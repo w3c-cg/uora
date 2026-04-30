@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UORA Core Protocol — Secure Physical Binding</title>
+    <script class="remove">
+        var respecConfig = {
+            group: "cg/uora",
+            specStatus: "CG-DRAFT",
+            edDraftURI: "https://w3id.org/uora/spec/core/v1.0",
+            latestVersion: "https://w3id.org/uora/spec/core/v1.0",
+            shortName: "uora-secure-physical-binding",
+            editors: [{
+                name: "Amir Hameed Mir",
+                company: "Sirraya Labs",
+                companyURL: "https://sirraya.io"
+            }],
+            authors: [],
+            formerEditors: [],
+            copyrightStart: "2025",
+            otherLinks: [{
+                key: "Repository",
+                data: [{
+                    value: "GitHub",
+                    href: "https://github.com/uora-wg/core"
+                }, {
+                    value: "Issues",
+                    href: "https://github.com/uora-wg/core/issues"
+                }]
+            }],
+            localBiblio: {
+                "Armknecht2011": {
+                    title: "A Formal Foundation for the Security Features of Physical Functions",
+                    authors: ["Armknecht, F.", "Sadeghi, A.R.", "Wachsmann, C."],
+                    date: "2011",
+                    publisher: "IEEE Symposium on Security and Privacy"
+                },
+                "Bernstein2011": {
+                    title: "High-speed high-security signatures",
+                    authors: ["Bernstein, D.J.", "Duif, N.", "Lange, T."],
+                    date: "2012",
+                    publisher: "Journal of Cryptographic Engineering, 2(2):77-89"
+                },
+                "Dodis2008": {
+                    title: "Fuzzy Extractors: How to Generate Strong Keys from Biometrics and Other Noisy Data",
+                    authors: ["Dodis, Y.", "Reyzin, L.", "Smith, A."],
+                    date: "2008",
+                    publisher: "SIAM Journal on Computing, 38(1):97-139"
+                },
+                "FIDO-CTAP2": {
+                    title: "Client to Authenticator Protocol (CTAP) 2.2",
+                    authors: ["FIDO Alliance"],
+                    date: "June 2023"
+                },
+                "FIPS186-5": {
+                    title: "Digital Signature Standard (DSS)",
+                    authors: ["National Institute of Standards and Technology"],
+                    date: "February 2023",
+                    publisher: "NIST FIPS 186-5"
+                },
+                "Hancke2005": {
+                    title: "An RFID Distance Bounding Protocol",
+                    authors: ["Hancke, G.", "Kuhn, M."],
+                    date: "2005",
+                    publisher: "Proceedings of SecureComm 2005"
+                },
+                "Pappu2002": {
+                    title: "Physical One-Way Functions",
+                    authors: ["Pappu, R.", "Recht, B.", "Taylor, J.", "Gershenfeld, N."],
+                    date: "September 2002",
+                    publisher: "Science, 297(5589):2026-2030"
+                },
+                "Ruhrmair2013": {
+                    title: "PUF Modeling Attacks on Simulated and Silicon Data",
+                    authors: ["Rührmair, U.", "Sölter, J.", "Sehnke, F.", "Xu, X.", "Mahmoud, A.", "Stoyanova, V.", "Dror, G.", "Schmidhuber, J.", "Burleson, W.", "Devadas, S."],
+                    date: "2013",
+                    publisher: "IEEE Trans. on Information Forensics and Security, 8(11):1876-1891"
+                },
+                "NIST-SP800-90A": {
+                    title: "Recommendation for Random Number Generation Using Deterministic Random Bit Generators",
+                    authors: ["Barker, E.", "Kelsey, J."],
+                    date: "June 2015",
+                    publisher: "NIST Special Publication 800-90A Rev 1"
+                },
+                "NIST-SP800-98": {
+                    title: "Guidelines for Securing Radio Frequency Identification (RFID) Systems",
+                    authors: ["Karygiannis, T.", "Eydt, B.", "Barber, G.", "Bunn, L.", "Phillips, T."],
+                    date: "April 2007",
+                    publisher: "NIST Special Publication 800-98"
+                },
+                "NIST-SP800-108": {
+                    title: "Recommendation for Key Derivation Using Pseudorandom Functions",
+                    authors: ["Chen, L."],
+                    date: "October 2009",
+                    publisher: "NIST Special Publication 800-108"
+                },
+                "ISO29192-6": {
+                    title: "Information technology — Lightweight cryptography — Part 6: Message authentication codes",
+                    authors: ["ISO/IEC JTC 1/SC 27"],
+                    date: "2019",
+                    publisher: "ISO/IEC 29192-6:2019"
+                }
+            }
+        };
+    </script>
+    <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer></script>
+    <style>
+        .note { background: #e9fbe9; border-left: 4px solid #52c052; padding: 1em; margin: 1em 0; }
+        .issue { background: #fbe9e9; border-left: 4px solid #c05252; padding: 1em; margin: 1em 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+        th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: left; }
+        th { background: #f0f0f0; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1em; margin: 1em 0; }
+    </style>
+</head>
+<body>
+
+    <section id="abstract">
+        <p>
+            This specification defines the Secure Physical Binding sub-protocol of UORA (Universal Object Registry and Attestation), governing how a Decentralized Identifier (DID) is cryptographically bound to a physical object, how that binding is verified by third parties, and how it is lifecycle-managed through upgrade, transfer, and revocation. The protocol operates under a formally specified attacker model, requires no trusted transport channel, and is stratified across four <a>Binding Assurance Levels (BAL)</a> that scale from passive tamper-evident labels to continuous, autonomous environmental attestation with hardware-rooted keys derived from <a>Physically Unclonable Functions (PUFs)</a>.
+        </p>
+        <p>
+            Cryptographic foundations follow [[RFC8032]] (Ed25519), [[FIPS186-5]] (P-256/ECDSA), [[RFC7517]] (JWK), and [[RFC8785]] (<a>JCS</a> canonicalization). PUF constructions are analyzed under the [[Armknecht2011]] security framework. The threat model is drawn from [[NIST-SP800-98]] and ETSI GR QSC 006.
+        </p>
+    </section>
+
+    <section id="sotd">
+        <p>This document is a Working Draft. It has been released for review and comment. Working Drafts are works in progress and subject to change based on implementation experience and community review. Implementors are cautioned against deploying Working Draft material in production systems. Please report issues at the feedback URI above.</p>
+    </section>
+
+    <section id="conformance"></section>
+
+    <section class="informative">
+        <h2>Introduction</h2>
+        <p>A UORA attestation chain proves, with cryptographic certainty, the provenance and integrity of claims made about an object identified by a DID. It does not prove that any particular physical artifact is the referent of that DID. This gap — between digital identity and physical matter — is the <dfn>binding problem</dfn>.</p>
+        <p>Consider a high-value pharmaceutical supply chain: every attestation in the chain may be validly signed, the DID document may be intact, and the governance rules may be satisfied — yet the capsules inside the bottle may have been replaced with counterfeits. No purely digital protocol can eliminate this risk; only a protocol that ties an unforgeable physical secret to the DID can address the <a>binding problem</a>.</p>
+        <p>This section specifies the mechanisms — passive, active, and continuous — by which such ties are established and verified. It draws on foundational work in physical unclonable functions [[Pappu2002]], [[Ruhrmair2013]], hardware security models [[FIDO-CTAP2]], and DID-based key management [[[DID-CORE]]], [[[VC-DATA-INTEGRITY]]].</p>
+
+        <section>
+            <h3>Design Principles</h3>
+            <ul>
+                <li><strong>Tamper-evidence.</strong> Any attempt to remove, transfer, or clone the binding MUST produce a detectable change in the <a>binding carrier</a> state or the cryptographic proof.</li>
+                <li><strong>Possession verification.</strong> A <a>verifier</a> MUST be able to mount a fresh cryptographic challenge against the <a>binding device</a> to demonstrate that the device is physically present and operational.</li>
+                <li><strong>Proportional unclonability.</strong> The binding SHOULD resist cloning at a level commensurate with its declared <a>BAL</a>. Higher BAL implies stronger unclonability guarantees, grounded in defined attacker capabilities (see Section 2).</li>
+                <li><strong>Graceful degradation.</strong> The binding SHOULD remain verifiable under partial physical damage, with the verification result encoding the degree of degradation.</li>
+                <li><strong>Transport independence.</strong> All security guarantees MUST derive from application-layer cryptography. Transport-layer security (TLS, NFC session encryption) is defense-in-depth only and SHALL NOT be a prerequisite for binding verification.</li>
+                <li><strong>Key sovereignty.</strong> Private binding keys MUST NOT be accessible outside the <a>binding device</a> at any point during the device's operational lifetime. For BAL-3, key existence is transient; the key is never stored.</li>
+                <li><strong>Auditability.</strong> Every material event in the binding lifecycle MUST be recorded as a signed UORA attestation, creating a non-repudiable audit trail.</li>
+            </ul>
+        </section>
+    </section>
+
+    <section>
+        <h2>Terminology</h2>
+        <dl>
+            <dt><dfn data-lt="Binding Device|binding device">Binding Device</dfn></dt>
+            <dd>Hardware component that performs cryptographic binding operations. Distinct from the <a>binding carrier</a>. Evaluated independently for tamper resistance and key protection.</dd>
+
+            <dt><dfn data-lt="Binding Carrier|binding carrier">Binding Carrier</dfn></dt>
+            <dd>Physical medium in which the <a>binding device</a> is embedded or affixed. The carrier provides tamper-evidence (visible or structural). The binding device provides cryptographic possession proof. The combination constitutes the physical binding.</dd>
+
+            <dt><dfn data-lt="Binding Assurance Level|BAL|Binding Assurance Level (BAL)">Binding Assurance Level (BAL)</dfn></dt>
+            <dd>Ordinal scale (BAL-1 through BAL-4) expressing the strength of the physical-to-digital binding. Higher BAL implies resistance against a stronger attacker class as defined in Section 2.</dd>
+
+            <dt><dfn data-lt="Enrollment Authority|EA">Enrollment Authority (EA)</dfn></dt>
+            <dd>Entity that cryptographically links a <a>binding device</a>'s public key to an object's DID by issuing a <a>Binding Enrollment Attestation (BEA)</a>. MUST hold a valid CertificationCredential issued by the applicable Trust Framework Governance Authority.</dd>
+
+            <dt><dfn>Verifier</dfn></dt>
+            <dd>Entity performing challenge-response binding verification. The protocol does not require the verifier to be trusted; the verifier learns only the object's public key and the verification outcome.</dd>
+
+            <dt><dfn data-lt="PUF|Physically Unclonable Function">Physically Unclonable Function (PUF)</dfn></dt>
+            <dd>A hardware construct that exploits manufacturing process variations to produce a unique, device-specific response to a given challenge input. The response is reproducible on the original device but computationally infeasible to clone without access to the original silicon [[Pappu2002]].</dd>
+
+            <dt><dfn>Fuzzy Extractor</dfn></dt>
+            <dd>A cryptographic construction (first formalized by [[Dodis2008]]) that derives a stable, uniformly random string from a noisy <a>PUF</a> response and generates public helper data enabling re-derivation. The helper data is computationally secure: it reveals negligible information about the derived key.</dd>
+
+            <dt><dfn data-lt="BEA|Binding Enrollment Attestation">Binding Enrollment Attestation (BEA)</dfn></dt>
+            <dd>A Verifiable Credential [[[VC-DATA-MODEL-2.0]]] issued by the <a>EA</a> that records the binding of a specific device (identified by public key and device certificate) to a specific DID at a declared <a>BAL</a>.</dd>
+
+            <dt><dfn>DID Document Version</dfn></dt>
+            <dd>A content-addressed snapshot of a DID document at a specific point in its history, identified by a version identifier whose format is DID-method-specific. Used by verifiers to request time-consistent verification.</dd>
+
+            <dt><dfn>JCS</dfn></dt>
+            <dd>JSON Canonicalization Scheme [[RFC8785]]. A deterministic serialization of a JSON object that eliminates encoding ambiguity, enabling consistent signature computation across implementations.</dd>
+
+            <dt><dfn>PUF Interface Descriptor (PID)</dfn></dt>
+            <dd>A machine-readable data structure embedded in the DID document or the <a>BEA</a> that fully describes the <a>PUF</a> construction, the <a>fuzzy extractor</a> algorithm, the challenge construction method, and the helper data location and format. The PID is the normative mechanism for achieving PUF-agnostic interoperability at BAL-3 and BAL-4.</dd>
+
+            <dt><dfn>Trust Framework Profile (TFP)</dfn></dt>
+            <dd>A normative profile that specifies the minimal governance, credential formats, revocation mechanisms, and audit structures required for a conformant deployment. TFP-1 is the baseline profile defined in Appendix B. Extension profiles (TFP-2, etc.) MAY be defined by communities of practice.</dd>
+
+            <dt><dfn>Proximity-Bound Authenticated Channel (PBAC)</dfn></dt>
+            <dd>An extension to the challenge-response protocol that binds the verification to a particular tight-timing transport (e.g., NFC) using a symmetric Channel Key. The <a>binding device</a> encrypts the nonce under this key, and a trusted <a>Proximity Verifier Service (PVS)</a> decrypts it to enforce that the response originated within the physical field. PBAC raises relay attacks from a heuristic to a cryptographic barrier. Defined in Appendix C.</dd>
+
+            <dt><dfn>Proximity Verifier Service (PVS)</dfn></dt>
+            <dd>A service trusted by the <a>verifier</a> to hold shadow copies of <a>PBAC</a> Channel Keys and to decrypt PBAC challenge responses. The PVS attests that the decrypted response matches the original nonce and that the latency is within the physical limit of the transport.</dd>
+        </dl>
+    </section>
+
+    <section>
+        <h2>Attacker Model</h2>
+        <p>This section specifies the threat model against which the binding protocol is designed. Implementations SHALL document which attacker classes they claim to resist.</p>
+
+        <section>
+            <h3>Attacker Classes</h3>
+            <table>
+                <thead>
+                    <tr><th>Class</th><th>Capabilities</th><th>BAL Resisting</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>A0</td><td>Network-only attacker. Can intercept, replay, and modify messages in transit. Cannot access the physical object.</td><td><a>BAL</a>-1 through BAL-4 (all)</td></tr>
+                    <tr><td>A1</td><td>A0 plus physical access to the object. Can photograph, scan, or optically clone identifiers. Cannot remove the <a>binding device</a> from its <a>binding carrier</a> without destruction.</td><td><a>BAL</a>-2 through BAL-4</td></tr>
+                    <tr><td>A2</td><td>A1 plus ability to remove the <a>binding device</a> from the <a>binding carrier</a>. Can attempt side-channel analysis (power, timing, EM). Cannot access the secure element's key store.</td><td><a>BAL</a>-2 through BAL-4</td></tr>
+                    <tr><td>A3</td><td>A2 plus access to semiconductor fabrication equipment. Can attempt non-invasive attacks on <a>PUF</a> responses. Cannot reproduce PUF manufacturing variations.</td><td><a>BAL</a>-3 and BAL-4</td></tr>
+                    <tr><td>A4</td><td>A3 plus full access to one enrolled device (logical break). Can extract helper data. Cannot derive the <a>PUF</a> response on a different device.</td><td><a>BAL</a>-3 and BAL-4 (partial; see §8.6)</td></tr>
+                    <tr><td>A5</td><td>A4 plus access to a dedicated high-speed, low-latency RF relay system. Can relay NFC/BLE challenges between a counterfeit object and a genuine device over distances.</td><td><a>BAL</a>-4 with <a>PBAC</a> (see Appendix C)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3>Out-of-Scope Threats</h3>
+            <p>The following attacks are explicitly outside the scope of this protocol:</p>
+            <ul>
+                <li>Supply-chain attacks that compromise the <a>binding device</a> before manufacture is complete. Trust framework governance (out-of-scope) addresses device supply chain.</li>
+                <li>Attacks exploiting vulnerabilities in the DID method itself (e.g., key recovery from an insecure key management system). DID security is specified per method.</li>
+                <li>Social engineering attacks on the <a>Enrollment Authority</a>.</li>
+                <li>Quantum-computer attacks on the asymmetric cryptographic primitives used in <a>BAL</a>-2 through BAL-4. Post-quantum profile extensions are reserved for a future revision.</li>
+            </ul>
+            <div class="note">
+                <p>The protocol's transport-independence property (Section 1.1, Principle 5) is the primary mitigation for Class A0. All BAL levels address A0 by design.</p>
+            </div>
+        </section>
+    </section>
+
+    <section>
+        <h2>Binding Assurance Levels</h2>
+        <p>The four <a>BAL</a> tiers form a strict partial order of assurance: a <a>verifier</a> requiring BAL-n MUST NOT accept a binding at BAL-m where m &lt; n, unless explicitly and verifiably authorized by the applicable <a>Trust Framework Profile (TFP)</a>. This constraint is enforced in the protocol via the BAL selection rules of Section 4.3.5.</p>
+
+        <section>
+            <h3>BAL-1: Passive Identifier with Tamper-Evident Carrier</h3>
+            <p><strong>Security objective.</strong> Demonstrate that a visual or machine-readable identifier has not been physically altered or transferred from the object it was applied to.</p>
+            <p><strong>Mechanism.</strong> A machine-readable representation of the object's DID (QR code, Data Matrix, NFC NDEF record, or equivalent) is applied to a tamper-evident <a>binding carrier</a>. The carrier MUST exhibit an irreversible, visible change upon removal or attempted transfer. Suitable carrier classes include void-pattern adhesives, destructible polyester labels, and security holographic laminates. The carrier engineering MUST be documented at enrollment.</p>
+            <p><strong>Assurance boundaries.</strong> BAL-1 does not provide cryptographic challenge-response. A BAL-1 binding is defeated by A1 attackers who succeed in carrier replication or who access the object before any carrier damage is detected. BAL-1 is appropriate for consumer-facing authentication where visual inspection at point-of-verification is feasible, and for batch-level supply chain tracking where individual object verification is not required.</p>
+            <p><strong>No device certificate required.</strong> BAL-1 bindings do not require a device certificate or a <a>binding device</a> in the sense of this specification. The DID document need not contain a <code>UORABindingVerification</code> method.</p>
+        </section>
+
+        <section>
+            <h3>BAL-2: Secure Element with Asymmetric Challenge-Response</h3>
+            <p><strong>Security objective.</strong> Cryptographically prove possession of a device-bound private key that cannot be extracted by A0 or A1 attackers, and resist A2 attackers via tamper detection and key zeroization.</p>
+            <p><strong>Mechanism.</strong> The <a>binding device</a> contains a hardware secure element (compliant with Common Criteria EAL 4+ or equivalent) with an asymmetric keypair generated on-device. The private key MUST NOT leave the secure element boundary at any time. The public key is registered in the DID document as a verification method with type <code>UORABindingVerification</code> and relationship <code>assertionMethod</code>.</p>
+            <p><strong>Key generation requirement.</strong> The keypair MUST be generated on-device after personalization, not pre-generated and loaded. Vendors claiming BAL-2 compliance SHALL provide attestation of on-device generation, auditable by the <a>Enrollment Authority</a>.</p>
+            <p><strong>Replay protection.</strong> Replay protection is the responsibility of the <a>verifier</a>, not the <a>binding device</a>. This design accommodates constrained devices (NFC tags, RFID tokens) that cannot maintain reliable persistent state. The verifier enforces replay protection by: (a) generating a cryptographically random nonce (≥ 256 bits) per challenge; (b) enforcing a response timestamp skew tolerance; and (c) maintaining a short-lived nonce cache for the duration of the skew window. The binding device SHALL NOT be required to maintain nonce history. This is consistent with the FIDO2 authenticator model [[FIDO-CTAP2]].</p>
+            <p><strong>Tamper response.</strong> The secure element MUST implement a hardware tamper detection mechanism (active shield, mesh, or equivalent). On tamper detection, the device SHOULD zeroize the private key. Key zeroization SHALL be documented in the device's security policy.</p>
+            <p><strong>Minimum algorithm requirements.</strong> Implementations SHALL support at least one of the cryptographic profiles in Section 6.</p>
+            <p><strong>Conformance.</strong> Passing the UORA BAL-2 Conformance Test Suite (CTS-BAL2) is REQUIRED. The CTS is available at <code>w3id.org/uora/conformance/binding/v1</code>.</p>
+        </section>
+
+        <section>
+            <h3>BAL-3: PUF-Derived Key with Fuzzy Extraction</h3>
+            <p><strong>Security objective.</strong> Prove possession of a key that is physically unclonable and never persisted, eliminating the vendor key-retention threat present in BAL-2.</p>
+            <p><strong>Mechanism.</strong> The <a>binding device</a> derives its private key from a <a>Physically Unclonable Function</a> using a <a>fuzzy extractor</a> [[Dodis2008]]. At enrollment, the PUF is queried with a defined challenge set, and the fuzzy extractor produces: (a) a stable derived key (the binding private key) and (b) public helper data required for re-derivation. The helper data is stored in the DID document or in a publicly accessible endpoint. The private key is never stored in non-volatile memory; it exists only transiently during device power-on and is recomputed on each challenge-response cycle.</p>
+            <p><strong>Unclonability guarantee.</strong> The security of a PUF-based binding under the [[Armknecht2011]] framework requires that the PUF satisfy: (1) uniqueness — the inter-device Hamming distance between responses to the same challenge is approximately 50%; (2) reliability — the intra-device Hamming distance across conditions is below the <a>fuzzy extractor</a>'s error-correction bound; and (3) unpredictability — an adversary observing polynomially many challenge-response pairs gains negligible advantage in predicting responses to unseen challenges. Implementations SHALL publish these statistics via the <a>PUF Interface Descriptor (PID)</a> as defined in Appendix A.</p>
+            <p><strong>PUF Interface Descriptor (PID).</strong> BAL-3 and BAL-4 devices MUST include a <a>PID</a> in the DID document's binding verification method. The PID is a machine-readable JSON object that fully describes the PUF construction, the <a>fuzzy extractor</a> algorithm and parameters, the challenge construction mechanism, the helper data location and content hash, and the measured inter- and intra-device statistics. The PID schema is defined in Appendix A. A <a>verifier</a> SHALL use the PID to construct a challenge and to interpret the helper data. Conformance test C-07a requires that a clean-room verifier can construct a valid challenge from the PID alone, without vendor-proprietary knowledge.</p>
+            <p><strong>Vendor cannot retain key.</strong> Because the private key is derived at power-on from silicon manufacturing variations, no manufacturing process can produce the key without the physical device. This property distinguishes BAL-3 from BAL-2 in the supply chain trust model.</p>
+            <p><strong>Conformance.</strong> Passing CTS-BAL3 plus a valid and complete <a>PID</a> are REQUIRED.</p>
+        </section>
+
+        <section>
+            <h3>BAL-4: Continuous Attestation with Environmental Monitoring</h3>
+            <p><strong>Security objective.</strong> Continuously prove that the bound physical object has not been tampered with, relocated without authorization, or subjected to conditions outside its permitted environmental envelope, even in the absence of an active <a>verifier</a>.</p>
+            <p><strong>Mechanism.</strong> All BAL-3 requirements apply, including the <a>PID</a>. In addition, the <a>binding device</a>: (a) continuously monitors the object's physical state via onboard sensors (motion, temperature, tamper switches, or other sensors specified at enrollment); (b) generates signed attestations autonomously when monitored parameters cross defined thresholds or on a configured periodic interval; (c) maintains a trusted time source with documented drift bounds; and (d) SHALL implement the <a>Proximity-Bound Authenticated Channel (PBAC)</a> extension defined in Appendix C as its mandatory proximity verification mechanism. The response-time bounding of Section 4.3.6 serves as a fallback when PBAC is not available.</p>
+            <p><strong>Maximum attestation interval.</strong> The maximum permitted interval between autonomous attestations MUST be declared at enrollment and recorded in the <a>BEA</a>. Verifiers SHALL treat a gap exceeding the declared interval (plus the documented clock drift) as a <a>verification_inconclusive</a> result requiring investigation.</p>
+            <p><strong>Conformance.</strong> Passing CTS-BAL3 plus CTS-BAL4 (continuous attestation test vectors) are REQUIRED.</p>
+        </section>
+
+        <section>
+            <h3>BAL Summary</h3>
+            <table>
+                <thead>
+                    <tr><th><a>BAL</a></th><th>Key Type</th><th>Possession Proof</th><th>Anti-Cloning</th><th>Autonomous Attestation</th><th>Attacker Resisted</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>None</td><td>Visual / carrier integrity</td><td>Carrier engineering</td><td>No</td><td>A0</td></tr>
+                    <tr><td>2</td><td>SE-generated asymmetric</td><td>Challenge-response</td><td>Secure element</td><td>No</td><td>A0, A1, A2</td></tr>
+                    <tr><td>3</td><td>PUF-derived, ephemeral</td><td>Challenge-response</td><td>PUF + <a>fuzzy extractor</a></td><td>No</td><td>A0, A1, A2, A3</td></tr>
+                    <tr><td>4</td><td>PUF-derived, ephemeral</td><td>Challenge-response + continuous + <a>PBAC</a></td><td>PUF + environmental monitor</td><td>Yes</td><td>A0, A1, A2, A3, A5</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </section>
+
+    <section>
+        <h2>Normative Protocol</h2>
+
+        <section>
+            <h3>Transport Model</h3>
+            <p>The binding protocol is transport-agnostic. The <code>ChallengeRequest</code> and <code>ChallengeResponse</code> messages MAY be carried over any transport, including NFC (ISO/IEC 14443, ISO/IEC 15693), Bluetooth LE, USB, HTTP/S, or proprietary RF protocols. Implementations SHOULD use transport-layer security where available as defense-in-depth. Implementations MUST NOT assume transport-layer integrity or authenticity. All security properties derive from the application-layer message signatures.</p>
+            <p><strong>Proximity enforcement.</strong> Some transports provide inherent proximity enforcement (NFC, RFID). For transports without inherent proximity enforcement, verifiers SHOULD apply maximum round-trip time thresholds calibrated to the expected transport medium (see Section 4.3.6). This does not eliminate relay attacks but raises the practical cost; see Section 8.2. BAL-4 devices and any deployment requiring strong relay-attack resistance SHALL implement the <a>PBAC</a> extension defined in Appendix C.</p>
+        </section>
+
+        <section>
+            <h2>Enrollment</h2>
+
+            <section>
+                <h4>Actors and Prerequisites</h4>
+                <ul>
+                    <li><strong>Binding Device Vendor (BDV).</strong> Manufactures the <a>binding device</a> and issues a device certificate asserting the device's public key, <a>BAL</a>, and hardware security properties. The device certificate MUST conform to [[RFC5280]] or be expressed as a W3C Verifiable Credential [[[VC-DATA-MODEL-2.0]]]. For BAL-3/4, the device certificate MUST include a link to the device's <a>PID</a>.</li>
+                    <li><strong>Enrollment Authority (EA).</strong> Verifies device authenticity and issues the <a>BEA</a>. MUST hold a valid <code>CertificationCredential</code>, issued by the applicable Trust Framework Governance Authority, authorizing the EA to issue BEAs at the declared BAL. An EA that has had its <code>CertificationCredential</code> revoked MUST NOT issue new BEAs.</li>
+                    <li><strong>Object Owner (OO).</strong> Controls the physical object at enrollment time and authorizes the binding. The OO MUST authenticate to the EA via a mechanism specified by the Trust Framework.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h4>Enrollment Protocol Steps</h4>
+                <ol>
+                    <li>EA generates a cryptographically random enrollment challenge (≥ 256 bits, generated by a CSPRNG conformant with [[NIST-SP800-90A]]).</li>
+                    <li>EA transmits the enrollment challenge to the <a>binding device</a> via a supported transport.</li>
+                    <li>Binding device signs the enrollment challenge using the binding private key. For BAL-3/4, this requires powering the device and running the <a>PUF</a> + <a>fuzzy extractor</a> pipeline to derive the key.</li>
+                    <li>EA verifies the signature against the public key in the device certificate, using the algorithm identified in the device certificate.</li>
+                    <li>EA resolves or creates the object's DID document and registers the binding device's public key as a verification method of type <code>UORABindingVerification</code>. The method MUST be listed under <code>assertionMethod</code> in the DID document.</li>
+                    <li>EA constructs a <a>BEA</a> containing, at minimum: object DID and <a>DID Document Version</a> identifier; binding device public key fingerprint (JWK thumbprint per [[RFC7638]]); declared <a>BAL</a>; enrollment timestamp (ISO 8601, UTC); binding device vendor, model identifier, and hardware revision; EA's DID; <strong>the <a>Trust Framework Profile (TFP)</a> identifier governing this binding (e.g., <code>urn:uora:trust-framework:profile-1</code>)</strong>; <a>PUF Interface Descriptor (PID)</a> as defined in Appendix A (BAL-3/4 only); tamper-evidence carrier class and engineering specification (all BALs).</li>
+                    <li>EA cryptographically signs the <a>BEA</a> using its CertificationCredential key.</li>
+                    <li>The BEA SHALL be stored as the primary evidence claim in the object's first UORA attestation. The attestation MUST be anchored to a verifiable data registry (VDR) per the applicable Trust Framework.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>EA Compromise Recovery</h4>
+                <p>If an EA's <code>CertificationCredential</code> is compromised or revoked, all <a>BEAs</a> issued by that EA SHOULD be treated as untrusted by default. Trust frameworks MUST specify: (a) the mechanism for revoking an EA's <code>CertificationCredential</code>; (b) the notification obligation of the EA and the Trust Framework Governance Authority; and (c) the procedure for verifying or re-enrolling affected bindings. An EA operating under a revoked <code>CertificationCredential</code> has no standing to issue BEAs or to attest to previously issued BEAs.</p>
+                <p><strong>TFP-1 default.</strong> Under TFP-1 (Appendix B), the revocation mechanism SHALL be <code>StatusList2021</code>. When an EA credential is revoked, all BEAs issued by that EA are invalid until the object owner completes re-enrollment with a valid EA. The object owner has 30 calendar days to complete re-enrollment. Failure to re-enroll within this window SHALL cause the binding to be marked as <a>revoked</a> with reason code <code>authority_revoked</code>.</p>
+            </section>
+        </section>
+
+        <section>
+            <h3>Challenge-Response Verification</h3>
+
+            <section>
+                <h4>ChallengeRequest Message</h4>
+                <table>
+                    <thead>
+                        <tr><th>Field</th><th>Type</th><th>Required?</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>did</code></td><td>string (DID)</td><td>REQUIRED</td><td>The DID of the object whose binding is being verified.</td></tr>
+                        <tr><td><code>didVersion</code></td><td>string</td><td>OPTIONAL</td><td>Version identifier of the <a>DID Document Version</a> the verifier resolved. If present, verification SHALL be performed against that version. If the version is unavailable, the verification SHALL fail with error <a>version_unavailable</a>. If absent, the current DID document version is used.</td></tr>
+                        <tr><td><code>nonce</code></td><td>string (base64url)</td><td>REQUIRED</td><td>Cryptographically random value, ≥ 256 bits (≥ 32 bytes). Generated by the <a>verifier</a> using a CSPRNG [[NIST-SP800-90A]]. MUST NOT be reused.</td></tr>
+                        <tr><td><code>timestamp</code></td><td>string (ISO 8601)</td><td>REQUIRED</td><td>Verifier's current time in UTC, expressed as a full ISO 8601 datetime with timezone offset <code>Z</code>. Used for skew tolerance enforcement.</td></tr>
+                        <tr><td><code>verifier</code></td><td>string (DID)</td><td>REQUIRED</td><td>The verifier's DID, providing accountability for challenge issuance.</td></tr>
+                        <tr><td><code>minBal</code></td><td>string</td><td>OPTIONAL</td><td>Minimum <a>BAL</a> the verifier will accept. If omitted, any BAL is accepted. Values: <code>"BAL-1"</code>, <code>"BAL-2"</code>, <code>"BAL-3"</code>, <code>"BAL-4"</code>.</td></tr>
+                        <tr><td><code>requestPbac</code></td><td>boolean</td><td>OPTIONAL</td><td>If <code>true</code> and the binding method advertises <a>PBAC</a> support (see Appendix C), the verifier requests that the challenge-response be bound to the transport channel using PBAC. If <code>true</code> and the device does not support PBAC, the device SHALL proceed with standard challenge-response and set <code>pbacApplied</code> to <code>false</code>. Default: <code>true</code> for verifiers that support PBAC.</td></tr>
+                    </tbody>
+                </table>
+                <div class="note">
+                    <p>The <code>didVersion</code> field enables time-consistent verification. A verifier that resolved a DID document and cached its binding verification methods SHOULD include the cached version identifier in subsequent challenges. This prevents a scenario where the DID document has been updated (e.g., a binding upgraded or revoked) between the verifier's resolution and the challenge.</p>
+                </div>
+            </section>
+
+            <section>
+                <h4>ChallengeResponse Message</h4>
+                <table>
+                    <thead>
+                        <tr><th>Field</th><th>Type</th><th>Required?</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>did</code></td><td>string (DID)</td><td>REQUIRED</td><td>Must match the <code>did</code> in the corresponding ChallengeRequest.</td></tr>
+                        <tr><td><code>nonce</code></td><td>string (base64url)</td><td>REQUIRED</td><td>Must be the nonce from the corresponding ChallengeRequest, reproduced without modification. When <a>PBAC</a> is applied, this field carries the PBAC-encrypted payload as a base64url-encoded binary blob. See Appendix C for the transformation.</td></tr>
+                        <tr><td><code>signature</code></td><td>string (base64url)</td><td>REQUIRED</td><td>The <a>binding device</a>'s signature over the <a>JCS</a>-canonicalized ChallengeRequest, as received, without modification.</td></tr>
+                        <tr><td><code>bindingMethod</code></td><td>string (URI)</td><td>REQUIRED</td><td>The verification method ID from the DID document corresponding to the keypair used to produce the signature.</td></tr>
+                        <tr><td><code>timestamp</code></td><td>string (ISO 8601)</td><td>CONDITIONAL</td><td>Device-generated timestamp in UTC. REQUIRED for BAL-4. OPTIONAL for BAL-2 (constrained devices without reliable clocks MAY omit). If present, used to bound response time and detect relay attacks.</td></tr>
+                        <tr><td><code>bal</code></td><td>string</td><td>REQUIRED</td><td>The device's actual <a>BAL</a>. Values: <code>"BAL-2"</code>, <code>"BAL-3"</code>, <code>"BAL-4"</code>. If this value is lower than the <code>minBal</code> in the ChallengeRequest, the verifier SHALL return <a>insufficient_bal</a>.</td></tr>
+                        <tr><td><code>deviceStatus</code></td><td>string</td><td>OPTIONAL</td><td>Device self-reported operational status. Values: <code>operational</code>, <a>degraded</a>, <code>tampered</code>. Absence implies <code>operational</code>. A <code>tampered</code> status SHALL cause the verifier to return <a>verification_inconclusive</a> regardless of signature validity.</td></tr>
+                        <tr><td><code>continuousAttestation</code></td><td>object</td><td>CONDITIONAL</td><td>Required for BAL-4. Contains the latest signed autonomous attestation payload, including sensor readings, event log, and timestamp. Schema specified in Appendix A.</td></tr>
+                        <tr><td><code>pbacApplied</code></td><td>boolean</td><td>REQUIRED for BAL-4. OPTIONAL for BAL-2/3.</td><td><code>true</code> if the response was generated using the <a>Proximity-Bound Authenticated Channel (PBAC)</a> extension. <code>false</code> otherwise. If the ChallengeRequest had <code>requestPbac = true</code> and this field is <code>false</code>, the verifier SHALL return <a>verification_inconclusive</a> unless a Trust Framework exception applies.</td></tr>
+                        <tr><td><code>pbacSignature</code></td><td>object</td><td>CONDITIONAL</td><td>Required when <code>pbacApplied</code> is <code>true</code>. Contains a signed attestation from the <a>Proximity Verifier Service (PVS)</a> confirming that the PBAC challenge was correctly decrypted and the response latency is within the physical limit of the transport. Schema: <code>{ pvsDid: string, decryptedNonce: string, latencyMs: number, timestamp: string, signature: string }</code>.</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h4>Canonicalization</h4>
+                <p>The signature MUST be computed over the <a>JCS</a>-canonicalized form of the ChallengeRequest, exactly as received by the <a>binding device</a>, without modification, including all fields present in the received message and no additional fields. The canonicalization algorithm is the JSON Canonicalization Scheme specified in [[RFC8785]]. This algorithm: (a) sorts object keys lexicographically by Unicode code point; (b) applies IEEE 754 serialization for numeric values; and (c) removes insignificant whitespace. The binding device MUST apply JCS to the received bytes; it MUST NOT re-parse or reconstruct the ChallengeRequest.</p>
+                <div class="note">
+                    <p>Implementations MUST validate that the JCS output is byte-for-byte reproducible before verifying or producing signatures. A reference implementation with test vectors is provided at the conformance URI.</p>
+                </div>
+            </section>
+
+            <section>
+                <h4>Verification Procedure</h4>
+                <ol>
+                    <li>Resolve the DID document. If <code>didVersion</code> was specified, resolve that specific version. If the version is unavailable, abort with <a>version_unavailable</a>.</li>
+                    <li>Locate all verification methods of type <code>UORABindingVerification</code>. If none are found, abort with <a>no_binding_method</a>.</li>
+                    <li>Apply BAL selection rules (Section 4.3.5). If no method satisfies the <code>minBal</code> requirement, abort with <a>insufficient_bal</a>.</li>
+                    <li>Validate the <a>TFP</a> identifier in the <a>BEA</a>. If the verifier does not support the declared TFP, abort with <a>unsupported_trust_framework</a>.</li>
+                    <li>For the selected binding method at BAL-3 or BAL-4, retrieve and parse the <a>PUF Interface Descriptor (PID)</a> from the DID document. Validate that the PID contains all required fields per Appendix A. If the PID is missing or invalid, return <a>verification_inconclusive</a> with detail <a>invalid_pid</a>.</li>
+                    <li>Generate a fresh ChallengeRequest with a new nonce from a CSPRNG.</li>
+                    <li>If the binding method advertises <a>PBAC</a> support and the verifier supports PBAC, set <code>requestPbac = true</code>.</li>
+                    <li>Record the transmission timestamp t₀.</li>
+                    <li>Transmit the ChallengeRequest to the <a>binding device</a> via the device's supported transport.</li>
+                    <li>Receive the ChallengeResponse. Record the receipt timestamp t₁.</li>
+                    <li>If <code>requestPbac</code> was <code>true</code>, verify that <code>pbacApplied</code> is <code>true</code>. If <code>false</code>, return <a>verification_inconclusive</a> with detail <code>pbac_not_applied</code>.</li>
+                    <li>If <code>pbacApplied</code> is <code>true</code>, validate the <code>pbacSignature</code> against the <a>PVS</a>'s public key and verify the attestation contents per Appendix C. If PVS validation fails, return <a>verification_inconclusive</a> with detail <code>pbac_validation_failed</code>.</li>
+                    <li>Verify nonce. The nonce in the ChallengeResponse MUST be byte-for-byte identical to the nonce in the ChallengeRequest. If not, abort with <a>invalid_nonce</a>. Note: if PBAC was applied, the nonce comparison is performed against the <code>decryptedNonce</code> in the validated PVS attestation, not the raw <code>nonce</code> field.</li>
+                    <li>Verify timestamp skew. If the ChallengeResponse includes a device timestamp, it MUST differ from the verifier's timestamp by no more than the configured skew tolerance (default: 300 seconds). If skew exceeds tolerance, abort with <a>expired_challenge</a>.</li>
+                    <li>Verify response time. If PBAC was not applied and a maximum response time is configured, (t₁ − t₀) MUST not exceed it. Excess may indicate a relay attack; return <a>verification_inconclusive</a>.</li>
+                    <li>Verify deviceStatus. If deviceStatus is <code>tampered</code>, return <a>verification_inconclusive</a>.</li>
+                    <li>Canonicalize the ChallengeRequest using <a>JCS</a>.</li>
+                    <li>Verify the signature in the ChallengeResponse against the public key in the selected binding verification method, using the algorithm identified in the method's publicKeyJwk. If signature verification fails, abort with <a>invalid_signature</a>.</li>
+                    <li>Check revocation status of the binding verification method. If revoked, abort with <a>revoked_binding</a>.</li>
+                    <li>If all checks pass, return <a>valid</a>. Record the verification event in the UORA audit log.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>BAL Selection Rules</h4>
+                <p>If a DID document contains multiple binding verification methods, the <a>verifier</a> SHALL select a method according to the following rules:</p>
+                <ul>
+                    <li>The selected method's <a>BAL</a> MUST be ≥ <code>minBal</code> specified in the ChallengeRequest.</li>
+                    <li>If multiple methods meet the BAL requirement, the verifier SHOULD select the method with the highest BAL.</li>
+                    <li><strong>Downgrade prevention.</strong> A verifier MUST NOT use a lower-BAL method when a higher-BAL method is available and non-revoked, unless the verifier's <a>Trust Framework Profile (TFP)</a> explicitly permits downgrade for a documented operational reason (e.g., device battery depletion in a BAL-4 device). Any downgrade event MUST be logged with justification.</li>
+                </ul>
+                <div class="note">
+                    <p>BAL downgrade attacks exploit a multi-method DID document by presenting a lower-assurance binding for an object that also has a higher-assurance binding. The rule above, combined with the verification result states in Section 4.5, ensures that a verifier receives an accurate picture of the highest available assurance.</p>
+                </div>
+            </section>
+
+            <section>
+                <h4>Relay Attack Mitigation</h4>
+                <p>A relay attack occurs when an attacker intercepts a ChallengeRequest, relays it to the genuine <a>binding device</a> at a different location, and returns the response — thereby making a fraudulent object appear to be the genuine article. The protocol provides a tiered set of mitigations:</p>
+                <ul>
+                    <li><strong>Response time bounding (BAL-2/3).</strong> The <a>verifier</a> SHOULD configure a maximum response time threshold calibrated to the expected round-trip propagation time of the transport medium plus processing time. Typical values: NFC ≤ 100 ms; Bluetooth LE ≤ 500 ms; HTTP ≤ 2000 ms. If the response time exceeds the threshold, return <a>verification_inconclusive</a>. This raises the cost of relay attacks but does not eliminate them against a sophisticated A5 attacker.</li>
+                    <li><strong>Proximity-Bound Authenticated Channel (PBAC) — BAL-4 REQUIRED, BAL-3 OPTIONAL.</strong> The <a>PBAC</a> extension (Appendix C) binds the challenge-response to an inherently distance-limited transport (e.g., NFC). By encrypting the nonce under a symmetric Channel Key that exists only inside the <a>binding device</a>, and requiring a trusted <a>Proximity Verifier Service (PVS)</a> to decrypt and attest to the response, PBAC makes relay attacks cryptographically infeasible: an attacker who intercepts the PBAC-blinded nonce and relays it to a distant device cannot return a valid response to the local verifier within the transport's physical timing constraints. BAL-4 devices SHALL implement PBAC. Any verification where PBAC was requested but not applied SHALL return <a>verification_inconclusive</a>.</li>
+                    <li><strong>Signed proximity signals (BAL-4).</strong> BAL-4 devices SHOULD include signed NFC field-strength readings, GPS coordinates (if available), or other proximity signals in the <code>continuousAttestation</code> object. Verifiers SHOULD validate that declared proximity is consistent with the verification context.</li>
+                    <li><strong>UWB distance bounding (OPTIONAL, all BALs).</strong> Deployments requiring strong relay-attack prevention MAY use Ultra-Wideband (UWB) distance bounding per ISO/IEC 24730-62 as an additional out-of-band proximity verification step. UWB bounding is independent of the binding protocol and is not normatively required.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h4>Rate Limiting</h4>
+                <p>Binding devices SHOULD implement rate limiting on challenge-response operations to mitigate denial-of-service attacks and resource exhaustion. Rate limiting is especially critical for:</p>
+                <ul>
+                    <li>Battery-powered devices (BAL-4 IoT deployments) where repeated cryptographic operations can deplete power reserves and disable the device.</li>
+                    <li><a>PUF</a>-based devices (BAL-3/4) where excessive challenge sets can, in theory, assist in modeling attacks on the PUF.</li>
+                </ul>
+                <p>Recommended rate limits: no more than 10 challenge-response operations per 60-second window per verifier DID, with exponential backoff on excess. Implementations SHALL document their rate limiting policy in the device's security policy.</p>
+            </section>
+
+            <section>
+                <h4>Offline Verification</h4>
+                <p><a>Verifiers</a> operating in environments with intermittent connectivity MAY cache resolved DID documents and associated binding verification methods subject to the following constraints:</p>
+                <ul>
+                    <li>Cache duration MUST NOT exceed 24 hours, unless a longer duration is explicitly authorized by the <a>Trust Framework Profile (TFP)</a> for the applicable use case.</li>
+                    <li>Cached entries MUST be validated against the DID document's revocation registry and key expiry before use.</li>
+                    <li>Verifiers SHALL re-verify bindings against the live DID document when connectivity is restored if the cache has expired.</li>
+                    <li><strong>Cache poisoning mitigation.</strong> The verifier MUST verify the integrity of cached DID documents using cryptographic proofs provided by the DID method (e.g., signed DID document, anchored hash). Unauthenticated caching is not permitted.</li>
+                </ul>
+            </section>
+        </section>
+
+        <section>
+            <h3>Binding Revocation</h3>
+
+            <section>
+                <h4>Revocation Procedure</h4>
+                <ol>
+                    <li>An authorized party (Object Owner, <a>EA</a>, or Trust Framework Governance Authority) updates the DID document to remove or mark as revoked the binding verification method, including a revocation timestamp and reason code.</li>
+                    <li>The revocation MUST be recorded in the DID document's revocation registry, using the mechanism specified by the DID method (e.g., <code>StatusList2021</code>, bitstring status list, or method-specific revocation endpoint).</li>
+                    <li>If the device is capable and connectivity is available, the device SHOULD issue a signed Binding Revocation Attestation containing: the object DID, the binding method ID, the revocation reason, the revocation timestamp, and the device's final operational state reading.</li>
+                    <li>The Binding Revocation Attestation SHALL be recorded as a UORA attestation in the object's chain, referencing the prior enrollment attestation.</li>
+                    <li>If the device supports tamper-triggered key zeroization, the zeroization event SHOULD be recorded in the Binding Revocation Attestation.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>Revocation Reason Codes</h4>
+                <table>
+                    <thead>
+                        <tr><th>Code</th><th>Meaning</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>tamper_detected</code></td><td>Hardware tamper indicator activated. The physical security of the <a>binding device</a> has been compromised.</td></tr>
+                        <tr><td><code>device_failure</code></td><td>The <a>binding device</a> has failed and can no longer produce valid challenge responses.</td></tr>
+                        <tr><td><code>device_replacement</code></td><td>The <a>binding device</a> is being replaced as part of scheduled maintenance. Use with rebinding (Section 4.5).</td></tr>
+                        <tr><td><code>object_decommissioned</code></td><td>The physical object has reached end-of-life and is being <a>decommissioned</a>. No rebinding will follow.</td></tr>
+                        <tr><td><code>binding_upgraded</code></td><td>The binding has been upgraded to a higher <a>BAL</a>. Use with rebinding (Section 4.5).</td></tr>
+                        <tr><td><code>authority_revoked</code></td><td>The <a>Enrollment Authority</a> that issued this binding's <a>BEA</a> has had its CertificationCredential revoked. The binding should be re-evaluated.</td></tr>
+                        <tr><td><code>key_compromise</code></td><td>There is evidence that the binding private key has been or may have been compromised.</td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </section>
+
+        <section>
+            <h3>Rebinding</h3>
+            <p>Rebinding replaces one <a>binding device</a> with another while maintaining the object's DID and attestation chain continuity.</p>
+            <ul>
+                <li>The previous binding MUST be <a>revoked</a> (Section 4.4) before or simultaneously with new enrollment (Section 4.2). Simultaneous revocation and enrollment SHALL be implemented as an atomic DID document update where supported by the DID method.</li>
+                <li>The rebinding event MUST be recorded as a UORA attestation referencing both the revocation attestation of the old binding and the <a>BEA</a> of the new binding.</li>
+                <li>The object's DID SHALL NOT change during rebinding. The DID provides the stable identifier for the object's attestation history.</li>
+                <li>The new binding MAY be at a different <a>BAL</a>. An upgrade in BAL SHOULD use reason code <code>binding_upgraded</code>. A downgrade in BAL MUST be explicitly authorized by the <a>Trust Framework Profile (TFP)</a> and logged.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Verification Result States</h3>
+            <table>
+                <thead>
+                    <tr><th>Result Code</th><th>Meaning</th><th>Recommended Action</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><dfn>valid</dfn></td><td>Challenge-response succeeded. Binding is intact and verified at the returned <a>BAL</a>.</td><td>Accept. Log event with BAL and timestamp.</td></tr>
+                    <tr><td><dfn>invalid_signature</dfn></td><td>Signature verification failed. The response does not correspond to the registered public key.</td><td>Reject. Investigate possible key mismatch or device substitution.</td></tr>
+                    <tr><td><dfn>expired_challenge</dfn></td><td>Challenge timestamp exceeds skew tolerance or response time threshold exceeded.</td><td>Reject. Retry with fresh challenge. If persistent, investigate relay attack.</td></tr>
+                    <tr><td><dfn>revoked_binding</dfn></td><td>Binding verification method is marked <a>revoked</a> in the DID document.</td><td>Reject. Do not accept the object without re-enrollment.</td></tr>
+                    <tr><td><dfn>insufficient_bal</dfn></td><td>Device's actual <a>BAL</a> is below the verifier's <code>minBal</code> requirement.</td><td>Reject. Do not downgrade without <a>Trust Framework Profile (TFP)</a> authorization.</td></tr>
+                    <tr><td><dfn>device_unreachable</dfn></td><td><a>Binding device</a> did not respond within the transport timeout.</td><td>Inconclusive. Retry. If persistent, escalate to object owner.</td></tr>
+                    <tr><td><dfn>verification_inconclusive</dfn></td><td>Transient error, tampered device status, relay attack suspicion, <a>PBAC</a> not applied when requested, or <a>PVS</a> validation failure. Binding cannot be confirmed or denied.</td><td>Inconclusive. Retry. Do not accept. Investigate if persistent.</td></tr>
+                    <tr><td><dfn>version_unavailable</dfn></td><td>The <code>didVersion</code> specified in the ChallengeRequest is not available from the DID resolver.</td><td>Inconclusive. Retry without <code>didVersion</code> or with a later version.</td></tr>
+                    <tr><td><dfn>no_binding_method</dfn></td><td>No <code>UORABindingVerification</code> method found in the resolved DID document.</td><td>Reject. The object may not have been enrolled or the DID document may be malformed.</td></tr>
+                    <tr><td><dfn>invalid_nonce</dfn></td><td>Nonce in the ChallengeResponse does not match the ChallengeRequest.</td><td>Reject. Possible replay or device malfunction.</td></tr>
+                    <tr><td><dfn>unsupported_trust_framework</dfn></td><td>The <a>TFP</a> declared in the <a>BEA</a> is not supported by the verifier.</td><td>Reject. Cannot verify binding under an unknown governance framework.</td></tr>
+                    <tr><td><dfn>profile_c_risk_not_accepted</dfn></td><td>The binding uses Profile C (symmetric-key) but the required risk acceptance acknowledgment is missing or invalid.</td><td>Reject. The verifier cannot trust a symmetric-key binding without explicit, signed risk acceptance per Section 6.3.</td></tr>
+                    <tr><td><dfn>invalid_pid</dfn></td><td>The <a>PUF Interface Descriptor (PID)</a> for a BAL-3/4 binding is missing or malformed.</td><td>Inconclusive. Cannot construct a valid PUF challenge without a valid PID.</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </section>
+
+    <section>
+        <h2>Trust Model</h2>
+        <p>This section formally characterizes the trust assumptions at each boundary of the binding protocol. An implementation that does not document its trust assumptions provides no verifiable security guarantees.</p>
+
+        <section>
+            <h3>Trust Boundaries and Mitigations</h3>
+            <table>
+                <thead>
+                    <tr><th>Actor</th><th>Trust Assumption</th><th>Failure Scenario</th><th>Mitigation</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Binding Device Vendor (BAL-2)</td>
+                        <td>Vendor manufactured the secure element correctly and did not retain a copy of the private key.</td>
+                        <td>Vendor retains key; can impersonate any bound object without physical access.</td>
+                        <td>Independent <a>Enrollment Authorities</a>. Vendor audits and Common Criteria certification. BAL-3 preferred for high-value deployments.</td>
+                    </tr>
+                    <tr>
+                        <td>Binding Device Vendor (BAL-3/4)</td>
+                        <td>Vendor's <a>PUF</a> construction satisfies uniqueness, reliability, and unpredictability per the [[Armknecht2011]] framework.</td>
+                        <td>PUF modeling attack succeeds; attacker can predict responses from published helper data.</td>
+                        <td>Documented PUF statistics from production samples via <a>PID</a>. Controlled challenge sets. Vendor SHALL provide attack mitigation disclosure.</td>
+                    </tr>
+                    <tr>
+                        <td>Enrollment Authority</td>
+                        <td>EA correctly verified device authenticity before issuing the <a>BEA</a>.</td>
+                        <td>EA compromise: attacker can issue fraudulent BEAs for non-genuine devices.</td>
+                        <td>EA must hold valid CertificationCredential. EA revocation and binding revalidation mechanisms per §4.2.3.</td>
+                    </tr>
+                    <tr>
+                        <td>Verifier</td>
+                        <td>None. Protocol is designed such that verifiers cannot learn the private key.</td>
+                        <td>Malicious verifier mounts repeated challenges to perform side-channel analysis.</td>
+                        <td>Rate limiting per §4.3.7. BAL-3/4 key non-existence between power cycles.</td>
+                    </tr>
+                    <tr>
+                        <td>Proximity Verifier Service (PVS)</td>
+                        <td><a>PVS</a> holds Channel Key shadows and correctly attests to <a>PBAC</a> decryption results. PVS is trusted not to collude with a relay attacker.</td>
+                        <td>PVS compromise: attacker with PVS keys can forge PBAC attestations and defeat relay protection.</td>
+                        <td>PVS SHALL be operated by an independent, audited third party. PVS Channel Key shadow storage SHALL be HSMed. PVS attestation signing key SHALL be rotated per the Trust Framework schedule. Verifiers MAY query multiple independent PVS instances for mutual corroboration.</td>
+                    </tr>
+                    <tr>
+                        <td>Transport</td>
+                        <td>None. Transport is fully untrusted.</td>
+                        <td>Man-in-the-middle intercepts and replays challenge-response pairs.</td>
+                        <td>Application-layer signatures. Nonce freshness. Timestamp skew. Response time bounding. PBAC for BAL-4.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3>Trust Framework Interface</h3>
+            <p>This specification defines the cryptographic binding protocol. It does not define the governance framework that determines which <a>EAs</a> are trusted, which <a>BALs</a> are required for specific use cases, or how disputes are resolved. These questions are addressed by the applicable <a>Trust Framework Profile (TFP)</a>, which MUST:</p>
+            <ul>
+                <li>Define the CertificationCredential issuance and revocation process for EAs.</li>
+                <li>Specify minimum BAL requirements for each protected use case.</li>
+                <li>Define the binding revalidation procedure following EA compromise.</li>
+                <li>Specify audit logging requirements and retention periods.</li>
+                <li>Define dispute resolution procedures for contested verification outcomes.</li>
+            </ul>
+            <p><strong>Baseline Profile.</strong> Appendix B defines TFP-1, the minimal Trust Framework Profile. TFP-1 provides a fully specified, normative governance model suitable for closed supply chains and single-provider deployments. Conformant implementations that do not operate under a community-specific Trust Framework SHALL support TFP-1 as the default interoperability profile.</p>
+        </section>
+    </section>
+
+    <section>
+        <h2>Cryptographic Profiles</h2>
+        <p>Implementations SHALL support at least one of the following profiles. The profile used for a given binding SHALL be recorded in the <a>BEA</a>. <a>Verifiers</a> MUST support all profiles they may encounter in their deployment context.</p>
+
+        <section>
+            <h3>Profile A — Ed25519</h3>
+            <table>
+                <tr><td>Algorithm</td><td>Ed25519 (Twisted Edwards curve, cofactor 8) [[RFC8032]]</td></tr>
+                <tr><td>JWK key type</td><td><code>OKP</code>, curve: <code>Ed25519</code></td></tr>
+                <tr><td>Signature format</td><td>64-byte raw (r || s), base64url-encoded</td></tr>
+                <tr><td>Signature input</td><td><a>JCS</a>-canonicalized ChallengeRequest bytes</td></tr>
+                <tr><td>Security level</td><td>~128-bit classical; secure under DL assumption on the Ed25519 curve [[Bernstein2011]]</td></tr>
+                <tr><td>Recommended for</td><td>BAL-2, BAL-3, BAL-4 (general purpose, high-performance constrained devices)</td></tr>
+            </table>
+        </section>
+
+        <section>
+            <h3>Profile B — ECDSA P-256</h3>
+            <table>
+                <tr><td>Algorithm</td><td>ECDSA with SHA-256 on NIST P-256 [[FIPS186-5]]</td></tr>
+                <tr><td>JWK key type</td><td><code>EC</code>, crv: <code>P-256</code></td></tr>
+                <tr><td>Signature format</td><td>DER-encoded (r, s), base64url-encoded</td></tr>
+                <tr><td>Signature input</td><td><a>JCS</a>-canonicalized ChallengeRequest bytes</td></tr>
+                <tr><td>Security level</td><td>~128-bit classical; secure under ECDLP assumption on P-256</td></tr>
+                <tr><td>Recommended for</td><td>BAL-2, BAL-3, BAL-4 (FIPS-regulated environments, HSM-backed deployments)</td></tr>
+            </table>
+        </section>
+
+        <section>
+            <h3>Profile C — AES-128-CMAC (Constrained Symmetric) — DEPRECATED</h3>
+            <div class="warning">
+                <p><strong>Security Warning:</strong> Profile C is DEPRECATED as of this Working Draft. New implementations SHOULD use Profile A or B. Profile C is included only for backward compatibility with existing deployments. Profile C fundamentally breaks the non-repudiation property of UORA because the <a>Enrollment Authority</a> shares the symmetric key and can impersonate any bound device at will.</p>
+            </div>
+            <table>
+                <tr><td>Algorithm</td><td>AES-128 CMAC per ISO/IEC 29192-6 and NIST SP 800-38B</td></tr>
+                <tr><td>Key material</td><td>128-bit symmetric key, provisioned at enrollment via secure channel</td></tr>
+                <tr><td>Signature format</td><td>16-byte MAC, base64url-encoded</td></tr>
+                <tr><td>Security level</td><td>~128-bit classical under AES assumption</td></tr>
+                <tr><td>Constraints</td><td>SHALL be used only in closed ecosystems with a single trusted EA. SHALL NOT be used in multi-party trust frameworks. Key diversification per device MUST be implemented per [[NIST-SP800-108]]. Non-repudiation properties are absent: the EA and the device share the key.</td></tr>
+                <tr><td><strong>Mandatory Risk Acceptance (NEW).</strong></td><td>Any <a>BEA</a> using Profile C MUST include a signed <code>profileCRiskAcceptance</code> object. A verifier that encounters a Profile C BEA without this object, or with an invalid signature, SHALL return <a>profile_c_risk_not_accepted</a>. The risk acceptance object SHALL contain: the DID of the accepting party, a statement acknowledging the non-repudiation break, the acceptance timestamp (ISO 8601 UTC), and a signature from the accepting party's DID key over the <a>JCS</a>-canonicalized acceptance object.</td></tr>
+                <tr><td>Recommended for</td><td>Legacy NFC-constrained BAL-2 deployments in closed supply chains. <strong>For all new deployments, prefer Profile A (Ed25519) on hardware capable of it.</strong></td></tr>
+            </table>
+        </section>
+
+        <div class="note">
+            <p>Post-quantum algorithm profiles (e.g., ML-DSA per FIPS 204, SLH-DSA per FIPS 205) are reserved for a future version of this specification. Implementors planning for long-term binding validity (>10 years) SHOULD monitor NIST PQC standardization progress and plan migration paths.</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Lifecycle Model</h2>
+        <p>The following states define the normative lifecycle of a physical binding. State transitions MUST be recorded as signed UORA attestations.</p>
+        <table>
+            <thead>
+                <tr><th>State</th><th>Entry Condition</th><th>Exit Conditions</th><th>Attestation Required</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><dfn>Manufactured</dfn></td><td>Device produced; keypair generated or <a>PUF</a> characterized; device certificate issued.</td><td>→ <a>Enrolled</a>: successful <a>BEA</a> issuance.</td><td>Device certificate (BDV-issued).</td></tr>
+                <tr><td><dfn>Enrolled</dfn></td><td><a>BEA</a> issued and anchored to VDR; binding verification method registered in DID document.</td><td>→ <a>Active</a>: first successful challenge-response. → <a>Revoked</a>: pre-operational compromise.</td><td>BEA (EA-issued).</td></tr>
+                <tr><td><dfn>Active</dfn></td><td>Binding operational; challenge-response succeeds.</td><td>→ <a>Degraded</a>: device reports degraded status. → <a>Revoked</a>: authorized revocation event.</td><td>Periodic verification events (logged by verifier).</td></tr>
+                <tr><td><dfn>Degraded</dfn></td><td>Device reports <code>deviceStatus = degraded</code>. Challenge-response may succeed with reduced reliability.</td><td>→ <a>Active</a>: device recovers. → <a>Revoked</a>: degradation progresses to failure or tamper detection.</td><td>Degradation event attestation.</td></tr>
+                <tr><td><dfn>Revoked</dfn></td><td>Binding verification method removed or marked revoked in DID document.</td><td>→ <a>Enrolled</a> (new device): rebinding per §4.5.</td><td>Binding Revocation Attestation.</td></tr>
+                <tr><td><dfn>Decommissioned</dfn></td><td>Object at end-of-life; all bindings revoked; DID document updated with decommission claim.</td><td>Terminal state.</td><td>Disposition attestation (Object Owner-issued).</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Security Considerations</h2>
+        <p>This section analyzes the security properties of the protocol against the attacker classes defined in Section 2. Implementations claiming a specific <a>BAL</a> MUST demonstrate, with reference to this section, that the identified mitigations are in place.</p>
+
+        <section>
+            <h3>Cloning Attacks</h3>
+            <p>A cloning attack involves replicating the binding identifier on a counterfeit object such that the counterfeit passes verification.</p>
+            <ul>
+                <li><strong>BAL-1.</strong> Susceptible to carrier replication if an A1 attacker can produce an identical carrier. Tamper-evident carrier engineering raises the practical cost but does not provide cryptographic guarantees.</li>
+                <li><strong>BAL-2.</strong> Resists cloning by A1 and A2 attackers where the secure element's tamper detection and key isolation are intact. An A2 attacker performing side-channel analysis on the secure element is mitigated by: Common Criteria-certified secure elements, key zeroization on tamper, and the ephemeral nature of cryptographic operations inside the SE boundary. A3 attackers (access to fab equipment) are not in scope for BAL-2.</li>
+                <li><strong>BAL-3/4.</strong> Resists cloning by A3 attackers because the <a>PUF</a> response is physically bound to manufacturing variations that cannot be reproduced even with semiconductor fabrication access. An A4 attacker who obtains one enrolled device and its helper data cannot derive the PUF response on a different device, because helper data reveals no information about the PUF's internal response beyond what a <a>fuzzy extractor</a> bound guarantees (see [[Dodis2008]], Theorem 3).</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Relay Attacks</h3>
+            <p>A relay attack intercepts a legitimate challenge and relays it to the genuine device from a remote location. The protocol provides tiered mitigations:</p>
+            <ul>
+                <li><strong>Response time bounding</strong> (Section 4.3.6) raises the cost of relay attacks but does not cryptographically prevent them, consistent with the analysis in [[Hancke2005]]. An A5 attacker with a dedicated high-speed RF relay system can defeat time bounding alone.</li>
+                <li><strong>Proximity-Bound Authenticated Channel (PBAC)</strong> (Appendix C) provides cryptographic relay protection by binding the challenge-response to a distance-limited transport. Under <a>PBAC</a>, a relay attacker who intercepts the PBAC-blinded nonce and relays it to a distant device cannot produce a valid response because: (a) the distant device's response is encrypted under the Channel Key, which the local verifier does not possess; and (b) the <a>Proximity Verifier Service (PVS)</a> will reject any attestation request where the latency exceeds the physical propagation limit of the transport.</li>
+            </ul>
+            <p>Verifiers requiring strong relay prevention SHALL use PBAC or supplement with UWB distance bounding.</p>
+        </section>
+
+        <section>
+            <h3>Replay Attacks</h3>
+            <p>Replay attacks are mitigated by nonce freshness and timestamp skew enforcement. The <a>verifier</a>'s short-lived nonce cache (maintained for the skew window) ensures that a captured challenge-response pair cannot be replayed within the skew window. After the skew window expires, the nonce is no longer valid and the response cannot be replayed, because a fresh nonce is required for each new challenge.</p>
+        </section>
+
+        <section>
+            <h3>BAL Downgrade Attacks</h3>
+            <p>A BAL downgrade attack presents a lower-assurance binding for an object that also has a higher-assurance binding. The BAL selection rules in Section 4.3.5 prevent this by requiring the <a>verifier</a> to select the highest available <a>BAL</a> that meets or exceeds <code>minBal</code>. Any permitted downgrade event MUST be logged and justified.</p>
+        </section>
+
+        <section>
+            <h3>Enrollment Authority Compromise</h3>
+            <p>Compromise of an <a>EA</a>'s CertificationCredential key allows an attacker to issue fraudulent <a>BEAs</a> for non-genuine devices. Trust frameworks MUST implement EA revocation and binding revalidation per Section 4.2.3. The use of independent EAs (multiple CertificationCredential holders) limits the blast radius of a single EA compromise. Verifiers SHOULD validate that the EA's CertificationCredential is non-revoked as part of every binding verification.</p>
+        </section>
+
+        <section>
+            <h3>PUF Modeling Attacks</h3>
+            <p>PUF modeling attacks use machine learning classifiers trained on challenge-response pairs to predict unseen responses [[Ruhrmair2013]]. Arbiter PUFs with large challenge spaces are particularly vulnerable. Mitigations: (a) use of XOR-Arbiter PUFs or Ring Oscillator PUFs with controlled challenge sets; (b) challenge set restriction (the verifier's challenge set MUST be kept confidential and rotated); (c) <a>fuzzy extractors</a> that operate on a fixed enrollment challenge, limiting the exposed challenge-response space; (d) preferring SRAM PUFs for BAL-3 implementations where manufacturing access risks are high; and (e) <a>PUF Interface Descriptors</a> (Appendix A) that allow verifiers to evaluate the PUF's published susceptibility profile before issuing challenges. Vendors SHALL document their PUF construction's susceptibility to modeling attacks and the implemented mitigations in the <a>PID</a>.</p>
+        </section>
+
+        <section>
+            <h3>Key Compromise</h3>
+            <p>Evidence of binding private key compromise SHOULD trigger immediate revocation (reason code <code>key_compromise</code>) and rebinding. For BAL-3/4, key compromise in the cryptographic sense (not a physical break) is infeasible without device access, due to the non-persistence of the derived key. For BAL-2, compromise of the SE vendor's manufacturing process could theoretically enable key extraction; independent EA verification and BAL-3 preference for high-value bindings mitigate this.</p>
+        </section>
+
+        <section>
+            <h3>Denial-of-Service on Binding Devices</h3>
+            <p>Repeated challenge requests can exhaust processing capacity or battery reserves of constrained devices. Rate limiting per Section 4.3.7 is the primary mitigation. Trust frameworks SHOULD also define verifier authentication requirements so that only authorized verifiers can submit challenges to <a>binding devices</a> in high-value deployments.</p>
+        </section>
+
+        <section>
+            <h3>PBAC Channel Key Compromise</h3>
+            <p>A compromise of the <a>Proximity Verifier Service (PVS)</a> or its Channel Key shadow store would allow an attacker to forge <a>PBAC</a> attestations, defeating the relay-attack protection at BAL-4. Mitigations:</p>
+            <ul>
+                <li>The PVS SHALL store Channel Key shadows in a FIPS 140-2 Level 3 or higher Hardware Security Module.</li>
+                <li>The PVS attestation signing key SHALL be distinct from the Channel Key store and rotated per the Trust Framework schedule (default: 90 days).</li>
+                <li>Verifiers MAY query multiple independent PVS instances operated by different service providers. If responses from the PVS instances are inconsistent, the verifier SHALL return <a>verification_inconclusive</a>.</li>
+                <li><a>Binding devices</a> SHALL support on-device Channel Key rotation. The new Channel Key hash SHALL be published in an updated DID document, and the old Channel Key SHALL be purged from the PVS.</li>
+            </ul>
+        </section>
+    </section>
+
+    <section>
+        <h2>Conformance</h2>
+        <p>An implementation claiming conformance to this specification SHALL satisfy all of the following requirements. Claims of conformance at a specific <a>BAL</a> MUST be accompanied by a completed Conformance Declaration referencing the test suite results.</p>
+        <table>
+            <thead>
+                <tr><th>Req. ID</th><th>Requirement</th><th>BAL Scope</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>C-01</td><td>Specify the supported BAL(s) and document any BAL combinations.</td><td>All</td></tr>
+                <tr><td>C-02</td><td>Implement the enrollment protocol per Section 4.2 for each supported BAL.</td><td>All</td></tr>
+                <tr><td>C-03</td><td>Implement the challenge-response protocol per Section 4.3, including <a>JCS</a> canonicalization, nonce generation, and skew tolerance enforcement.</td><td>BAL-2+</td></tr>
+                <tr><td>C-04</td><td>Implement the revocation procedure per Section 4.4, including all reason codes.</td><td>All</td></tr>
+                <tr><td>C-05</td><td>Support at least one cryptographic profile from Section 6.</td><td>BAL-2+</td></tr>
+                <tr><td>C-06</td><td>Pass the UORA Binding Conformance Test Suite (CTS) for all claimed BALs. Test vectors: <code>w3id.org/uora/conformance/binding/v1</code>.</td><td>All</td></tr>
+                <tr><td>C-07</td><td>Publish a valid and complete <a>PUF Interface Descriptor (PID)</a> per Appendix A, including measured inter/intra-device statistics from ≥ 1000 devices.</td><td>BAL-3+</td></tr>
+                <tr><td>C-07a</td><td>Demonstrate that a clean-room verifier implementation can parse the <a>PID</a> and construct a valid PUF challenge without vendor-proprietary knowledge.</td><td>BAL-3+</td></tr>
+                <tr><td>C-08</td><td>Return all verification result states defined in Section 4.6 with the correct semantics.</td><td>BAL-2+</td></tr>
+                <tr><td>C-09</td><td>Support the <code>didVersion</code> field in ChallengeRequest and implement time-consistent verification per Section 4.3.1.</td><td>BAL-2+</td></tr>
+                <tr><td>C-10</td><td>Enforce BAL selection rules per Section 4.3.5, including downgrade prevention.</td><td>BAL-2+</td></tr>
+                <tr><td>C-11</td><td>Implement rate limiting per Section 4.3.7 and document the rate limiting policy.</td><td>BAL-2+</td></tr>
+                <tr><td>C-12</td><td>Implement the lifecycle model per Section 7, recording each state transition as a signed UORA attestation.</td><td>All</td></tr>
+                <tr><td>C-13</td><td>Document trust model assumptions per Section 5 for each claimed BAL.</td><td>All</td></tr>
+                <tr><td>C-14</td><td>Document the tamper-evidence carrier class and engineering specification in the <a>BEA</a>.</td><td>All</td></tr>
+                <tr><td>C-15</td><td>Implement continuous attestation, including trusted time source and autonomous attestation per Section 3.4.</td><td>BAL-4</td></tr>
+                <tr><td>C-16</td><td>Support the mandatory risk acceptance mechanism for Profile C per Section 6.3, and return <a>profile_c_risk_not_accepted</a> when the mechanism is violated.</td><td>BAL-2 (Profile C only)</td></tr>
+                <tr><td>C-17</td><td>Implement <a>PBAC</a> per Appendix C, including Channel Key generation, PBAC response generation, and <a>PVS</a> integration.</td><td>BAL-4</td></tr>
+                <tr><td>C-18</td><td>Support TFP-1 per Appendix B as the default <a>Trust Framework Profile (TFP)</a>, including <code>StatusList2021</code> EA credential revocation and 30-day re-enrollment window.</td><td>All</td></tr>
+                <tr><td>C-19</td><td>Include the TFP identifier in every <a>BEA</a> per Section 4.2.2, Step 6.</td><td>All</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="appendix">
+        <h2>Appendix A: PUF Interface Descriptor (PID) Schema</h2>
+        <p>The <a>PUF Interface Descriptor (PID)</a> is REQUIRED for all BAL-3 and BAL-4 bindings. The PID SHALL be embedded in the <code>UORABindingVerification</code> verification method in the DID document, or included directly in the <a>BEA</a> and referenced by URL from the DID document. The PID provides all information a verifier needs to construct a challenge the <a>binding device</a> can process, without requiring vendor-proprietary knowledge.</p>
+        <pre class="example">
+{
+  "pidVersion": "1.0",
+  "pufConstruction": "SRAM-PUF",
+  "pufVendor": "PUFvendor Corp",
+  "pufPartNumber": "PV-SRAM-256A",
+  "challengeConstruction": {
+    "algorithm": "sha256",
+    "inputFormat": "utf8-string",
+    "maxChallengeLength": 64,
+    "minChallengeLength": 8,
+    "description": "The binding device hashes the UTF-8 bytes of the nonce field from the ChallengeRequest. The resulting 256-bit hash is the PUF challenge."
+  },
+  "helperData": {
+    "uri": "https://vendor.example/helper-data/device123.bin",
+    "hash": {
+      "algorithm": "sha256",
+      "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "format": "bch-params",
+    "formatVersion": "1",
+    "description": "BCH error-correcting code parameters for the fuzzy extractor. The binary helper data file contains the BCH codeword."
+  },
+  "fuzzyExtractor": {
+    "algorithm": "BCH",
+    "parameters": {
+      "codewordLength": 2047,
+      "messageLength": 1023,
+      "errorCorrectionCapability": 50
+    },
+    "implementation": "Standard binary BCH per Lin & Costello",
+    "derivedKeyLength": 256
+  },
+  "pufStatistics": {
+    "interDeviceHD": { "mean": 0.49, "stddev": 0.02, "min": 0.44, "max": 0.54 },
+    "intraDeviceHD": { "mean": 0.04, "stddev": 0.01, "min": 0.01, "max": 0.08 },
+    "sampleSize": 5000,
+    "temperatureRange": "-20C to +85C",
+    "voltageRange": "1.62V to 1.98V",
+    "measurementMethod": "NIST NVLAP-accredited lab, report #2025-PUF-001",
+    "reportUri": "https://pufvendor.example/audit/2025-puf-001.pdf",
+    "measuredBy": "Independent Testing Lab Inc."
+  },
+  "modelingAttackResistance": {
+    "classifierTested": ["Support Vector Machine", "Deep Neural Network", "Logistic Regression"],
+    "challengeResponsePairsExposed": 1000000,
+    "predictionAccuracy": { "maxObserved": 0.52, "atPairCount": 1000000 },
+    "reportUri": "https://pufvendor.example/security/puf-modeling-2025.pdf"
+  }
+}
+        </pre>
+        <p><strong>Required fields:</strong> <code>pidVersion</code>, <code>pufConstruction</code>, <code>challengeConstruction</code>, <code>helperData</code>, <code>fuzzyExtractor</code>, <code>pufStatistics</code> (with <code>interDeviceHD</code>, <code>intraDeviceHD</code>, and <code>sampleSize</code>).</p>
+        <p><strong>Verifier usage:</strong> A <a>verifier</a> SHALL parse the <a>PID</a>, validate that <code>pidVersion</code> is supported, verify that the <code>helperData.hash.value</code> matches the actual helper data retrieved from <code>helperData.uri</code>, and construct challenges according to <code>challengeConstruction</code>. If any PID field is missing or invalid, the verifier SHALL return <a>invalid_pid</a>.</p>
+    </section>
+
+    <section class="appendix">
+        <h2>Appendix B: Trust Framework Profile 1 (TFP-1)</h2>
+        <p>TFP-1 is the baseline <a>Trust Framework Profile (TFP)</a>. Conformant implementations that do not operate under a community-specific Trust Framework SHALL support TFP-1 as the default interoperability profile. BEA issuers SHALL record the TFP identifier <code>urn:uora:trust-framework:profile-1</code> in the <a>BEA</a> when operating under TFP-1.</p>
+
+        <section>
+            <h4>B.1 CertificationCredential Schema</h4>
+            <p>Under TFP-1, an EA's CertificationCredential SHALL be a W3C Verifiable Credential conforming to the following minimum schema:</p>
+            <pre class="example">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://w3id.org/uora/contexts/v1"
+  ],
+  "type": ["VerifiableCredential", "UORACertificationCredential"],
+  "issuer": "did:example:governance-authority",
+  "validFrom": "2026-01-01T00:00:00Z",
+  "validUntil": "2027-01-01T00:00:00Z",
+  "credentialSubject": {
+    "id": "did:example:ea-123",
+    "authorizedBALs": ["BAL-1", "BAL-2", "BAL-3", "BAL-4"],
+    "jurisdiction": "Global",
+    "contactEmail": "compliance@ea-123.example"
+  },
+  "credentialStatus": {
+    "id": "https://ea-123.example/status/1",
+    "type": "StatusList2021Entry",
+    "statusPurpose": "revocation",
+    "statusListIndex": "0",
+    "statusListCredential": "https://governance.example/status/lists/1"
+  }
+}
+            </pre>
+        </section>
+
+        <section>
+            <h4>B.2 EA Revocation and Re-Enrollment</h4>
+            <p>EA CertificationCredentials under TFP-1 SHALL be revocable via <code>StatusList2021</code>. When an EA credential index is set to <code>revoked</code>:</p>
+            <ol>
+                <li>The Governance Authority SHALL publish a notification on the designated revocation endpoint.</li>
+                <li>All <a>BEAs</a> issued by the revoked EA SHALL be treated as invalid.</li>
+                <li>Affected Object Owners have 30 calendar days from the revocation notification to re-enroll their bindings with a valid EA.</li>
+                <li>If re-enrollment is not completed within 30 calendar days, the binding SHALL transition to the <a>Revoked</a> state with reason code <code>authority_revoked</code>.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h4>B.3 Audit Log Structure</h4>
+            <p>Verification events under TFP-1 SHALL be logged with the following minimum structure:</p>
+            <pre class="example">
+{
+  "eventType": "UORABindingVerification",
+  "eventId": "uuid",
+  "timestamp": "ISO8601 UTC",
+  "verifierDid": "did:example:verifier",
+  "objectDid": "did:example:object",
+  "bindingMethodId": "did:example:object#key-1",
+  "result": "valid | invalid_signature | ...",
+  "bal": "BAL-3",
+  "pbacApplied": true,
+  "pvsAttestation": { "..." },
+  "tfp": "urn:uora:trust-framework:profile-1"
+}
+            </pre>
+            <p>Audit logs SHALL be retained for a minimum of 7 years from the verification date, or as required by the applicable regulatory regime, whichever is longer.</p>
+        </section>
+
+        <section>
+            <h4>B.4 Dispute Resolution</h4>
+            <p>TFP-1 defines a default two-step dispute process:</p>
+            <ol>
+                <li><strong>Verification retry.</strong> The disputing party MAY request up to three re-verifications within 24 hours, each with a fresh ChallengeRequest. The results of all re-verifications SHALL be logged.</li>
+                <li><strong>Governance Authority adjudication.</strong> If the dispute remains unresolved after three re-verifications, either party MAY escalate to the Governance Authority, which SHALL issue a binding adjudication attestation within 10 business days. The adjudication attestation SHALL reference all prior verification results and SHALL be recorded in the object's attestation chain.</li>
+            </ol>
+        </section>
+    </section>
+
+    <section class="appendix">
+        <h2>Appendix C: Proximity-Bound Authenticated Channel (PBAC)</h2>
+        <p>The <a>Proximity-Bound Authenticated Channel (PBAC)</a> is a normative extension to the challenge-response protocol that provides cryptographic relay-attack protection. PBAC is REQUIRED for BAL-4 devices and OPTIONAL for BAL-2 and BAL-3 devices. BAL-4 devices SHALL implement PBAC as their primary proximity verification mechanism.</p>
+
+        <section>
+            <h4>C.1 Protocol Overview</h4>
+            <p>The core idea: the <a>verifier</a>'s challenge nonce is encrypted under a symmetric Channel Key (CK) that exists only inside the <a>binding device</a> and in a trusted <a>Proximity Verifier Service (PVS)</a>. The binding device decrypts and re-encrypts the nonce within the same transport session. A relay attacker who intercepts the encrypted nonce and sends it to a distant device cannot produce a valid response because the distant device's decrypted response can never return fast enough to satisfy the transport's physical timing constraints, and the verifier cannot decrypt the response itself. The PVS acts as a trusted third party that verifies the decryption was correct and the latency was within expected bounds.</p>
+        </section>
+
+        <section>
+            <h4>C.2 Channel Key Generation and Registration</h4>
+            <ol>
+                <li>At manufacture, the <a>binding device</a> generates a 256-bit symmetric Channel Key (CK) using a CSPRNG [[NIST-SP800-90A]].</li>
+                <li>The CK SHALL NOT leave the binding device's secure element.</li>
+                <li>The binding device computes <code>CKHash = SHA-256(CK)</code>.</li>
+                <li>The device certificate or <a>PID</a> includes <code>CKHash</code> and the DID of the designated <a>Proximity Verifier Service (PVS)</a> responsible for this device.</li>
+                <li>During enrollment, the <a>Enrollment Authority</a> validates <code>CKHash</code> and registers the PVS binding in the DID document.</li>
+                <li><strong>PVS Shadow Storage.</strong> The binding device vendor or EA securely transmits a copy of CK to the PVS through a secure offline channel (e.g., a one-time HSM-to-HSM transfer during device personalization). The PVS stores CK in a FIPS 140-2 Level 3 HSM indexed by the device's JWK thumbprint.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h4>C.3 PBAC Challenge-Response Protocol</h4>
+            <p>When a verifier sets <code>requestPbac = true</code> in the ChallengeRequest and the <a>binding device</a> supports <a>PBAC</a>:</p>
+            <ol>
+                <li>The verifier generates a standard ChallengeRequest with <code>requestPbac: true</code>.</li>
+                <li>The verifier transmits the ChallengeRequest to the binding device over the short-range transport (e.g., NFC).</li>
+                <li>The binding device receives the ChallengeRequest and extracts the <code>nonce</code> field.</li>
+                <li>The binding device computes: <code>pbacBlindedNonce = AES-256-CTR(CK, nonce)</code> using the internally stored CK. The ciphertext is a deterministic encryption of the nonce under the Channel Key.</li>
+                <li>The binding device constructs the ChallengeResponse with: <code>nonce = base64url(pbacBlindedNonce)</code>, <code>pbacApplied = true</code>, and computes the standard signature over the <a>JCS</a>-canonicalized original ChallengeRequest (not over pbacBlindedNonce).</li>
+                <li>The binding device transmits the ChallengeResponse back to the verifier within the same transport session.</li>
+                <li>The verifier receives the ChallengeResponse. Because <code>pbacApplied = true</code>, the verifier cannot directly compare the nonce. Instead, the verifier submits a PBAC Verification Request to the <a>PVS</a>:
+                    <pre class="example">
+{
+  "deviceJwkThumbprint": "urn:ietf:params:oauth:jwk-thumbprint:sha-256:...",
+  "originalNonce": "base64url(original nonce)",
+  "pbacBlindedNonce": "base64url(pbacBlindedNonce from response)",
+  "challengeTimestamp": "ISO 8601",
+  "responseTimestamp": "ISO 8601",
+  "transportType": "NFC",
+  "verifierDid": "did:example:verifier"
+}
+                    </pre>
+                </li>
+                <li>The PVS retrieves the device's CK from its HSM using the <code>deviceJwkThumbprint</code>.</li>
+                <li>The PVS locally decrypts: <code>decryptedNonce = AES-256-CTR-DECRYPT(CK, pbacBlindedNonce)</code>.</li>
+                <li>The PVS checks that <code>decryptedNonce == originalNonce</code>. If not, the PVS returns a failure attestation.</li>
+                <li>The PVS checks that <code>(responseTimestamp - challengeTimestamp)</code> is within the expected transport latency bound (e.g., ≤ 10 ms for NFC).</li>
+                <li>If both checks pass, the PVS signs and returns a PBAC Attestation:
+                    <pre class="example">
+{
+  "pvsDid": "did:example:pvs",
+  "deviceJwkThumbprint": "urn:ietf:params:oauth:jwk-thumbprint:sha-256:...",
+  "decryptedNonce": "base64url(decrypted nonce, matching originalNonce)",
+  "latencyMs": 4.2,
+  "latencyBoundMs": 10,
+  "latencyValid": true,
+  "verifiedAt": "ISO 8601",
+  "signature": "base64url(PVS_sign(JCS_canonicalize(payload)))"
+}
+                    </pre>
+                </li>
+                <li>The verifier stores the PVS attestation in the <code>ChallengeResponse.pbacSignature</code> field and proceeds with standard verification.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h4>C.4 Security Properties</h4>
+            <ul>
+                <li>A relay attacker intercepting the PBAC-blinded nonce cannot produce the correct <code>pbacBlindedNonce</code> without access to CK. The attacker cannot replay the response because the original nonce is fresh and verifier-generated.</li>
+                <li>A distant genuine device, even if it receives the full ChallengeRequest over a relay channel and produces a valid <code>pbacBlindedNonce</code>, will fail the PVS latency check because the round-trip time to the distant device violates the transport's physical latency bound.</li>
+                <li>The PVS cannot impersonate a <a>binding device</a> because it does not possess the binding device's signing private key, only the symmetric Channel Key used for the PBAC blind.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h4>C.5 Channel Key Rotation</h4>
+            <p>Channel Keys SHALL be rotatable. The rotation procedure:</p>
+            <ol>
+                <li>The <a>binding device</a> generates a new CK' and computes CKHash'.</li>
+                <li>The binding device signs an attestation containing CKHash' and the new <a>PVS</a> assignment (if changing).</li>
+                <li>The Object Owner updates the DID document with the new CKHash' and PVS assignment.</li>
+                <li>The binding device securely transmits the new CK' to the new PVS using the on-device asymmetric key to wrap CK' for PVS delivery.</li>
+                <li>The old PVS purges the old CK from its HSM.</li>
+            </ol>
+        </section>
+    </section>
+
+    <section class="appendix">
+        <h2>Appendix D: Continuous Attestation Payload Schema (BAL-4)</h2>
+        <p>The <code>continuousAttestation</code> object in a BAL-4 ChallengeResponse SHALL conform to the following structure:</p>
+        <pre class="example">
+{
+  "did": "&lt;object DID&gt;",
+  "bindingMethod": "&lt;method ID&gt;",
+  "generatedAt": "&lt;ISO 8601 UTC&gt;",
+  "nextExpectedBy": "&lt;ISO 8601 UTC&gt;",
+  "sensors": {
+    "&lt;sensorId&gt;": {
+      "value": &lt;number&gt;,
+      "unit": "&lt;SI unit&gt;",
+      "withinLimits": &lt;bool&gt;
+    }
+  },
+  "events": [
+    {
+      "eventType": "&lt;string&gt;",
+      "timestamp": "&lt;ISO 8601 UTC&gt;",
+      "details": "&lt;string&gt;"
+    }
+  ],
+  "signature": "&lt;base64url(device_sign(JCS(this_object_without_signature_field)))&gt;"
+}
+        </pre>
+        <p>The <code>signature</code> field SHALL be computed over the <a>JCS</a>-canonicalized attestation object with the <code>signature</code> field absent, using the <a>binding device</a>'s private key. <a>Verifiers</a> MUST verify this signature against the public key in the DID document's binding verification method before trusting any sensor readings or event records.</p>
+    </section>
+
+    <section class="appendix">
+        <h2>Appendix E: Changes from Prior Draft</h2>
+        <table>
+            <thead>
+                <tr><th>Section</th><th>Change</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>2 (Attacker Model)</td><td>New. Formally specifies five attacker classes (A0–A4) with defined capabilities and <a>BAL</a> resistance mapping. Added A5 class for dedicated RF relay attackers.</td></tr>
+                <tr><td>3.2 (BAL-2)</td><td>Added key generation on-device requirement and vendor attestation obligation. Clarified replay protection is verifier-side. Added reference to FIDO-CTAP2.</td></tr>
+                <tr><td>3.3 (BAL-3)</td><td>Grounded PUF unclonability in Armknecht et al. (2011) framework. Added <a>PUF Interface Descriptor (PID)</a> as normative mechanism for PUF interoperability. Added inter/intra-device statistics requirement from ≥ 1000 devices via PID. Added Dodis et al. (2008) theorem citation for helper data security.</td></tr>
+                <tr><td>3.4 (BAL-4)</td><td>Added <a>PBAC</a> as mandatory proximity verification mechanism for BAL-4.</td></tr>
+                <tr><td>4.1 (Transport)</td><td>Explicitly stated transport-agnostic model. Added proximity enforcement guidance and PBAC reference.</td></tr>
+                <tr><td>4.2 (Enrollment)</td><td>Added EA revocation and binding revalidation requirements (§4.2.3). Added <a>TFP</a> identifier requirement in BEA. Added PID requirement in BEA for BAL-3/4.</td></tr>
+                <tr><td>4.3.1 (ChallengeRequest)</td><td><code>didVersion</code> field fully specified. Added <a>version_unavailable</a> error state. Added <code>minBal</code> and <code>requestPbac</code> fields.</td></tr>
+                <tr><td>4.3.2 (ChallengeResponse)</td><td>Added <code>continuousAttestation</code> conditional field for BAL-4. Added <code>deviceStatus</code> tampered handling. Added <code>pbacApplied</code> and <code>pbacSignature</code> fields.</td></tr>
+                <tr><td>4.3.5 (BAL Selection)</td><td>Added explicit downgrade logging requirement. Clarified conditions for permitted downgrade.</td></tr>
+                <tr><td>4.3.6 (Relay Attack)</td><td>Added PBAC as primary mitigation for A5 attackers. Added quantitative response time thresholds per transport. Added UWB distance bounding as optional supplement.</td></tr>
+                <tr><td>4.3.7 (Rate Limiting)</td><td>New dedicated section with recommended rate limit parameters and PUF modeling attack connection.</td></tr>
+                <tr><td>4.6 (Verification States)</td><td>Added <a>version_unavailable</a>, <a>no_binding_method</a>, <a>invalid_nonce</a>, <a>unsupported_trust_framework</a>, <a>profile_c_risk_not_accepted</a>, and <a>invalid_pid</a> result codes.</td></tr>
+                <tr><td>6 (Cryptographic Profiles)</td><td>Profile C deprecated and marked with a security warning. Added mandatory risk acceptance mechanism for Profile C. Added post-quantum migration note. Added key diversification requirement for Profile C per NIST SP 800-108.</td></tr>
+                <tr><td>8 (Security Considerations)</td><td>New sections: 8.3 (Replay), 8.4 (BAL Downgrade), 8.6 (PUF Modeling Attacks), 8.9 (PBAC Channel Key Compromise). Updated Section 8.2 (Relay Attacks) with PBAC cryptographic mitigation. Added Rührmair et al. (2013) citation.</td></tr>
+                <tr><td>9 (Conformance)</td><td>Added C-07a (PID interoperability), C-16 (Profile C risk acceptance), C-17 (PBAC), C-18 (TFP-1 support), C-19 (TFP identifier in BEA).</td></tr>
+                <tr><td>Appendix A</td><td>Formal PID schema with mandatory and optional fields, verifier usage instructions, and conformance requirement.</td></tr>
+                <tr><td>Appendix B (NEW)</td><td><a>Trust Framework Profile</a> 1 (TFP-1) with CertificationCredential schema, EA revocation, audit log structure, and dispute resolution.</td></tr>
+                <tr><td>Appendix C (NEW)</td><td><a>Proximity-Bound Authenticated Channel (PBAC)</a> with Channel Key generation, PBAC challenge-response protocol, PVS integration, and key rotation.</td></tr>
+                <tr><td>10 (References)</td><td>Added NIST SP 800-108 and ISO/IEC 29192-6 references.</td></tr>
+                <tr><td>Terminology</td><td>Added <a>PUF Interface Descriptor (PID)</a>, <a>Trust Framework Profile (TFP)</a>, <a>Proximity-Bound Authenticated Channel (PBAC)</a>, and <a>Proximity Verifier Service (PVS)</a> definitions.</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="references"></section>
+
+</body>
+</html>
