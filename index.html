@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UORA Core Protocol — Secure Physical Binding</title>
+    <title>UORA Core Protocol v1.0 — Universal Object & Resource Attestation</title>
     <script class="remove">
         var respecConfig = {
             group: "cg/uora",
             specStatus: "CG-DRAFT",
             edDraftURI: "https://w3id.org/uora/spec/core/v1.0",
             latestVersion: "https://w3id.org/uora/spec/core/v1.0",
-            shortName: "uora-secure-physical-binding",
+            shortName: "uora-core-protocol",
             editors: [{
                 name: "Amir Hameed Mir",
                 company: "Sirraya Labs",
@@ -27,1018 +27,1306 @@
                     value: "Issues",
                     href: "https://github.com/uora-wg/core/issues"
                 }]
+            }, {
+                key: "Conformance",
+                data: [{
+                    value: "Test Vectors",
+                    href: "https://w3id.org/uora/conformance/v1.0/vectors.json"
+                }]
             }],
             localBiblio: {
-                "Armknecht2011": {
-                    title: "A Formal Foundation for the Security Features of Physical Functions",
-                    authors: ["Armknecht, F.", "Sadeghi, A.R.", "Wachsmann, C."],
-                    date: "2011",
-                    publisher: "IEEE Symposium on Security and Privacy"
+                "DID-CORE": {
+                    title: "Decentralized Identifiers (DIDs) v1.0",
+                    authors: ["W3C"],
+                    date: "2022",
+                    publisher: "W3C Recommendation",
+                    href: "https://www.w3.org/TR/did-core/"
                 },
-                "Bernstein2011": {
-                    title: "High-speed high-security signatures",
-                    authors: ["Bernstein, D.J.", "Duif, N.", "Lange, T."],
-                    date: "2012",
-                    publisher: "Journal of Cryptographic Engineering, 2(2):77-89"
+                "VC-DATA-MODEL-2.0": {
+                    title: "Verifiable Credentials Data Model v2.0",
+                    authors: ["W3C"],
+                    date: "2024",
+                    publisher: "W3C Recommendation",
+                    href: "https://www.w3.org/TR/vc-data-model-2.0/"
                 },
-                "Dodis2008": {
-                    title: "Fuzzy Extractors: How to Generate Strong Keys from Biometrics and Other Noisy Data",
-                    authors: ["Dodis, Y.", "Reyzin, L.", "Smith, A."],
-                    date: "2008",
-                    publisher: "SIAM Journal on Computing, 38(1):97-139"
+                "VC-DATA-INTEGRITY": {
+                    title: "Verifiable Credential Data Integrity 1.0",
+                    authors: ["W3C"],
+                    date: "2024",
+                    publisher: "W3C Recommendation",
+                    href: "https://www.w3.org/TR/vc-data-integrity/"
                 },
-                "FIDO-CTAP2": {
-                    title: "Client to Authenticator Protocol (CTAP) 2.2",
-                    authors: ["FIDO Alliance"],
-                    date: "June 2023"
+                "BITSTRING-STATUS-LIST": {
+                    title: "Bitstring Status List v1.0",
+                    authors: ["W3C"],
+                    date: "2024",
+                    publisher: "W3C Recommendation",
+                    href: "https://www.w3.org/TR/vc-bitstring-status-list/"
                 },
-                "FIPS186-5": {
-                    title: "Digital Signature Standard (DSS)",
-                    authors: ["National Institute of Standards and Technology"],
-                    date: "February 2023",
-                    publisher: "NIST FIPS 186-5"
+                "BBS-2023": {
+                    title: "BBS Cryptosuite v2023",
+                    authors: ["W3C CCG"],
+                    date: "2023",
+                    publisher: "W3C Credentials Community Group Draft",
+                    href: "https://w3c.github.io/vc-di-bbs/"
                 },
-                "Hancke2005": {
-                    title: "An RFID Distance Bounding Protocol",
-                    authors: ["Hancke, G.", "Kuhn, M."],
-                    date: "2005",
-                    publisher: "Proceedings of SecureComm 2005"
+                "EPCIS-2.0": {
+                    title: "EPCIS 2.0 Standard",
+                    authors: ["GS1"],
+                    date: "2022",
+                    publisher: "GS1",
+                    href: "https://www.gs1.org/standards/epcis"
                 },
-                "Pappu2002": {
-                    title: "Physical One-Way Functions",
-                    authors: ["Pappu, R.", "Recht, B.", "Taylor, J.", "Gershenfeld, N."],
-                    date: "September 2002",
-                    publisher: "Science, 297(5589):2026-2030"
-                },
-                "Ruhrmair2013": {
-                    title: "PUF Modeling Attacks on Simulated and Silicon Data",
-                    authors: ["Rührmair, U.", "Sölter, J.", "Sehnke, F.", "Xu, X.", "Mahmoud, A.", "Stoyanova, V.", "Dror, G.", "Schmidhuber, J.", "Burleson, W.", "Devadas, S."],
-                    date: "2013",
-                    publisher: "IEEE Trans. on Information Forensics and Security, 8(11):1876-1891"
-                },
-                "NIST-SP800-90A": {
-                    title: "Recommendation for Random Number Generation Using Deterministic Random Bit Generators",
-                    authors: ["Barker, E.", "Kelsey, J."],
-                    date: "June 2015",
-                    publisher: "NIST Special Publication 800-90A Rev 1"
-                },
-                "NIST-SP800-98": {
-                    title: "Guidelines for Securing Radio Frequency Identification (RFID) Systems",
-                    authors: ["Karygiannis, T.", "Eydt, B.", "Barber, G.", "Bunn, L.", "Phillips, T."],
-                    date: "April 2007",
-                    publisher: "NIST Special Publication 800-98"
-                },
-                "NIST-SP800-108": {
-                    title: "Recommendation for Key Derivation Using Pseudorandom Functions",
-                    authors: ["Chen, L."],
-                    date: "October 2009",
-                    publisher: "NIST Special Publication 800-108"
-                },
-                "ISO29192-6": {
-                    title: "Information technology — Lightweight cryptography — Part 6: Message authentication codes",
-                    authors: ["ISO/IEC JTC 1/SC 27"],
+                "ISO-8601": {
+                    title: "Date and time format",
+                    authors: ["ISO"],
                     date: "2019",
-                    publisher: "ISO/IEC 29192-6:2019"
+                    publisher: "ISO 8601-1:2019"
+                },
+                "NIST-SP800-57": {
+                    title: "Recommendation for Key Management",
+                    authors: ["Barker, E."],
+                    date: "May 2020",
+                    publisher: "NIST Special Publication 800-57 Part 1 Rev 5"
                 }
             }
         };
     </script>
     <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer></script>
     <style>
-        .note { background: #e9fbe9; border-left: 4px solid #52c052; padding: 1em; margin: 1em 0; }
-        .issue { background: #fbe9e9; border-left: 4px solid #c05252; padding: 1em; margin: 1em 0; }
+        /* ── BASICS ── */
+        .note { background: #e9fbe9; border-left: 4px solid #2e7d32; padding: 1em; margin: 1em 0; }
+        .issue { background: #fbe9e9; border-left: 4px solid #c62828; padding: 1em; margin: 1em 0; }
+        .warning { background: #fff3cd; border-left: 4px solid #f9a825; padding: 1em; margin: 1em 0; }
+        .advisement { background: #e3f2fd; border-left: 4px solid #1565c0; padding: 1em; margin: 1em 0; }
         table { width: 100%; border-collapse: collapse; margin: 1em 0; }
         th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: left; }
-        th { background: #f0f0f0; }
-        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1em; margin: 1em 0; }
+        th { background: #f5f5f5; }
+        pre.example { background: #1e1e2e; color: #cdd6f4; border: 1px solid #313244; padding: 1.2em 1.4em; overflow-x: auto; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.82em; line-height: 1.5; }
+        pre.example .key { color: #89b4fa; }
+        pre.example .str { color: #a6e3a1; }
+        pre.example .num { color: #fab387; }
+        pre.example .cmt { color: #6c7086; font-style: italic; }
+
+        /* ── ARCHITECTURE LAYER CARDS ── */
+        .arch-stack { position: relative; margin: 2em 0; }
+        .arch-card { padding: 1.4em 1.6em; border-radius: 8px; margin: 1.2em 0; position: relative; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .arch-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.10); }
+        .arch-card h5 { margin: 0 0 0.5em; font-size: 1.05em; display: flex; align-items: center; gap: 0.5em; }
+        .arch-card h5 .badge { display: inline-block; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; color: #fff; font-size: 0.8em; font-weight: 700; flex-shrink: 0; }
+        .arch-card p { margin: 0.3em 0; }
+        .arch-card .card-em { display: block; margin-top: 0.5em; font-style: italic; opacity: 0.75; font-size: 0.88em; }
+        .arch-layer-4 { background: #faf5ff; border: 2px solid #c084fc; }
+        .arch-layer-4 .badge { background: #7b1fa2; }
+        .arch-layer-3 { background: #fff7ed; border: 2px solid #fb923c; }
+        .arch-layer-3 .badge { background: #e65100; }
+        .arch-layer-2 { background: #f0fdf4; border: 2px solid #4ade80; }
+        .arch-layer-2 .badge { background: #2e7d32; }
+        .arch-layer-1 { background: #eff6ff; border: 2px solid #60a5fa; }
+        .arch-layer-1 .badge { background: #1565c0; }
+        .arch-connector { display: flex; align-items: center; justify-content: center; gap: 0.6em; margin: 0.2em 0; color: #888; font-size: 0.85em; font-style: italic; }
+        .arch-connector::before, .arch-connector::after { content: ""; display: block; width: 2px; height: 18px; background: linear-gradient(to bottom, #ccc, #999); }
+
+        /* ── UML CLASS DIAGRAM (PURE CSS) ── */
+        .uml-figure { text-align: center; margin: 2em 0; }
+        .uml-abstract-box { display: inline-block; border: 2.5px solid #374151; background: #fff; max-width: 440px; text-align: left; border-radius: 0; box-shadow: 3px 3px 0 rgba(0,0,0,0.08); }
+        .uml-abstract-box .header { background: #374151; color: #fff; padding: 0.5em 1.2em; font-style: italic; font-weight: 700; font-size: 0.9em; text-align: center; }
+        .uml-abstract-box .body { padding: 0.8em 1.2em; font-family: 'Courier New', monospace; font-size: 0.78em; }
+        .uml-abstract-box .body ul { margin: 0; padding: 0; list-style: none; }
+        .uml-abstract-box .body ul li { padding: 0.15em 0; }
+        .uml-abstract-box .body ul li::before { content: "+ "; color: #2e7d32; font-weight: 700; }
+        .uml-extends { margin: 0.5em 0; font-style: italic; color: #666; font-size: 0.9em; }
+        .uml-extends::after { content: " ▼ extends ▼"; }
+        .uml-concrete-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1em; margin-top: 0.5em; }
+        .uml-concrete { border: 2px solid #6b7280; background: #fff; min-width: 240px; border-radius: 2px; text-align: left; box-shadow: 2px 2px 0 rgba(0,0,0,0.06); flex: 1; max-width: 300px; }
+        .uml-concrete .header { background: #6b7280; color: #fff; padding: 0.4em 1em; font-weight: 700; font-size: 0.82em; text-align: center; }
+        .uml-concrete .body { padding: 0.6em 1em; font-family: 'Courier New', monospace; font-size: 0.72em; }
+        .uml-concrete .body ul { margin: 0; padding: 0; list-style: none; }
+        .uml-concrete .body ul li { padding: 0.12em 0; }
+        .uml-concrete .body ul li::before { content: "+ "; color: #2e7d32; font-weight: 700; }
+
+        /* ── CONFLICT CASCADE GAUGE ── */
+        .cascade-gauge { display: flex; flex-direction: column; gap: 0; margin: 1.5em 0; max-width: 700px; }
+        .cascade-row { display: flex; align-items: stretch; min-height: 50px; }
+        .cascade-pillar { width: 80px; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.5em; font-weight: 700; font-size: 0.78em; text-align: center; flex-shrink: 0; letter-spacing: 0.03em; }
+        .cascade-pillar .tier-num { font-size: 1.6em; line-height: 1; }
+        .cascade-desc { background: #fafafa; border: 1px solid #e5e5e5; border-left: none; padding: 0.7em 1.1em; flex: 1; font-size: 0.88em; }
+        .cascade-desc strong { display: block; margin-bottom: 0.2em; }
+        .cascade-tier-1 .cascade-pillar { background: #1b5e20; }
+        .cascade-tier-2 .cascade-pillar { background: #e65100; }
+        .cascade-tier-3 .cascade-pillar { background: #1565c0; }
+
+        /* ── PIPELINE TRACK ── */
+        .pipeline-track { margin: 1.5em 0; }
+        .pipe-phase { display: flex; margin: 0.4em 0; }
+        .pipe-num { background: #1e1e2e; color: #fff; font-weight: 700; font-size: 0.9em; width: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pipe-body { background: #fafafa; border: 1px solid #e5e5e5; border-left: none; padding: 0.6em 1em; flex: 1; font-size: 0.85em; }
+        .pipe-body strong { display: block; margin-bottom: 0.15em; }
+        .pipe-body .pipe-reject { font-family: monospace; font-size: 0.8em; color: #c62828; margin-top: 0.2em; }
+        .pipe-body .pipe-reject::before { content: "✗ "; }
+
+        /* ── CONFORMANCE BADGES ── */
+        .conf-badge-row { display: flex; flex-wrap: wrap; gap: 1em; margin: 1.2em 0; }
+        .conf-badge { flex: 1; min-width: 200px; border-radius: 8px; padding: 1.2em; text-align: center; border: 3px solid; }
+        .conf-badge h5 { margin: 0 0 0.5em; font-size: 1em; }
+        .conf-badge .level-icon { font-size: 2em; margin-bottom: 0.3em; }
+        .conf-data { border-color: #60a5fa; background: #eff6ff; }
+        .conf-proto { border-color: #fb923c; background: #fff7ed; }
+        .conf-full { border-color: #4ade80; background: #f0fdf4; }
+
+        /* ── TEST VECTOR CARDS ── */
+        .tv-card { border: 1px solid #e5e5e5; border-radius: 6px; padding: 0.9em 1.1em; margin: 0.5em 0; background: #fafafa; }
+        .tv-card .tv-head { display: flex; align-items: center; gap: 0.6em; margin-bottom: 0.4em; }
+        .tv-card .tv-id { font-family: monospace; font-weight: 700; color: #1d4ed8; font-size: 0.9em; }
+        .tv-card .tv-tag { font-family: monospace; font-size: 0.7em; background: #374151; color: #fff; padding: 0.15em 0.6em; border-radius: 10px; letter-spacing: 0.04em; }
+        .tv-card .tv-accept { color: #1b5e20; font-weight: 700; }
+        .tv-card .tv-reject { color: #c62828; font-weight: 700; }
+
+        /* ── ROLE GRID ── */
+        .role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1em; margin: 1.5em 0; }
+        .role-card { border: 2px solid #e5e5e5; border-radius: 8px; padding: 1em; text-align: center; }
+        .role-card .role-icon { font-size: 1.8em; margin-bottom: 0.3em; }
+        .role-card h5 { margin: 0 0 0.4em; }
+        .role-card p { font-size: 0.82em; color: #555; margin: 0; }
     </style>
 </head>
 <body>
 
     <section id="abstract">
         <p>
-            This specification defines the Secure Physical Binding sub-protocol of UORA (Universal Object Registry and Attestation), governing how a Decentralized Identifier (DID) is cryptographically bound to a physical object, how that binding is verified by third parties, and how it is lifecycle-managed through upgrade, transfer, and revocation. The protocol operates under a formally specified attacker model, requires no trusted transport channel, and is stratified across four <a>Binding Assurance Levels (BAL)</a> that scale from passive tamper-evident labels to continuous, autonomous environmental attestation with hardware-rooted keys derived from <a>Physically Unclonable Functions (PUFs)</a>.
+            The Universal Object & Resource Attestation (UORA) Protocol defines a complete, vendor-neutral framework for decentralized identity, state verification, and lifecycle tracking of physical assets across untrusted parties. Unlike data-format specifications that define only syntax, UORA defines a <strong>protocol</strong>: a set of rules for how attestations are issued, discovered, validated, and reconciled — with sufficient detail that a conformant implementation can be built from this document alone.
         </p>
-        <p>
-            Cryptographic foundations follow [[RFC8032]] (Ed25519), [[FIPS186-5]] (P-256/ECDSA), [[RFC7517]] (JWK), and [[RFC8785]] (<a>JCS</a> canonicalization). PUF constructions are analyzed under the [[Armknecht2011]] security framework. The threat model is drawn from [[NIST-SP800-98]] and ETSI GR QSC 006.
-        </p>
+        <p>This specification addresses the four pillars of decentralized supply chain trust:</p>
+        <ol>
+            <li><strong>Governance & Authorization:</strong> A verifiable chain of authority ensuring that only certified entities may issue specific attestation types for specific product categories, through decoupled <a>CertificationCredential</a>s with a BitstringStatusList revocation mechanism.</li>
+            <li><strong>Standardized Discovery:</strong> The <a>UORA-Query-API</a>, a uniform HTTP protocol mandating a single standardized endpoint structure and response format, with full normative detail sufficient for independent <a>Resolver</a> implementation.</li>
+            <li><strong>Deterministic State Reconciliation:</strong> A cryptographically linked <a>antecedent chain</a> supporting both linear sequences and DAGs, with a <a>conflict resolution cascade</a> that uses governance authority as the primary arbiter — eliminating timestamp-race vulnerabilities — plus normative DAG depth and cycle-detection rules.</li>
+            <li><strong>Conformance & Testability:</strong> 22 fully specified test vectors defining three conformance levels with independently verifiable, machine-executable criteria.</li>
+        </ol>
     </section>
 
     <section id="sotd">
-        <p>This document is a Working Draft. It has been released for review and comment. Working Drafts are works in progress and subject to change based on implementation experience and community review. Implementors are cautioned against deploying Working Draft material in production systems. Please report issues at the feedback URI above.</p>
+        <p>This is a <strong>Community Group Draft</strong>. It has been released for review and comment. Implementors are advised against deploying this material in production systems until it reaches Candidate Recommendation status. Please report issues at <a href="https://github.com/uora-wg/core/issues">https://github.com/uora-wg/core/issues</a>.</p>
     </section>
 
     <section id="conformance"></section>
 
-    <section class="informative">
+    <section id="intro" class="informative">
         <h2>Introduction</h2>
-        <p>A UORA attestation chain proves, with cryptographic certainty, the provenance and integrity of claims made about an object identified by a DID. It does not prove that any particular physical artifact is the referent of that DID. This gap — between digital identity and physical matter — is the <dfn>binding problem</dfn>.</p>
-        <p>Consider a high-value pharmaceutical supply chain: every attestation in the chain may be validly signed, the DID document may be intact, and the governance rules may be satisfied — yet the capsules inside the bottle may have been replaced with counterfeits. No purely digital protocol can eliminate this risk; only a protocol that ties an unforgeable physical secret to the DID can address the <a>binding problem</a>.</p>
-        <p>This section specifies the mechanisms — passive, active, and continuous — by which such ties are established and verified. It draws on foundational work in physical unclonable functions [[Pappu2002]], [[Ruhrmair2013]], hardware security models [[FIDO-CTAP2]], and DID-based key management [[[DID-CORE]]], [[[VC-DATA-INTEGRITY]]].</p>
-
-        <section>
-            <h3>Design Principles</h3>
-            <ul>
-                <li><strong>Tamper-evidence.</strong> Any attempt to remove, transfer, or clone the binding MUST produce a detectable change in the <a>binding carrier</a> state or the cryptographic proof.</li>
-                <li><strong>Possession verification.</strong> A <a>verifier</a> MUST be able to mount a fresh cryptographic challenge against the <a>binding device</a> to demonstrate that the device is physically present and operational.</li>
-                <li><strong>Proportional unclonability.</strong> The binding SHOULD resist cloning at a level commensurate with its declared <a>BAL</a>. Higher BAL implies stronger unclonability guarantees, grounded in defined attacker capabilities (see Section 2).</li>
-                <li><strong>Graceful degradation.</strong> The binding SHOULD remain verifiable under partial physical damage, with the verification result encoding the degree of degradation.</li>
-                <li><strong>Transport independence.</strong> All security guarantees MUST derive from application-layer cryptography. Transport-layer security (TLS, NFC session encryption) is defense-in-depth only and SHALL NOT be a prerequisite for binding verification.</li>
-                <li><strong>Key sovereignty.</strong> Private binding keys MUST NOT be accessible outside the <a>binding device</a> at any point during the device's operational lifetime. For BAL-3, key existence is transient; the key is never stored.</li>
-                <li><strong>Auditability.</strong> Every material event in the binding lifecycle MUST be recorded as a signed UORA attestation, creating a non-repudiable audit trail.</li>
-            </ul>
-        </section>
-    </section>
-
-    <section>
-        <h2>Terminology</h2>
-        <dl>
-            <dt><dfn data-lt="Binding Device|binding device">Binding Device</dfn></dt>
-            <dd>Hardware component that performs cryptographic binding operations. Distinct from the <a>binding carrier</a>. Evaluated independently for tamper resistance and key protection.</dd>
-
-            <dt><dfn data-lt="Binding Carrier|binding carrier">Binding Carrier</dfn></dt>
-            <dd>Physical medium in which the <a>binding device</a> is embedded or affixed. The carrier provides tamper-evidence (visible or structural). The binding device provides cryptographic possession proof. The combination constitutes the physical binding.</dd>
-
-            <dt><dfn data-lt="Binding Assurance Level|BAL|Binding Assurance Level (BAL)">Binding Assurance Level (BAL)</dfn></dt>
-            <dd>Ordinal scale (BAL-1 through BAL-4) expressing the strength of the physical-to-digital binding. Higher BAL implies resistance against a stronger attacker class as defined in Section 2.</dd>
-
-            <dt><dfn data-lt="Enrollment Authority|EA">Enrollment Authority (EA)</dfn></dt>
-            <dd>Entity that cryptographically links a <a>binding device</a>'s public key to an object's DID by issuing a <a>Binding Enrollment Attestation (BEA)</a>. MUST hold a valid CertificationCredential issued by the applicable Trust Framework Governance Authority.</dd>
-
-            <dt><dfn>Verifier</dfn></dt>
-            <dd>Entity performing challenge-response binding verification. The protocol does not require the verifier to be trusted; the verifier learns only the object's public key and the verification outcome.</dd>
-
-            <dt><dfn data-lt="PUF|Physically Unclonable Function">Physically Unclonable Function (PUF)</dfn></dt>
-            <dd>A hardware construct that exploits manufacturing process variations to produce a unique, device-specific response to a given challenge input. The response is reproducible on the original device but computationally infeasible to clone without access to the original silicon [[Pappu2002]].</dd>
-
-            <dt><dfn>Fuzzy Extractor</dfn></dt>
-            <dd>A cryptographic construction (first formalized by [[Dodis2008]]) that derives a stable, uniformly random string from a noisy <a>PUF</a> response and generates public helper data enabling re-derivation. The helper data is computationally secure: it reveals negligible information about the derived key.</dd>
-
-            <dt><dfn data-lt="BEA|Binding Enrollment Attestation">Binding Enrollment Attestation (BEA)</dfn></dt>
-            <dd>A Verifiable Credential [[[VC-DATA-MODEL-2.0]]] issued by the <a>EA</a> that records the binding of a specific device (identified by public key and device certificate) to a specific DID at a declared <a>BAL</a>.</dd>
-
-            <dt><dfn>DID Document Version</dfn></dt>
-            <dd>A content-addressed snapshot of a DID document at a specific point in its history, identified by a version identifier whose format is DID-method-specific. Used by verifiers to request time-consistent verification.</dd>
-
-            <dt><dfn>JCS</dfn></dt>
-            <dd>JSON Canonicalization Scheme [[RFC8785]]. A deterministic serialization of a JSON object that eliminates encoding ambiguity, enabling consistent signature computation across implementations.</dd>
-
-            <dt><dfn>PUF Interface Descriptor (PID)</dfn></dt>
-            <dd>A machine-readable data structure embedded in the DID document or the <a>BEA</a> that fully describes the <a>PUF</a> construction, the <a>fuzzy extractor</a> algorithm, the challenge construction method, and the helper data location and format. The PID is the normative mechanism for achieving PUF-agnostic interoperability at BAL-3 and BAL-4.</dd>
-
-            <dt><dfn>Trust Framework Profile (TFP)</dfn></dt>
-            <dd>A normative profile that specifies the minimal governance, credential formats, revocation mechanisms, and audit structures required for a conformant deployment. TFP-1 is the baseline profile defined in Appendix B. Extension profiles (TFP-2, etc.) MAY be defined by communities of practice.</dd>
-
-            <dt><dfn>Proximity-Bound Authenticated Channel (PBAC)</dfn></dt>
-            <dd>An extension to the challenge-response protocol that binds the verification to a particular tight-timing transport (e.g., NFC) using a symmetric Channel Key. The <a>binding device</a> encrypts the nonce under this key, and a trusted <a>Proximity Verifier Service (PVS)</a> decrypts it to enforce that the response originated within the physical field. PBAC raises relay attacks from a heuristic to a cryptographic barrier. Defined in Appendix C.</dd>
-
-            <dt><dfn>Proximity Verifier Service (PVS)</dfn></dt>
-            <dd>A service trusted by the <a>verifier</a> to hold shadow copies of <a>PBAC</a> Channel Keys and to decrypt PBAC challenge responses. The PVS attests that the decrypted response matches the original nonce and that the latency is within the physical limit of the transport.</dd>
-        </dl>
-    </section>
-
-    <section>
-        <h2>Attacker Model</h2>
-        <p>This section specifies the threat model against which the binding protocol is designed. Implementations SHALL document which attacker classes they claim to resist.</p>
-
-        <section>
-            <h3>Attacker Classes</h3>
-            <table>
-                <thead>
-                    <tr><th>Class</th><th>Capabilities</th><th>BAL Resisting</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>A0</td><td>Network-only attacker. Can intercept, replay, and modify messages in transit. Cannot access the physical object.</td><td><a>BAL</a>-1 through BAL-4 (all)</td></tr>
-                    <tr><td>A1</td><td>A0 plus physical access to the object. Can photograph, scan, or optically clone identifiers. Cannot remove the <a>binding device</a> from its <a>binding carrier</a> without destruction.</td><td><a>BAL</a>-2 through BAL-4</td></tr>
-                    <tr><td>A2</td><td>A1 plus ability to remove the <a>binding device</a> from the <a>binding carrier</a>. Can attempt side-channel analysis (power, timing, EM). Cannot access the secure element's key store.</td><td><a>BAL</a>-2 through BAL-4</td></tr>
-                    <tr><td>A3</td><td>A2 plus access to semiconductor fabrication equipment. Can attempt non-invasive attacks on <a>PUF</a> responses. Cannot reproduce PUF manufacturing variations.</td><td><a>BAL</a>-3 and BAL-4</td></tr>
-                    <tr><td>A4</td><td>A3 plus full access to one enrolled device (logical break). Can extract helper data. Cannot derive the <a>PUF</a> response on a different device.</td><td><a>BAL</a>-3 and BAL-4 (partial; see §8.6)</td></tr>
-                    <tr><td>A5</td><td>A4 plus access to a dedicated high-speed, low-latency RF relay system. Can relay NFC/BLE challenges between a counterfeit object and a genuine device over distances.</td><td><a>BAL</a>-4 with <a>PBAC</a> (see Appendix C)</td></tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section>
-            <h3>Out-of-Scope Threats</h3>
-            <p>The following attacks are explicitly outside the scope of this protocol:</p>
-            <ul>
-                <li>Supply-chain attacks that compromise the <a>binding device</a> before manufacture is complete. Trust framework governance (out-of-scope) addresses device supply chain.</li>
-                <li>Attacks exploiting vulnerabilities in the DID method itself (e.g., key recovery from an insecure key management system). DID security is specified per method.</li>
-                <li>Social engineering attacks on the <a>Enrollment Authority</a>.</li>
-                <li>Quantum-computer attacks on the asymmetric cryptographic primitives used in <a>BAL</a>-2 through BAL-4. Post-quantum profile extensions are reserved for a future revision.</li>
-            </ul>
-            <div class="note">
-                <p>The protocol's transport-independence property (Section 1.1, Principle 5) is the primary mitigation for Class A0. All BAL levels address A0 by design.</p>
-            </div>
-        </section>
-    </section>
-
-    <section>
-        <h2>Binding Assurance Levels</h2>
-        <p>The four <a>BAL</a> tiers form a strict partial order of assurance: a <a>verifier</a> requiring BAL-n MUST NOT accept a binding at BAL-m where m &lt; n, unless explicitly and verifiably authorized by the applicable <a>Trust Framework Profile (TFP)</a>. This constraint is enforced in the protocol via the BAL selection rules of Section 4.3.5.</p>
-
-        <section>
-            <h3>BAL-1: Passive Identifier with Tamper-Evident Carrier</h3>
-            <p><strong>Security objective.</strong> Demonstrate that a visual or machine-readable identifier has not been physically altered or transferred from the object it was applied to.</p>
-            <p><strong>Mechanism.</strong> A machine-readable representation of the object's DID (QR code, Data Matrix, NFC NDEF record, or equivalent) is applied to a tamper-evident <a>binding carrier</a>. The carrier MUST exhibit an irreversible, visible change upon removal or attempted transfer. Suitable carrier classes include void-pattern adhesives, destructible polyester labels, and security holographic laminates. The carrier engineering MUST be documented at enrollment.</p>
-            <p><strong>Assurance boundaries.</strong> BAL-1 does not provide cryptographic challenge-response. A BAL-1 binding is defeated by A1 attackers who succeed in carrier replication or who access the object before any carrier damage is detected. BAL-1 is appropriate for consumer-facing authentication where visual inspection at point-of-verification is feasible, and for batch-level supply chain tracking where individual object verification is not required.</p>
-            <p><strong>No device certificate required.</strong> BAL-1 bindings do not require a device certificate or a <a>binding device</a> in the sense of this specification. The DID document need not contain a <code>UORABindingVerification</code> method.</p>
-        </section>
-
-        <section>
-            <h3>BAL-2: Secure Element with Asymmetric Challenge-Response</h3>
-            <p><strong>Security objective.</strong> Cryptographically prove possession of a device-bound private key that cannot be extracted by A0 or A1 attackers, and resist A2 attackers via tamper detection and key zeroization.</p>
-            <p><strong>Mechanism.</strong> The <a>binding device</a> contains a hardware secure element (compliant with Common Criteria EAL 4+ or equivalent) with an asymmetric keypair generated on-device. The private key MUST NOT leave the secure element boundary at any time. The public key is registered in the DID document as a verification method with type <code>UORABindingVerification</code> and relationship <code>assertionMethod</code>.</p>
-            <p><strong>Key generation requirement.</strong> The keypair MUST be generated on-device after personalization, not pre-generated and loaded. Vendors claiming BAL-2 compliance SHALL provide attestation of on-device generation, auditable by the <a>Enrollment Authority</a>.</p>
-            <p><strong>Replay protection.</strong> Replay protection is the responsibility of the <a>verifier</a>, not the <a>binding device</a>. This design accommodates constrained devices (NFC tags, RFID tokens) that cannot maintain reliable persistent state. The verifier enforces replay protection by: (a) generating a cryptographically random nonce (≥ 256 bits) per challenge; (b) enforcing a response timestamp skew tolerance; and (c) maintaining a short-lived nonce cache for the duration of the skew window. The binding device SHALL NOT be required to maintain nonce history. This is consistent with the FIDO2 authenticator model [[FIDO-CTAP2]].</p>
-            <p><strong>Tamper response.</strong> The secure element MUST implement a hardware tamper detection mechanism (active shield, mesh, or equivalent). On tamper detection, the device SHOULD zeroize the private key. Key zeroization SHALL be documented in the device's security policy.</p>
-            <p><strong>Minimum algorithm requirements.</strong> Implementations SHALL support at least one of the cryptographic profiles in Section 6.</p>
-            <p><strong>Conformance.</strong> Passing the UORA BAL-2 Conformance Test Suite (CTS-BAL2) is REQUIRED. The CTS is available at <code>w3id.org/uora/conformance/binding/v1</code>.</p>
-        </section>
-
-        <section>
-            <h3>BAL-3: PUF-Derived Key with Fuzzy Extraction</h3>
-            <p><strong>Security objective.</strong> Prove possession of a key that is physically unclonable and never persisted, eliminating the vendor key-retention threat present in BAL-2.</p>
-            <p><strong>Mechanism.</strong> The <a>binding device</a> derives its private key from a <a>Physically Unclonable Function</a> using a <a>fuzzy extractor</a> [[Dodis2008]]. At enrollment, the PUF is queried with a defined challenge set, and the fuzzy extractor produces: (a) a stable derived key (the binding private key) and (b) public helper data required for re-derivation. The helper data is stored in the DID document or in a publicly accessible endpoint. The private key is never stored in non-volatile memory; it exists only transiently during device power-on and is recomputed on each challenge-response cycle.</p>
-            <p><strong>Unclonability guarantee.</strong> The security of a PUF-based binding under the [[Armknecht2011]] framework requires that the PUF satisfy: (1) uniqueness — the inter-device Hamming distance between responses to the same challenge is approximately 50%; (2) reliability — the intra-device Hamming distance across conditions is below the <a>fuzzy extractor</a>'s error-correction bound; and (3) unpredictability — an adversary observing polynomially many challenge-response pairs gains negligible advantage in predicting responses to unseen challenges. Implementations SHALL publish these statistics via the <a>PUF Interface Descriptor (PID)</a> as defined in Appendix A.</p>
-            <p><strong>PUF Interface Descriptor (PID).</strong> BAL-3 and BAL-4 devices MUST include a <a>PID</a> in the DID document's binding verification method. The PID is a machine-readable JSON object that fully describes the PUF construction, the <a>fuzzy extractor</a> algorithm and parameters, the challenge construction mechanism, the helper data location and content hash, and the measured inter- and intra-device statistics. The PID schema is defined in Appendix A. A <a>verifier</a> SHALL use the PID to construct a challenge and to interpret the helper data. Conformance test C-07a requires that a clean-room verifier can construct a valid challenge from the PID alone, without vendor-proprietary knowledge.</p>
-            <p><strong>Vendor cannot retain key.</strong> Because the private key is derived at power-on from silicon manufacturing variations, no manufacturing process can produce the key without the physical device. This property distinguishes BAL-3 from BAL-2 in the supply chain trust model.</p>
-            <p><strong>Conformance.</strong> Passing CTS-BAL3 plus a valid and complete <a>PID</a> are REQUIRED.</p>
-        </section>
-
-        <section>
-            <h3>BAL-4: Continuous Attestation with Environmental Monitoring</h3>
-            <p><strong>Security objective.</strong> Continuously prove that the bound physical object has not been tampered with, relocated without authorization, or subjected to conditions outside its permitted environmental envelope, even in the absence of an active <a>verifier</a>.</p>
-            <p><strong>Mechanism.</strong> All BAL-3 requirements apply, including the <a>PID</a>. In addition, the <a>binding device</a>: (a) continuously monitors the object's physical state via onboard sensors (motion, temperature, tamper switches, or other sensors specified at enrollment); (b) generates signed attestations autonomously when monitored parameters cross defined thresholds or on a configured periodic interval; (c) maintains a trusted time source with documented drift bounds; and (d) SHALL implement the <a>Proximity-Bound Authenticated Channel (PBAC)</a> extension defined in Appendix C as its mandatory proximity verification mechanism. The response-time bounding of Section 4.3.6 serves as a fallback when PBAC is not available.</p>
-            <p><strong>Maximum attestation interval.</strong> The maximum permitted interval between autonomous attestations MUST be declared at enrollment and recorded in the <a>BEA</a>. Verifiers SHALL treat a gap exceeding the declared interval (plus the documented clock drift) as a <a>verification_inconclusive</a> result requiring investigation.</p>
-            <p><strong>Conformance.</strong> Passing CTS-BAL3 plus CTS-BAL4 (continuous attestation test vectors) are REQUIRED.</p>
-        </section>
-
-        <section>
-            <h3>BAL Summary</h3>
-            <table>
-                <thead>
-                    <tr><th><a>BAL</a></th><th>Key Type</th><th>Possession Proof</th><th>Anti-Cloning</th><th>Autonomous Attestation</th><th>Attacker Resisted</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>1</td><td>None</td><td>Visual / carrier integrity</td><td>Carrier engineering</td><td>No</td><td>A0</td></tr>
-                    <tr><td>2</td><td>SE-generated asymmetric</td><td>Challenge-response</td><td>Secure element</td><td>No</td><td>A0, A1, A2</td></tr>
-                    <tr><td>3</td><td>PUF-derived, ephemeral</td><td>Challenge-response</td><td>PUF + <a>fuzzy extractor</a></td><td>No</td><td>A0, A1, A2, A3</td></tr>
-                    <tr><td>4</td><td>PUF-derived, ephemeral</td><td>Challenge-response + continuous + <a>PBAC</a></td><td>PUF + environmental monitor</td><td>Yes</td><td>A0, A1, A2, A3, A5</td></tr>
-                </tbody>
-            </table>
-        </section>
-    </section>
-
-    <section>
-        <h2>Normative Protocol</h2>
-
-        <section>
-            <h3>Transport Model</h3>
-            <p>The binding protocol is transport-agnostic. The <code>ChallengeRequest</code> and <code>ChallengeResponse</code> messages MAY be carried over any transport, including NFC (ISO/IEC 14443, ISO/IEC 15693), Bluetooth LE, USB, HTTP/S, or proprietary RF protocols. Implementations SHOULD use transport-layer security where available as defense-in-depth. Implementations MUST NOT assume transport-layer integrity or authenticity. All security properties derive from the application-layer message signatures.</p>
-            <p><strong>Proximity enforcement.</strong> Some transports provide inherent proximity enforcement (NFC, RFID). For transports without inherent proximity enforcement, verifiers SHOULD apply maximum round-trip time thresholds calibrated to the expected transport medium (see Section 4.3.6). This does not eliminate relay attacks but raises the practical cost; see Section 8.2. BAL-4 devices and any deployment requiring strong relay-attack resistance SHALL implement the <a>PBAC</a> extension defined in Appendix C.</p>
-        </section>
-
-        <section>
-            <h2>Enrollment</h2>
-
-            <section>
-                <h4>Actors and Prerequisites</h4>
-                <ul>
-                    <li><strong>Binding Device Vendor (BDV).</strong> Manufactures the <a>binding device</a> and issues a device certificate asserting the device's public key, <a>BAL</a>, and hardware security properties. The device certificate MUST conform to [[RFC5280]] or be expressed as a W3C Verifiable Credential [[[VC-DATA-MODEL-2.0]]]. For BAL-3/4, the device certificate MUST include a link to the device's <a>PID</a>.</li>
-                    <li><strong>Enrollment Authority (EA).</strong> Verifies device authenticity and issues the <a>BEA</a>. MUST hold a valid <code>CertificationCredential</code>, issued by the applicable Trust Framework Governance Authority, authorizing the EA to issue BEAs at the declared BAL. An EA that has had its <code>CertificationCredential</code> revoked MUST NOT issue new BEAs.</li>
-                    <li><strong>Object Owner (OO).</strong> Controls the physical object at enrollment time and authorizes the binding. The OO MUST authenticate to the EA via a mechanism specified by the Trust Framework.</li>
-                </ul>
-            </section>
-
-            <section>
-                <h4>Enrollment Protocol Steps</h4>
-                <ol>
-                    <li>EA generates a cryptographically random enrollment challenge (≥ 256 bits, generated by a CSPRNG conformant with [[NIST-SP800-90A]]).</li>
-                    <li>EA transmits the enrollment challenge to the <a>binding device</a> via a supported transport.</li>
-                    <li>Binding device signs the enrollment challenge using the binding private key. For BAL-3/4, this requires powering the device and running the <a>PUF</a> + <a>fuzzy extractor</a> pipeline to derive the key.</li>
-                    <li>EA verifies the signature against the public key in the device certificate, using the algorithm identified in the device certificate.</li>
-                    <li>EA resolves or creates the object's DID document and registers the binding device's public key as a verification method of type <code>UORABindingVerification</code>. The method MUST be listed under <code>assertionMethod</code> in the DID document.</li>
-                    <li>EA constructs a <a>BEA</a> containing, at minimum: object DID and <a>DID Document Version</a> identifier; binding device public key fingerprint (JWK thumbprint per [[RFC7638]]); declared <a>BAL</a>; enrollment timestamp (ISO 8601, UTC); binding device vendor, model identifier, and hardware revision; EA's DID; <strong>the <a>Trust Framework Profile (TFP)</a> identifier governing this binding (e.g., <code>urn:uora:trust-framework:profile-1</code>)</strong>; <a>PUF Interface Descriptor (PID)</a> as defined in Appendix A (BAL-3/4 only); tamper-evidence carrier class and engineering specification (all BALs).</li>
-                    <li>EA cryptographically signs the <a>BEA</a> using its CertificationCredential key.</li>
-                    <li>The BEA SHALL be stored as the primary evidence claim in the object's first UORA attestation. The attestation MUST be anchored to a verifiable data registry (VDR) per the applicable Trust Framework.</li>
-                </ol>
-            </section>
-
-            <section>
-                <h4>EA Compromise Recovery</h4>
-                <p>If an EA's <code>CertificationCredential</code> is compromised or revoked, all <a>BEAs</a> issued by that EA SHOULD be treated as untrusted by default. Trust frameworks MUST specify: (a) the mechanism for revoking an EA's <code>CertificationCredential</code>; (b) the notification obligation of the EA and the Trust Framework Governance Authority; and (c) the procedure for verifying or re-enrolling affected bindings. An EA operating under a revoked <code>CertificationCredential</code> has no standing to issue BEAs or to attest to previously issued BEAs.</p>
-                <p><strong>TFP-1 default.</strong> Under TFP-1 (Appendix B), the revocation mechanism SHALL be <code>StatusList2021</code>. When an EA credential is revoked, all BEAs issued by that EA are invalid until the object owner completes re-enrollment with a valid EA. The object owner has 30 calendar days to complete re-enrollment. Failure to re-enroll within this window SHALL cause the binding to be marked as <a>revoked</a> with reason code <code>authority_revoked</code>.</p>
-            </section>
-        </section>
-
-        <section>
-            <h3>Challenge-Response Verification</h3>
-
-            <section>
-                <h4>ChallengeRequest Message</h4>
-                <table>
-                    <thead>
-                        <tr><th>Field</th><th>Type</th><th>Required?</th><th>Description</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><code>did</code></td><td>string (DID)</td><td>REQUIRED</td><td>The DID of the object whose binding is being verified.</td></tr>
-                        <tr><td><code>didVersion</code></td><td>string</td><td>OPTIONAL</td><td>Version identifier of the <a>DID Document Version</a> the verifier resolved. If present, verification SHALL be performed against that version. If the version is unavailable, the verification SHALL fail with error <a>version_unavailable</a>. If absent, the current DID document version is used.</td></tr>
-                        <tr><td><code>nonce</code></td><td>string (base64url)</td><td>REQUIRED</td><td>Cryptographically random value, ≥ 256 bits (≥ 32 bytes). Generated by the <a>verifier</a> using a CSPRNG [[NIST-SP800-90A]]. MUST NOT be reused.</td></tr>
-                        <tr><td><code>timestamp</code></td><td>string (ISO 8601)</td><td>REQUIRED</td><td>Verifier's current time in UTC, expressed as a full ISO 8601 datetime with timezone offset <code>Z</code>. Used for skew tolerance enforcement.</td></tr>
-                        <tr><td><code>verifier</code></td><td>string (DID)</td><td>REQUIRED</td><td>The verifier's DID, providing accountability for challenge issuance.</td></tr>
-                        <tr><td><code>minBal</code></td><td>string</td><td>OPTIONAL</td><td>Minimum <a>BAL</a> the verifier will accept. If omitted, any BAL is accepted. Values: <code>"BAL-1"</code>, <code>"BAL-2"</code>, <code>"BAL-3"</code>, <code>"BAL-4"</code>.</td></tr>
-                        <tr><td><code>requestPbac</code></td><td>boolean</td><td>OPTIONAL</td><td>If <code>true</code> and the binding method advertises <a>PBAC</a> support (see Appendix C), the verifier requests that the challenge-response be bound to the transport channel using PBAC. If <code>true</code> and the device does not support PBAC, the device SHALL proceed with standard challenge-response and set <code>pbacApplied</code> to <code>false</code>. Default: <code>true</code> for verifiers that support PBAC.</td></tr>
-                    </tbody>
-                </table>
-                <div class="note">
-                    <p>The <code>didVersion</code> field enables time-consistent verification. A verifier that resolved a DID document and cached its binding verification methods SHOULD include the cached version identifier in subsequent challenges. This prevents a scenario where the DID document has been updated (e.g., a binding upgraded or revoked) between the verifier's resolution and the challenge.</p>
-                </div>
-            </section>
-
-            <section>
-                <h4>ChallengeResponse Message</h4>
-                <table>
-                    <thead>
-                        <tr><th>Field</th><th>Type</th><th>Required?</th><th>Description</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><code>did</code></td><td>string (DID)</td><td>REQUIRED</td><td>Must match the <code>did</code> in the corresponding ChallengeRequest.</td></tr>
-                        <tr><td><code>nonce</code></td><td>string (base64url)</td><td>REQUIRED</td><td>Must be the nonce from the corresponding ChallengeRequest, reproduced without modification. When <a>PBAC</a> is applied, this field carries the PBAC-encrypted payload as a base64url-encoded binary blob. See Appendix C for the transformation.</td></tr>
-                        <tr><td><code>signature</code></td><td>string (base64url)</td><td>REQUIRED</td><td>The <a>binding device</a>'s signature over the <a>JCS</a>-canonicalized ChallengeRequest, as received, without modification.</td></tr>
-                        <tr><td><code>bindingMethod</code></td><td>string (URI)</td><td>REQUIRED</td><td>The verification method ID from the DID document corresponding to the keypair used to produce the signature.</td></tr>
-                        <tr><td><code>timestamp</code></td><td>string (ISO 8601)</td><td>CONDITIONAL</td><td>Device-generated timestamp in UTC. REQUIRED for BAL-4. OPTIONAL for BAL-2 (constrained devices without reliable clocks MAY omit). If present, used to bound response time and detect relay attacks.</td></tr>
-                        <tr><td><code>bal</code></td><td>string</td><td>REQUIRED</td><td>The device's actual <a>BAL</a>. Values: <code>"BAL-2"</code>, <code>"BAL-3"</code>, <code>"BAL-4"</code>. If this value is lower than the <code>minBal</code> in the ChallengeRequest, the verifier SHALL return <a>insufficient_bal</a>.</td></tr>
-                        <tr><td><code>deviceStatus</code></td><td>string</td><td>OPTIONAL</td><td>Device self-reported operational status. Values: <code>operational</code>, <a>degraded</a>, <code>tampered</code>. Absence implies <code>operational</code>. A <code>tampered</code> status SHALL cause the verifier to return <a>verification_inconclusive</a> regardless of signature validity.</td></tr>
-                        <tr><td><code>continuousAttestation</code></td><td>object</td><td>CONDITIONAL</td><td>Required for BAL-4. Contains the latest signed autonomous attestation payload, including sensor readings, event log, and timestamp. Schema specified in Appendix A.</td></tr>
-                        <tr><td><code>pbacApplied</code></td><td>boolean</td><td>REQUIRED for BAL-4. OPTIONAL for BAL-2/3.</td><td><code>true</code> if the response was generated using the <a>Proximity-Bound Authenticated Channel (PBAC)</a> extension. <code>false</code> otherwise. If the ChallengeRequest had <code>requestPbac = true</code> and this field is <code>false</code>, the verifier SHALL return <a>verification_inconclusive</a> unless a Trust Framework exception applies.</td></tr>
-                        <tr><td><code>pbacSignature</code></td><td>object</td><td>CONDITIONAL</td><td>Required when <code>pbacApplied</code> is <code>true</code>. Contains a signed attestation from the <a>Proximity Verifier Service (PVS)</a> confirming that the PBAC challenge was correctly decrypted and the response latency is within the physical limit of the transport. Schema: <code>{ pvsDid: string, decryptedNonce: string, latencyMs: number, timestamp: string, signature: string }</code>.</td></tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section>
-                <h4>Canonicalization</h4>
-                <p>The signature MUST be computed over the <a>JCS</a>-canonicalized form of the ChallengeRequest, exactly as received by the <a>binding device</a>, without modification, including all fields present in the received message and no additional fields. The canonicalization algorithm is the JSON Canonicalization Scheme specified in [[RFC8785]]. This algorithm: (a) sorts object keys lexicographically by Unicode code point; (b) applies IEEE 754 serialization for numeric values; and (c) removes insignificant whitespace. The binding device MUST apply JCS to the received bytes; it MUST NOT re-parse or reconstruct the ChallengeRequest.</p>
-                <div class="note">
-                    <p>Implementations MUST validate that the JCS output is byte-for-byte reproducible before verifying or producing signatures. A reference implementation with test vectors is provided at the conformance URI.</p>
-                </div>
-            </section>
-
-            <section>
-                <h4>Verification Procedure</h4>
-                <ol>
-                    <li>Resolve the DID document. If <code>didVersion</code> was specified, resolve that specific version. If the version is unavailable, abort with <a>version_unavailable</a>.</li>
-                    <li>Locate all verification methods of type <code>UORABindingVerification</code>. If none are found, abort with <a>no_binding_method</a>.</li>
-                    <li>Apply BAL selection rules (Section 4.3.5). If no method satisfies the <code>minBal</code> requirement, abort with <a>insufficient_bal</a>.</li>
-                    <li>Validate the <a>TFP</a> identifier in the <a>BEA</a>. If the verifier does not support the declared TFP, abort with <a>unsupported_trust_framework</a>.</li>
-                    <li>For the selected binding method at BAL-3 or BAL-4, retrieve and parse the <a>PUF Interface Descriptor (PID)</a> from the DID document. Validate that the PID contains all required fields per Appendix A. If the PID is missing or invalid, return <a>verification_inconclusive</a> with detail <a>invalid_pid</a>.</li>
-                    <li>Generate a fresh ChallengeRequest with a new nonce from a CSPRNG.</li>
-                    <li>If the binding method advertises <a>PBAC</a> support and the verifier supports PBAC, set <code>requestPbac = true</code>.</li>
-                    <li>Record the transmission timestamp t₀.</li>
-                    <li>Transmit the ChallengeRequest to the <a>binding device</a> via the device's supported transport.</li>
-                    <li>Receive the ChallengeResponse. Record the receipt timestamp t₁.</li>
-                    <li>If <code>requestPbac</code> was <code>true</code>, verify that <code>pbacApplied</code> is <code>true</code>. If <code>false</code>, return <a>verification_inconclusive</a> with detail <code>pbac_not_applied</code>.</li>
-                    <li>If <code>pbacApplied</code> is <code>true</code>, validate the <code>pbacSignature</code> against the <a>PVS</a>'s public key and verify the attestation contents per Appendix C. If PVS validation fails, return <a>verification_inconclusive</a> with detail <code>pbac_validation_failed</code>.</li>
-                    <li>Verify nonce. The nonce in the ChallengeResponse MUST be byte-for-byte identical to the nonce in the ChallengeRequest. If not, abort with <a>invalid_nonce</a>. Note: if PBAC was applied, the nonce comparison is performed against the <code>decryptedNonce</code> in the validated PVS attestation, not the raw <code>nonce</code> field.</li>
-                    <li>Verify timestamp skew. If the ChallengeResponse includes a device timestamp, it MUST differ from the verifier's timestamp by no more than the configured skew tolerance (default: 300 seconds). If skew exceeds tolerance, abort with <a>expired_challenge</a>.</li>
-                    <li>Verify response time. If PBAC was not applied and a maximum response time is configured, (t₁ − t₀) MUST not exceed it. Excess may indicate a relay attack; return <a>verification_inconclusive</a>.</li>
-                    <li>Verify deviceStatus. If deviceStatus is <code>tampered</code>, return <a>verification_inconclusive</a>.</li>
-                    <li>Canonicalize the ChallengeRequest using <a>JCS</a>.</li>
-                    <li>Verify the signature in the ChallengeResponse against the public key in the selected binding verification method, using the algorithm identified in the method's publicKeyJwk. If signature verification fails, abort with <a>invalid_signature</a>.</li>
-                    <li>Check revocation status of the binding verification method. If revoked, abort with <a>revoked_binding</a>.</li>
-                    <li>If all checks pass, return <a>valid</a>. Record the verification event in the UORA audit log.</li>
-                </ol>
-            </section>
-
-            <section>
-                <h4>BAL Selection Rules</h4>
-                <p>If a DID document contains multiple binding verification methods, the <a>verifier</a> SHALL select a method according to the following rules:</p>
-                <ul>
-                    <li>The selected method's <a>BAL</a> MUST be ≥ <code>minBal</code> specified in the ChallengeRequest.</li>
-                    <li>If multiple methods meet the BAL requirement, the verifier SHOULD select the method with the highest BAL.</li>
-                    <li><strong>Downgrade prevention.</strong> A verifier MUST NOT use a lower-BAL method when a higher-BAL method is available and non-revoked, unless the verifier's <a>Trust Framework Profile (TFP)</a> explicitly permits downgrade for a documented operational reason (e.g., device battery depletion in a BAL-4 device). Any downgrade event MUST be logged with justification.</li>
-                </ul>
-                <div class="note">
-                    <p>BAL downgrade attacks exploit a multi-method DID document by presenting a lower-assurance binding for an object that also has a higher-assurance binding. The rule above, combined with the verification result states in Section 4.5, ensures that a verifier receives an accurate picture of the highest available assurance.</p>
-                </div>
-            </section>
-
-            <section>
-                <h4>Relay Attack Mitigation</h4>
-                <p>A relay attack occurs when an attacker intercepts a ChallengeRequest, relays it to the genuine <a>binding device</a> at a different location, and returns the response — thereby making a fraudulent object appear to be the genuine article. The protocol provides a tiered set of mitigations:</p>
-                <ul>
-                    <li><strong>Response time bounding (BAL-2/3).</strong> The <a>verifier</a> SHOULD configure a maximum response time threshold calibrated to the expected round-trip propagation time of the transport medium plus processing time. Typical values: NFC ≤ 100 ms; Bluetooth LE ≤ 500 ms; HTTP ≤ 2000 ms. If the response time exceeds the threshold, return <a>verification_inconclusive</a>. This raises the cost of relay attacks but does not eliminate them against a sophisticated A5 attacker.</li>
-                    <li><strong>Proximity-Bound Authenticated Channel (PBAC) — BAL-4 REQUIRED, BAL-3 OPTIONAL.</strong> The <a>PBAC</a> extension (Appendix C) binds the challenge-response to an inherently distance-limited transport (e.g., NFC). By encrypting the nonce under a symmetric Channel Key that exists only inside the <a>binding device</a>, and requiring a trusted <a>Proximity Verifier Service (PVS)</a> to decrypt and attest to the response, PBAC makes relay attacks cryptographically infeasible: an attacker who intercepts the PBAC-blinded nonce and relays it to a distant device cannot return a valid response to the local verifier within the transport's physical timing constraints. BAL-4 devices SHALL implement PBAC. Any verification where PBAC was requested but not applied SHALL return <a>verification_inconclusive</a>.</li>
-                    <li><strong>Signed proximity signals (BAL-4).</strong> BAL-4 devices SHOULD include signed NFC field-strength readings, GPS coordinates (if available), or other proximity signals in the <code>continuousAttestation</code> object. Verifiers SHOULD validate that declared proximity is consistent with the verification context.</li>
-                    <li><strong>UWB distance bounding (OPTIONAL, all BALs).</strong> Deployments requiring strong relay-attack prevention MAY use Ultra-Wideband (UWB) distance bounding per ISO/IEC 24730-62 as an additional out-of-band proximity verification step. UWB bounding is independent of the binding protocol and is not normatively required.</li>
-                </ul>
-            </section>
-
-            <section>
-                <h4>Rate Limiting</h4>
-                <p>Binding devices SHOULD implement rate limiting on challenge-response operations to mitigate denial-of-service attacks and resource exhaustion. Rate limiting is especially critical for:</p>
-                <ul>
-                    <li>Battery-powered devices (BAL-4 IoT deployments) where repeated cryptographic operations can deplete power reserves and disable the device.</li>
-                    <li><a>PUF</a>-based devices (BAL-3/4) where excessive challenge sets can, in theory, assist in modeling attacks on the PUF.</li>
-                </ul>
-                <p>Recommended rate limits: no more than 10 challenge-response operations per 60-second window per verifier DID, with exponential backoff on excess. Implementations SHALL document their rate limiting policy in the device's security policy.</p>
-            </section>
-
-            <section>
-                <h4>Offline Verification</h4>
-                <p><a>Verifiers</a> operating in environments with intermittent connectivity MAY cache resolved DID documents and associated binding verification methods subject to the following constraints:</p>
-                <ul>
-                    <li>Cache duration MUST NOT exceed 24 hours, unless a longer duration is explicitly authorized by the <a>Trust Framework Profile (TFP)</a> for the applicable use case.</li>
-                    <li>Cached entries MUST be validated against the DID document's revocation registry and key expiry before use.</li>
-                    <li>Verifiers SHALL re-verify bindings against the live DID document when connectivity is restored if the cache has expired.</li>
-                    <li><strong>Cache poisoning mitigation.</strong> The verifier MUST verify the integrity of cached DID documents using cryptographic proofs provided by the DID method (e.g., signed DID document, anchored hash). Unauthenticated caching is not permitted.</li>
-                </ul>
-            </section>
-        </section>
-
-        <section>
-            <h3>Binding Revocation</h3>
-
-            <section>
-                <h4>Revocation Procedure</h4>
-                <ol>
-                    <li>An authorized party (Object Owner, <a>EA</a>, or Trust Framework Governance Authority) updates the DID document to remove or mark as revoked the binding verification method, including a revocation timestamp and reason code.</li>
-                    <li>The revocation MUST be recorded in the DID document's revocation registry, using the mechanism specified by the DID method (e.g., <code>StatusList2021</code>, bitstring status list, or method-specific revocation endpoint).</li>
-                    <li>If the device is capable and connectivity is available, the device SHOULD issue a signed Binding Revocation Attestation containing: the object DID, the binding method ID, the revocation reason, the revocation timestamp, and the device's final operational state reading.</li>
-                    <li>The Binding Revocation Attestation SHALL be recorded as a UORA attestation in the object's chain, referencing the prior enrollment attestation.</li>
-                    <li>If the device supports tamper-triggered key zeroization, the zeroization event SHOULD be recorded in the Binding Revocation Attestation.</li>
-                </ol>
-            </section>
-
-            <section>
-                <h4>Revocation Reason Codes</h4>
-                <table>
-                    <thead>
-                        <tr><th>Code</th><th>Meaning</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><code>tamper_detected</code></td><td>Hardware tamper indicator activated. The physical security of the <a>binding device</a> has been compromised.</td></tr>
-                        <tr><td><code>device_failure</code></td><td>The <a>binding device</a> has failed and can no longer produce valid challenge responses.</td></tr>
-                        <tr><td><code>device_replacement</code></td><td>The <a>binding device</a> is being replaced as part of scheduled maintenance. Use with rebinding (Section 4.5).</td></tr>
-                        <tr><td><code>object_decommissioned</code></td><td>The physical object has reached end-of-life and is being <a>decommissioned</a>. No rebinding will follow.</td></tr>
-                        <tr><td><code>binding_upgraded</code></td><td>The binding has been upgraded to a higher <a>BAL</a>. Use with rebinding (Section 4.5).</td></tr>
-                        <tr><td><code>authority_revoked</code></td><td>The <a>Enrollment Authority</a> that issued this binding's <a>BEA</a> has had its CertificationCredential revoked. The binding should be re-evaluated.</td></tr>
-                        <tr><td><code>key_compromise</code></td><td>There is evidence that the binding private key has been or may have been compromised.</td></tr>
-                    </tbody>
-                </table>
-            </section>
-        </section>
-
-        <section>
-            <h3>Rebinding</h3>
-            <p>Rebinding replaces one <a>binding device</a> with another while maintaining the object's DID and attestation chain continuity.</p>
-            <ul>
-                <li>The previous binding MUST be <a>revoked</a> (Section 4.4) before or simultaneously with new enrollment (Section 4.2). Simultaneous revocation and enrollment SHALL be implemented as an atomic DID document update where supported by the DID method.</li>
-                <li>The rebinding event MUST be recorded as a UORA attestation referencing both the revocation attestation of the old binding and the <a>BEA</a> of the new binding.</li>
-                <li>The object's DID SHALL NOT change during rebinding. The DID provides the stable identifier for the object's attestation history.</li>
-                <li>The new binding MAY be at a different <a>BAL</a>. An upgrade in BAL SHOULD use reason code <code>binding_upgraded</code>. A downgrade in BAL MUST be explicitly authorized by the <a>Trust Framework Profile (TFP)</a> and logged.</li>
-            </ul>
-        </section>
-
-        <section>
-            <h3>Verification Result States</h3>
-            <table>
-                <thead>
-                    <tr><th>Result Code</th><th>Meaning</th><th>Recommended Action</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td><dfn>valid</dfn></td><td>Challenge-response succeeded. Binding is intact and verified at the returned <a>BAL</a>.</td><td>Accept. Log event with BAL and timestamp.</td></tr>
-                    <tr><td><dfn>invalid_signature</dfn></td><td>Signature verification failed. The response does not correspond to the registered public key.</td><td>Reject. Investigate possible key mismatch or device substitution.</td></tr>
-                    <tr><td><dfn>expired_challenge</dfn></td><td>Challenge timestamp exceeds skew tolerance or response time threshold exceeded.</td><td>Reject. Retry with fresh challenge. If persistent, investigate relay attack.</td></tr>
-                    <tr><td><dfn>revoked_binding</dfn></td><td>Binding verification method is marked <a>revoked</a> in the DID document.</td><td>Reject. Do not accept the object without re-enrollment.</td></tr>
-                    <tr><td><dfn>insufficient_bal</dfn></td><td>Device's actual <a>BAL</a> is below the verifier's <code>minBal</code> requirement.</td><td>Reject. Do not downgrade without <a>Trust Framework Profile (TFP)</a> authorization.</td></tr>
-                    <tr><td><dfn>device_unreachable</dfn></td><td><a>Binding device</a> did not respond within the transport timeout.</td><td>Inconclusive. Retry. If persistent, escalate to object owner.</td></tr>
-                    <tr><td><dfn>verification_inconclusive</dfn></td><td>Transient error, tampered device status, relay attack suspicion, <a>PBAC</a> not applied when requested, or <a>PVS</a> validation failure. Binding cannot be confirmed or denied.</td><td>Inconclusive. Retry. Do not accept. Investigate if persistent.</td></tr>
-                    <tr><td><dfn>version_unavailable</dfn></td><td>The <code>didVersion</code> specified in the ChallengeRequest is not available from the DID resolver.</td><td>Inconclusive. Retry without <code>didVersion</code> or with a later version.</td></tr>
-                    <tr><td><dfn>no_binding_method</dfn></td><td>No <code>UORABindingVerification</code> method found in the resolved DID document.</td><td>Reject. The object may not have been enrolled or the DID document may be malformed.</td></tr>
-                    <tr><td><dfn>invalid_nonce</dfn></td><td>Nonce in the ChallengeResponse does not match the ChallengeRequest.</td><td>Reject. Possible replay or device malfunction.</td></tr>
-                    <tr><td><dfn>unsupported_trust_framework</dfn></td><td>The <a>TFP</a> declared in the <a>BEA</a> is not supported by the verifier.</td><td>Reject. Cannot verify binding under an unknown governance framework.</td></tr>
-                    <tr><td><dfn>profile_c_risk_not_accepted</dfn></td><td>The binding uses Profile C (symmetric-key) but the required risk acceptance acknowledgment is missing or invalid.</td><td>Reject. The verifier cannot trust a symmetric-key binding without explicit, signed risk acceptance per Section 6.3.</td></tr>
-                    <tr><td><dfn>invalid_pid</dfn></td><td>The <a>PUF Interface Descriptor (PID)</a> for a BAL-3/4 binding is missing or malformed.</td><td>Inconclusive. Cannot construct a valid PUF challenge without a valid PID.</td></tr>
-                </tbody>
-            </table>
-        </section>
-    </section>
-
-    <section>
-        <h2>Trust Model</h2>
-        <p>This section formally characterizes the trust assumptions at each boundary of the binding protocol. An implementation that does not document its trust assumptions provides no verifiable security guarantees.</p>
-
-        <section>
-            <h3>Trust Boundaries and Mitigations</h3>
-            <table>
-                <thead>
-                    <tr><th>Actor</th><th>Trust Assumption</th><th>Failure Scenario</th><th>Mitigation</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Binding Device Vendor (BAL-2)</td>
-                        <td>Vendor manufactured the secure element correctly and did not retain a copy of the private key.</td>
-                        <td>Vendor retains key; can impersonate any bound object without physical access.</td>
-                        <td>Independent <a>Enrollment Authorities</a>. Vendor audits and Common Criteria certification. BAL-3 preferred for high-value deployments.</td>
-                    </tr>
-                    <tr>
-                        <td>Binding Device Vendor (BAL-3/4)</td>
-                        <td>Vendor's <a>PUF</a> construction satisfies uniqueness, reliability, and unpredictability per the [[Armknecht2011]] framework.</td>
-                        <td>PUF modeling attack succeeds; attacker can predict responses from published helper data.</td>
-                        <td>Documented PUF statistics from production samples via <a>PID</a>. Controlled challenge sets. Vendor SHALL provide attack mitigation disclosure.</td>
-                    </tr>
-                    <tr>
-                        <td>Enrollment Authority</td>
-                        <td>EA correctly verified device authenticity before issuing the <a>BEA</a>.</td>
-                        <td>EA compromise: attacker can issue fraudulent BEAs for non-genuine devices.</td>
-                        <td>EA must hold valid CertificationCredential. EA revocation and binding revalidation mechanisms per §4.2.3.</td>
-                    </tr>
-                    <tr>
-                        <td>Verifier</td>
-                        <td>None. Protocol is designed such that verifiers cannot learn the private key.</td>
-                        <td>Malicious verifier mounts repeated challenges to perform side-channel analysis.</td>
-                        <td>Rate limiting per §4.3.7. BAL-3/4 key non-existence between power cycles.</td>
-                    </tr>
-                    <tr>
-                        <td>Proximity Verifier Service (PVS)</td>
-                        <td><a>PVS</a> holds Channel Key shadows and correctly attests to <a>PBAC</a> decryption results. PVS is trusted not to collude with a relay attacker.</td>
-                        <td>PVS compromise: attacker with PVS keys can forge PBAC attestations and defeat relay protection.</td>
-                        <td>PVS SHALL be operated by an independent, audited third party. PVS Channel Key shadow storage SHALL be HSMed. PVS attestation signing key SHALL be rotated per the Trust Framework schedule. Verifiers MAY query multiple independent PVS instances for mutual corroboration.</td>
-                    </tr>
-                    <tr>
-                        <td>Transport</td>
-                        <td>None. Transport is fully untrusted.</td>
-                        <td>Man-in-the-middle intercepts and replays challenge-response pairs.</td>
-                        <td>Application-layer signatures. Nonce freshness. Timestamp skew. Response time bounding. PBAC for BAL-4.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section>
-            <h3>Trust Framework Interface</h3>
-            <p>This specification defines the cryptographic binding protocol. It does not define the governance framework that determines which <a>EAs</a> are trusted, which <a>BALs</a> are required for specific use cases, or how disputes are resolved. These questions are addressed by the applicable <a>Trust Framework Profile (TFP)</a>, which MUST:</p>
-            <ul>
-                <li>Define the CertificationCredential issuance and revocation process for EAs.</li>
-                <li>Specify minimum BAL requirements for each protected use case.</li>
-                <li>Define the binding revalidation procedure following EA compromise.</li>
-                <li>Specify audit logging requirements and retention periods.</li>
-                <li>Define dispute resolution procedures for contested verification outcomes.</li>
-            </ul>
-            <p><strong>Baseline Profile.</strong> Appendix B defines TFP-1, the minimal Trust Framework Profile. TFP-1 provides a fully specified, normative governance model suitable for closed supply chains and single-provider deployments. Conformant implementations that do not operate under a community-specific Trust Framework SHALL support TFP-1 as the default interoperability profile.</p>
-        </section>
-    </section>
-
-    <section>
-        <h2>Cryptographic Profiles</h2>
-        <p>Implementations SHALL support at least one of the following profiles. The profile used for a given binding SHALL be recorded in the <a>BEA</a>. <a>Verifiers</a> MUST support all profiles they may encounter in their deployment context.</p>
-
-        <section>
-            <h3>Profile A — Ed25519</h3>
-            <table>
-                <tr><td>Algorithm</td><td>Ed25519 (Twisted Edwards curve, cofactor 8) [[RFC8032]]</td></tr>
-                <tr><td>JWK key type</td><td><code>OKP</code>, curve: <code>Ed25519</code></td></tr>
-                <tr><td>Signature format</td><td>64-byte raw (r || s), base64url-encoded</td></tr>
-                <tr><td>Signature input</td><td><a>JCS</a>-canonicalized ChallengeRequest bytes</td></tr>
-                <tr><td>Security level</td><td>~128-bit classical; secure under DL assumption on the Ed25519 curve [[Bernstein2011]]</td></tr>
-                <tr><td>Recommended for</td><td>BAL-2, BAL-3, BAL-4 (general purpose, high-performance constrained devices)</td></tr>
-            </table>
-        </section>
-
-        <section>
-            <h3>Profile B — ECDSA P-256</h3>
-            <table>
-                <tr><td>Algorithm</td><td>ECDSA with SHA-256 on NIST P-256 [[FIPS186-5]]</td></tr>
-                <tr><td>JWK key type</td><td><code>EC</code>, crv: <code>P-256</code></td></tr>
-                <tr><td>Signature format</td><td>DER-encoded (r, s), base64url-encoded</td></tr>
-                <tr><td>Signature input</td><td><a>JCS</a>-canonicalized ChallengeRequest bytes</td></tr>
-                <tr><td>Security level</td><td>~128-bit classical; secure under ECDLP assumption on P-256</td></tr>
-                <tr><td>Recommended for</td><td>BAL-2, BAL-3, BAL-4 (FIPS-regulated environments, HSM-backed deployments)</td></tr>
-            </table>
-        </section>
-
-        <section>
-            <h3>Profile C — AES-128-CMAC (Constrained Symmetric) — DEPRECATED</h3>
-            <div class="warning">
-                <p><strong>Security Warning:</strong> Profile C is DEPRECATED as of this Working Draft. New implementations SHOULD use Profile A or B. Profile C is included only for backward compatibility with existing deployments. Profile C fundamentally breaks the non-repudiation property of UORA because the <a>Enrollment Authority</a> shares the symmetric key and can impersonate any bound device at will.</p>
-            </div>
-            <table>
-                <tr><td>Algorithm</td><td>AES-128 CMAC per ISO/IEC 29192-6 and NIST SP 800-38B</td></tr>
-                <tr><td>Key material</td><td>128-bit symmetric key, provisioned at enrollment via secure channel</td></tr>
-                <tr><td>Signature format</td><td>16-byte MAC, base64url-encoded</td></tr>
-                <tr><td>Security level</td><td>~128-bit classical under AES assumption</td></tr>
-                <tr><td>Constraints</td><td>SHALL be used only in closed ecosystems with a single trusted EA. SHALL NOT be used in multi-party trust frameworks. Key diversification per device MUST be implemented per [[NIST-SP800-108]]. Non-repudiation properties are absent: the EA and the device share the key.</td></tr>
-                <tr><td><strong>Mandatory Risk Acceptance (NEW).</strong></td><td>Any <a>BEA</a> using Profile C MUST include a signed <code>profileCRiskAcceptance</code> object. A verifier that encounters a Profile C BEA without this object, or with an invalid signature, SHALL return <a>profile_c_risk_not_accepted</a>. The risk acceptance object SHALL contain: the DID of the accepting party, a statement acknowledging the non-repudiation break, the acceptance timestamp (ISO 8601 UTC), and a signature from the accepting party's DID key over the <a>JCS</a>-canonicalized acceptance object.</td></tr>
-                <tr><td>Recommended for</td><td>Legacy NFC-constrained BAL-2 deployments in closed supply chains. <strong>For all new deployments, prefer Profile A (Ed25519) on hardware capable of it.</strong></td></tr>
-            </table>
-        </section>
-
-        <div class="note">
-            <p>Post-quantum algorithm profiles (e.g., ML-DSA per FIPS 204, SLH-DSA per FIPS 205) are reserved for a future version of this specification. Implementors planning for long-term binding validity (>10 years) SHOULD monitor NIST PQC standardization progress and plan migration paths.</p>
+        <p>Global supply chains operate across jurisdictional boundaries, regulatory regimes, and competing commercial interests. Traditional traceability systems rely on centralized databases, proprietary APIs, and bilateral agreements — each a single point of failure, a trust bottleneck, and an interoperability barrier. The UORA Protocol replaces these fragile architectures with a decentralized, cryptographically verifiable framework where <strong>trust is derived from governance authority and mathematics, not from any single participant or shared clock</strong>.</p>
+        <p>The protocol is organized into four architectural layers:</p>
+        <ul>
+            <li><strong>Layer 1 — Addressing & Discovery:</strong> How objects are identified and how their attestation history is retrieved.</li>
+            <li><strong>Layer 2 — Core Attestation Schemas:</strong> What events can be recorded and how they form a verifiable chain.</li>
+            <li><strong>Layer 3 — Governance & Authorization:</strong> Who is authorized to issue which attestations, and how that authority is verified and revoked.</li>
+            <li><strong>Layer 4 — Domain Profiles:</strong> How industry-specific requirements extend the core without modifying it.</li>
+        </ul>
+        <div class="advisement">
+            <p><strong>Relationship to Companion Specifications:</strong> This Core Protocol provides all normative rules required to build a conformant <a>Issuer</a>, <a>Resolver</a>, and <a>Verifier</a>. The companion <a href="https://w3id.org/uora/spec/secure-physical-binding/v1.0">UORA Secure Physical Binding</a> specification is normatively required only for physical binding verification (BAL declarations, PUF Interface Descriptors, Proximity Verifier Service). It is not required for software-only implementations.</p>
         </div>
     </section>
 
-    <section>
-        <h2>Lifecycle Model</h2>
-        <p>The following states define the normative lifecycle of a physical binding. State transitions MUST be recorded as signed UORA attestations.</p>
+    <section id="terminology">
+        <h2>Terminology</h2>
+        <p>The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in [[RFC2119]].</p>
+        <dl>
+            <dt><dfn>Issuer</dfn></dt>
+            <dd>Entity that creates and cryptographically signs attestations. MUST possess a valid <a>CertificationCredential</a> for the specific attestation type and product category being asserted.</dd>
+
+            <dt><dfn>Holder</dfn></dt>
+            <dd>Entity possessing the physical object and its attestation chain. MAY present attestations to <a>Verifiers</a> for inspection. Does not sign attestations.</dd>
+
+            <dt><dfn>Verifier</dfn></dt>
+            <dd>Entity that validates attestations using the governance rules, <a>antecedent chain</a> integrity, <a>linear custody chain enforcement</a>, and <a>conflict resolution cascade</a> defined herein. The Verifier MAY be untrusted; the protocol is designed so that verifiers learn only public information.</dd>
+
+            <dt><dfn>Trust Anchor</dfn></dt>
+            <dd>Governance body that issues <a>CertificationCredential</a>s to legitimate <a>Issuers</a> according to a published <a>Trust Framework</a>. The Trust Anchor is the root of authority for a specific domain or industry.</dd>
+
+            <dt><dfn>Resolver</dfn></dt>
+            <dd>Service implementing the <a>UORA-Query-API</a> for standardized attestation discovery, history retrieval, and validation. A Resolver MAY be operated by any party.</dd>
+
+            <dt><dfn>Trust Framework</dfn></dt>
+            <dd>A published document defining governance rules for a specific domain: recognized <a>Trust Anchors</a>, required <a>CertificationCredential</a> schema, <a>authority precedence</a> table for <a>conflict resolution cascade</a>, and audit requirements.</dd>
+
+            <dt><dfn>Antecedent</dfn></dt>
+            <dd>The cryptographically referenced predecessor attestation(s) upon which a given attestation builds. SHALL be <code>null</code> for origin events, a single attestation ID for linear chains, or an ordered array for DAG-based transformations.</dd>
+
+            <dt><dfn>Antecedent Chain</dfn></dt>
+            <dd>The complete, cryptographically linked sequence of attestations from an object's origin to its current state, formed by traversing <a>antecedent</a> references.</dd>
+
+            <dt><dfn data-lt="conflict resolution cascade|Conflict Resolution Cascade">Conflict Resolution Cascade</dfn></dt>
+            <dd>The deterministic, three-tier algorithm (authority → timestamp → attestation ID) that resolves competing attestations claiming the same <a>antecedent</a> without requiring external consensus. Authority is the primary tier; timestamp is secondary.</dd>
+
+            <dt><dfn data-lt="linear custody chain enforcement|Linear Custody Chain Enforcement">Linear Custody Chain Enforcement</dfn></dt>
+            <dd>The rule requiring Transfer and Disposition attestations to reference the most recent valid event, preventing custody gaps and ensuring a complete audit trail.</dd>
+
+            <dt><dfn>Authority Precedence</dfn></dt>
+            <dd>A numeric rank assigned to each recognized <a>Issuer</a> by the <a>Trust Anchor</a> in the applicable <a>Trust Framework</a>. Higher integers denote higher authority. Authority precedence is the primary discriminator in the <a>Conflict Resolution Cascade</a>.</dd>
+
+            <dt><dfn data-lt="DAG depth|DAG depth limit">DAG Depth</dfn></dt>
+            <dd>The maximum number of antecedent hops a <a>Resolver</a> MAY traverse when validating a Directed Acyclic Graph attestation chain. Defined normatively as 64 hops.</dd>
+
+            <dt><dfn>CertificationCredential</dfn></dt>
+            <dd>A W3C Verifiable Credential issued by a <a>Trust Anchor</a> to an <a>Issuer</a>, authorizing that Issuer to create specific attestation types for specific product categories within a defined validity window. Uses BitstringStatusList for revocation.</dd>
+
+            <dt><dfn data-lt="UORA-Query-API|UORA Query API">UORA-Query-API</dfn></dt>
+            <dd>The standardized HTTP API that every UORA-compliant <a>Resolver</a> MUST implement for attestation discovery, capture, validation, and chain inspection.</dd>
+        </dl>
+    </section>
+
+    <section id="architecture">
+        <h2>Architecture</h2>
+
+        <section>
+            <h3>Protocol Layers</h3>
+            <figure id="fig-architecture-layers">
+                <figcaption>The UORA Protocol Architecture — Four-Layer Trust Stack</figcaption>
+                <div class="arch-stack">
+                    <div class="arch-card arch-layer-4">
+                        <h5><span class="badge">4</span> Domain Profiles</h5>
+                        <p>Extends <a>UORAAttestation</a> subtypes with industry-specific claims (Pharma, CriticalMinerals, FoodBeverage, Customs, Aerospace). All profiles inherit validation rules from Layers 2–3. Profiles MUST NOT override governance, chaining, or conflict rules.</p>
+                        <span class="card-em">Industry-specific extensions require no core protocol changes.</span>
+                    </div>
+                    <div class="arch-connector">extends and inherits from</div>
+                    <div class="arch-card arch-layer-3">
+                        <h5><span class="badge">3</span> Governance & Authorization</h5>
+                        <p><a>CertificationCredential</a>s issued by <a>Trust Anchors</a> to <a>Issuers</a>, with BitstringStatusList revocation. <a>Trust Frameworks</a> define <a>authority precedence</a> tables. Every attestation MUST reference a valid, unexpired, non-revoked CertificationCredential.</p>
+                        <span class="card-em">Decoupled from core schemas — trust models evolve independently.</span>
+                    </div>
+                    <div class="arch-connector">validates issuer authority via</div>
+                    <div class="arch-card arch-layer-2">
+                        <h5><span class="badge">2</span> Core Attestation Schemas</h5>
+                        <p>Four concrete attestation types: Origin, Transfer, Transformation, Disposition. <a>Antecedent chaining</a> (linear and DAG, with depth limits and cycle detection). <a>Conflict resolution cascade</a> (authority → timestamp → ID). <a>Linear custody chain enforcement</a>.</p>
+                        <span class="card-em">Complete, automatable supply chain event modeling.</span>
+                    </div>
+                    <div class="arch-connector">resolves and discovers via</div>
+                    <div class="arch-card arch-layer-1">
+                        <h5><span class="badge">1</span> Universal Object Addressing & Discovery</h5>
+                        <p>DID-based object identification (serial, batch, SKU granularity). Standardized <a>UORA-Query-API</a> with six endpoints fully specified herein. Physical binding metadata (companion spec required only for binding verification).</p>
+                        <span class="card-em">Every object has a single, uniform discovery interface.</span>
+                    </div>
+                </div>
+            </figure>
+        </section>
+
+        <section>
+            <h3>Protocol Roles</h3>
+            <div class="role-grid">
+                <div class="role-card"><div class="role-icon">⚓</div><h5>Trust Anchor</h5><p>Publishes Trust Framework; issues and revokes CertificationCredentials; configures authority precedence table.</p></div>
+                <div class="role-card"><div class="role-icon">✍️</div><h5>Issuer</h5><p>Creates and signs attestations; references valid CertificationCredential in every attestation.</p></div>
+                <div class="role-card"><div class="role-icon">📦</div><h5>Holder</h5><p>Possesses the physical object; presents attestation chains to Verifiers.</p></div>
+                <div class="role-card"><div class="role-icon">🔍</div><h5>Verifier</h5><p>Validates structure, governance, chain integrity, and conflict resolution.</p></div>
+                <div class="role-card"><div class="role-icon">🖥️</div><h5>Resolver</h5><p>Implements UORA-Query-API; stores or proxies attestations; executes the validation pipeline.</p></div>
+            </div>
+        </section>
+
+        <section>
+            <h3>Attestation Type Hierarchy</h3>
+            <figure id="fig-attestation-hierarchy">
+                <figcaption>UORA Attestation Type Hierarchy — UML Class Diagram</figcaption>
+                <div class="uml-figure">
+                    <div class="uml-abstract-box">
+                        <div class="header">«abstract» UORAAttestation</div>
+                        <div class="body"><ul>
+                            <li>id: URI (UUID URN)</li>
+                            <li>type: [VerifiableCredential, UORAAttestation, ...]</li>
+                            <li>validFrom: DateTime (ISO 8601)</li>
+                            <li>eventType: Origin | Transfer | Transformation | Disposition</li>
+                            <li>antecedent: URI | Array&lt;URI&gt; | null</li>
+                            <li>authorizedBy: Object</li>
+                            <li>evidence: Array (min 1)</li>
+                            <li>proof: DataIntegrityProof</li>
+                        </ul></div>
+                    </div>
+                    <p class="uml-extends"></p>
+                    <div class="uml-concrete-row">
+                        <div class="uml-concrete"><div class="header">UORAOriginAttestation</div><div class="body"><ul><li>originType: String</li><li>originLocation: URI</li><li>originDate: DateTime</li><li>productionBatch?: String</li><li>inputMaterials?: Array&lt;URI&gt;</li></ul></div></div>
+                        <div class="uml-concrete"><div class="header">UORATransferAttestation</div><div class="body"><ul><li>transferType: custody | ownership | location</li><li>fromParty: URI</li><li>toParty: URI</li><li>fromLocation?: URI</li><li>toLocation?: URI</li></ul></div></div>
+                        <div class="uml-concrete"><div class="header">UORATransformationAttestation</div><div class="body"><ul><li>transformationType: String</li><li>inputObjects: Array&lt;URI&gt;</li><li>outputObjects: Array&lt;URI&gt;</li><li>inputQuantities?: Array</li><li>outputQuantities?: Array</li></ul></div></div>
+                        <div class="uml-concrete"><div class="header">UORADispositionAttestation</div><div class="body"><ul><li>dispositionType: String</li><li>dispositionLocation?: URI</li><li>environmentalCertification?: URI</li></ul></div></div>
+                    </div>
+                </div>
+            </figure>
+        </section>
+    </section>
+
+    <section id="addressing">
+        <h2>Universal Object Addressing & Discovery</h2>
+
+        <section>
+            <h3>DID Method for Physical Objects</h3>
+            <p>Every physical object tracked by UORA SHALL be assigned a Decentralized Identifier (DID) resolvable to a DID Document. The DID Document provides cryptographic verification material, the <a>Resolver</a> service endpoint, and optional physical binding metadata.</p>
+            <p><strong>DID Pattern:</strong></p>
+            <pre class="example">did:web:{domain}:object:{granularity}:{identifier}</pre>
+            <table>
+                <thead><tr><th>Granularity</th><th>Example DID</th><th>Use Case</th><th>Antecedent Behavior</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>serial</strong></td><td><code>did:web:maker.example.com:object:serial:SN-001</code></td><td>Individual item tracking</td><td>Single linear chain</td></tr>
+                    <tr><td><strong>lot</strong></td><td><code>did:web:maker.example.com:object:lot:L-2026-04</code></td><td>Batch-level traceability</td><td>May reference DAG antecedents</td></tr>
+                    <tr><td><strong>sku</strong></td><td><code>did:web:maker.example.com:object:sku:GTIN-123456</code></td><td>Product class definition</td><td>Lifecycle events at higher granularity</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3>DID Document Structure</h3>
+            <p>A UORA-compliant DID Document SHALL include verification material and a <code>service</code> endpoint declaring the <a>UORA-Query-API</a> base URL.</p>
+            <pre class="example">
+{
+  "@context": ["https://www.w3.org/ns/did/v1"],
+  "id": "did:web:maker.example.com:object:serial:SN-001",
+  "verificationMethod": [
+    {
+      "id": "#key-1",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:web:maker.example.com:object:serial:SN-001",
+      "publicKeyMultibase": "zH3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+    }
+  ],
+  "assertionMethod": ["#key-1"],
+  "service": [
+    {
+      "id": "#attestation-history",
+      "type": "UORAAttestationService",
+      "serviceEndpoint": "https://maker.example.com/uora/v1"
+    }
+  ]
+}
+            </pre>
+        </section>
+
+        <section id="uora-query-api-protocol">
+            <h3><dfn>UORA-Query-API</dfn> Protocol</h3>
+            <p>Every UORA-compliant <a>Resolver</a> SHALL implement this standardized query interface at the <code>serviceEndpoint</code> declared in the object's DID Document.</p>
+
+            <section>
+                <h4>Endpoint Reference</h4>
+                <table>
+                    <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Idempotent</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>GET</code></td><td><code>{base}/history</code></td><td>Retrieve attestation history for an object</td><td>Yes</td></tr>
+                        <tr><td><code>POST</code></td><td><code>{base}/attestations</code></td><td>Submit and validate a new attestation</td><td>No</td></tr>
+                        <tr><td><code>POST</code></td><td><code>{base}/validate</code></td><td>Validate an attestation without storing</td><td>Yes</td></tr>
+                        <tr><td><code>GET</code></td><td><code>{base}/chain</code></td><td>Retrieve human-readable custody chain timeline</td><td>Yes</td></tr>
+                        <tr><td><code>GET</code></td><td><code>{base}/health</code></td><td>Resolver health check</td><td>Yes</td></tr>
+                        <tr><td><code>GET</code></td><td><code>{base}/stats</code></td><td>Resolver store statistics</td><td>Yes</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h4>Request Parameters — <code>GET /history</code></h4>
+                <table>
+                    <thead><tr><th>Parameter</th><th>Required</th><th>Type</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>did</code></td><td>MUST</td><td>URI</td><td>DID of the physical object</td></tr>
+                        <tr><td><code>eventType</code></td><td>OPTIONAL</td><td>String</td><td>Filter: <code>Origin</code>, <code>Transfer</code>, <code>Transformation</code>, <code>Disposition</code></td></tr>
+                        <tr><td><code>from</code></td><td>OPTIONAL</td><td>ISO 8601</td><td>Return attestations where <code>validFrom >= from</code></td></tr>
+                        <tr><td><code>to</code></td><td>OPTIONAL</td><td>ISO 8601</td><td>Return attestations where <code>validFrom <= to</code></td></tr>
+                        <tr><td><code>limit</code></td><td>OPTIONAL</td><td>Integer</td><td>Maximum results (default: 100, max: 1000)</td></tr>
+                        <tr><td><code>includeSuperseded</code></td><td>OPTIONAL</td><td>Boolean</td><td>If <code>true</code>, include attestations with status <code>superseded</code> (default: false)</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h4>Response: <code>200 OK</code> for <code>GET /history</code></h4>
+                <pre class="example">
+{
+  "did": "did:web:maker.example.com:object:serial:SN-001",
+  "attestations": [
+    {
+      "id": "urn:uuid:origin-attestation-id",
+      "type": ["VerifiableCredential", "UORAAttestation", "UORAOriginAttestation"],
+      "validFrom": "2026-01-15T08:00:00Z",
+      "issuer": "did:web:maker.example.com",
+      "eventType": "Origin",
+      "antecedent": null,
+      "status": "valid",
+      "chainIntegrity": "intact",
+      "supersededBy": null,
+      "proof": { "type": "Ed25519Signature2020" },
+      "credential": { /* full verifiable credential */ }
+    }
+  ],
+  "total": 1
+}
+                </pre>
+            </section>
+
+            <section>
+                <h4>Response: <code>201 Created</code> for <code>POST /attestations</code></h4>
+                <pre class="example">
+{
+  "status": "accepted",
+  "attestationId": "urn:uuid:550e8400-e29b-41d4-a716-446655440000",
+  "chainIntegrity": "intact",
+  "eventType": "Transfer",
+  "antecedent": ["urn:uuid:origin-attestation-id"]
+}
+                </pre>
+            </section>
+
+            <section>
+                <h4>Response: <code>200 OK</code> for <code>POST /validate</code></h4>
+                <pre class="example">
+{
+  "status": "valid",
+  "error": null,
+  "chainIntegrity": "intact",
+  "details": {
+    "attestationId": "urn:uuid:550e8400-e29b-41d4-a716-446655440000",
+    "issuer": "did:web:shipper.example.com",
+    "eventType": "Transfer",
+    "antecedent": ["urn:uuid:origin-attestation-id"],
+    "proofType": "Ed25519Signature2020",
+    "phasesExecuted": [1, 2, 3, 4, 5, 6, 7]
+  }
+}
+                </pre>
+            </section>
+
+            <section>
+                <h4>Response: <code>200 OK</code> for <code>GET /chain</code></h4>
+                <pre class="example">
+{
+  "did": "did:web:maker.example.com:object:serial:SN-001",
+  "chainLength": 3,
+  "dagDepth": 1,
+  "isComplete": true,
+  "chain": [
+    {
+      "position": 1,
+      "eventType": "Origin",
+      "attestationId": "urn:uuid:origin-attestation-id",
+      "timestamp": "2026-01-15T08:00:00Z",
+      "issuer": "did:web:maker.example.com",
+      "description": "Object created at https://id.gs1.org/414/9521321000010"
+    }
+  ]
+}
+                </pre>
+            </section>
+
+            <section>
+                <h4>Response: <code>200 OK</code> for <code>GET /health</code></h4>
+                <pre class="example">
+{
+  "status": "ok",
+  "version": "1.0",
+  "conformanceLevel": "UORA-Full-Compliant",
+  "timestamp": "2026-05-01T00:00:00Z"
+}
+                </pre>
+            </section>
+
+            <section>
+                <h4>Error Responses (Normative)</h4>
+                <table>
+                    <thead><tr><th>HTTP Status</th><th>Condition</th><th>Body field <code>error</code></th></tr></thead>
+                    <tbody>
+                        <tr><td><code>400</code></td><td>Missing required <code>did</code> parameter or malformed JSON body</td><td><code>bad_request</code></td></tr>
+                        <tr><td><code>404</code></td><td>DID not found or no attestation history available</td><td><code>not_found</code></td></tr>
+                        <tr><td><code>409</code></td><td>Duplicate attestation ID detected (Phase 1)</td><td><code>rejected_duplicate_id</code></td></tr>
+                        <tr><td><code>422</code></td><td>Attestation rejected by any validation pipeline phase</td><td>Phase-specific rejection status</td></tr>
+                        <tr><td><code>500</code></td><td>Internal Resolver error</td><td><code>internal_error</code></td></tr>
+                    </tbody>
+                </table>
+                <p>All error responses MUST include a JSON body with fields <code>error</code> (string), <code>message</code> (human-readable string), and <code>phase</code> (integer 1–7 identifying the failing pipeline phase, or <code>null</code> for non-pipeline errors).</p>
+            </section>
+        </section>
+
+        <section>
+            <h3>Secure Physical Binding Reference</h3>
+            <p>A UORA digital identity MUST be bound to its physical counterpart through at least one tamper-evident mechanism. The normative specification is the companion <a href="https://w3id.org/uora/spec/secure-physical-binding/v1.0">UORA Secure Physical Binding</a> protocol. This companion specification is required only for physical binding verification; it is not required to implement a conformant <a>Resolver</a> or <a>Verifier</a> operating on software-presented credentials.</p>
+            <table>
+                <thead><tr><th>Binding Mechanism</th><th>Security Level</th><th>Typical Application</th></tr></thead>
+                <tbody>
+                    <tr><td>Cryptographic NFC Tag</td><td>High</td><td>Individual high-value items with challenge-response</td></tr>
+                    <tr><td>Secure QR with Digital Signature</td><td>Medium</td><td>Batch-level tracking with visual inspection</td></tr>
+                    <tr><td>IoT Hardware Security Module (HSM)</td><td>High</td><td>Containers and equipment with continuous attestation</td></tr>
+                    <tr><td>Physically Unclonable Function (PUF)</td><td>Very High</td><td>Critical components and luxury goods</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </section>
+
+    <section id="governance">
+        <h2>Governance & Authorization</h2>
+
+        <section>
+            <h3>Certification of Authority</h3>
+            <p>An attestation SHALL NOT be considered valid unless the <a>Issuer</a> possesses a valid, non-revoked <a>CertificationCredential</a> (<code>UORACertificationCredential</code>) for the specific attestation type and product category.</p>
+
+            <section>
+                <h4>CertificationCredential Schema</h4>
+                <pre class="example">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://w3id.org/uora/contexts/core.jsonld"
+  ],
+  "id": "urn:uuid:cert-credential-id",
+  "type": ["VerifiableCredential", "UORACertificationCredential"],
+  "issuer": {
+    "id": "did:web:trust-anchor.example.com",
+    "name": "Pharmaceutical Trust Anchor Consortium"
+  },
+  "validFrom": "2026-01-01T00:00:00Z",
+  "validUntil": "2027-01-01T00:00:00Z",
+  "credentialStatus": {
+    "id": "https://trust-anchor.example.com/status/1#42",
+    "type": "BitstringStatusListEntry",
+    "statusPurpose": "revocation",
+    "statusListIndex": "42",
+    "statusListCredential": "https://trust-anchor.example.com/status/1"
+  },
+  "credentialSubject": {
+    "id": "did:web:certified-issuer.example.com",
+    "authorizedAttestations": [
+      "UORAOriginAttestation",
+      "UORATransferAttestation",
+      "UORATransformationAttestation"
+    ],
+    "authorizedCategories": ["pharmaceuticals", "medical-devices"],
+    "authorizedRegions": ["global"],
+    "authorityPrecedence": 50,
+    "trustFramework": "https://w3id.org/verifiable-supply-chain/trust-frameworks/pharma-v1"
+  }
+}
+                </pre>
+                <div class="note">The <code>authorityPrecedence</code> field is the canonical source of an Issuer's precedence rank. It MUST match the value in the Trust Framework's authority precedence table. In case of conflict, the CertificationCredential value is authoritative.</div>
+            </section>
+
+            <section>
+                <h4><dfn>authorizedBy</dfn> Claim</h4>
+                <p>Every <a>UORAAttestation</a> MUST include an <code>authorizedBy</code> claim referencing a valid <a>CertificationCredential</a>.</p>
+                <pre class="example">
+{
+  "credentialSubject": {
+    "authorizedBy": {
+      "certificationId": "urn:uuid:cert-credential-id",
+      "trustFramework": "https://w3id.org/verifiable-supply-chain/trust-frameworks/pharma-v1",
+      "verifiedAt": "2026-04-28T10:30:00Z"
+    }
+  }
+}
+                </pre>
+            </section>
+
+            <section>
+                <h4>Governance Validation Rules</h4>
+                <p>A <a>Verifier</a> SHALL reject any attestation where:</p>
+                <table>
+                    <thead><tr><th>Condition</th><th>Rejection Status</th><th>Remediation</th></tr></thead>
+                    <tbody>
+                        <tr><td>The <code>authorizedBy</code> claim is absent</td><td><code>rejected_missing_authorization</code></td><td>Issuer MUST add the claim and reissue</td></tr>
+                        <tr><td>The referenced <code>certificationId</code> cannot be resolved</td><td><code>rejected_unauthorized_issuer</code></td><td>Issuer MUST obtain a valid CertificationCredential</td></tr>
+                        <tr><td>The attestation's <code>validFrom</code> falls outside the certification's validity window</td><td><code>rejected_expired_certification</code></td><td>Issuer MUST renew certification before issuing</td></tr>
+                        <tr><td>The CertificationCredential is revoked (per BitstringStatusList check)</td><td><code>rejected_revoked_certification</code></td><td>Issuer MUST obtain a new CertificationCredential</td></tr>
+                        <tr><td>The attestation type is not in <code>authorizedAttestations</code></td><td><code>rejected_unauthorized_category</code></td><td>Issuer MUST obtain certification for this type</td></tr>
+                        <tr><td>The Issuer DID does not match <code>credentialSubject.id</code></td><td><code>rejected_unauthorized_issuer</code></td><td>Attestation MUST be issued by the certified entity</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="governance-revocation">
+                <h4>CertificationCredential Revocation</h4>
+                <p><a>Trust Anchors</a> MUST implement credential revocation using the W3C Bitstring Status List specification [[BITSTRING-STATUS-LIST]]. <a>Verifiers</a> MUST check the revocation status of every <a>CertificationCredential</a> during Phase 5 validation. The revocation check is not optional and MUST NOT be cached for longer than 5 minutes.</p>
+                <pre class="example">
+/* Revocation check algorithm */
+1. Resolve credentialStatus.statusListCredential → StatusListCredential VC
+2. Verify the StatusListCredential's proof
+3. Decode the compressed bitstring (GZIP + base64url)
+4. Check bit at index credentialStatus.statusListIndex
+5. If bit = 1: reject with rejected_revoked_certification
+6. If bit = 0: credential is valid (proceed with other checks)
+                </pre>
+            </section>
+        </section>
+    </section>
+
+    <section id="schemas">
+        <h2>Core Attestation Schemas</h2>
+
+        <section>
+            <h3>Antecedent Chaining & Deterministic State Reconciliation</h3>
+            <p>Every UORA attestation SHALL reference its immediate predecessor through an <code>antecedent</code> property, creating a cryptographically linked, verifiable history chain. <a>Conflict resolution cascade</a> is governed by <a>authority precedence</a> — not timestamps — as the primary discriminator.</p>
+
+            <section>
+                <h4>Linear Chains</h4>
+                <p>For sequential events, the <a>antecedent</a> is a single attestation ID:</p>
+                <pre class="example">{ "credentialSubject": { "antecedent": "urn:uuid:previous-attestation-id" } }</pre>
+                <p>Implementations SHALL normalize single antecedent strings to arrays during processing. The first attestation in an object's lifecycle SHALL have <code>"antecedent": null</code>.</p>
+            </section>
+
+            <section>
+                <h4>Directed Acyclic Graph (DAG) Support</h4>
+                <p>For transformations and aggregations, <code>antecedent</code> SHALL accept an ordered array:</p>
+                <pre class="example">
+{
+  "credentialSubject": {
+    "antecedent": [
+      "urn:uuid:component-a-final-state",
+      "urn:uuid:component-b-final-state",
+      "urn:uuid:component-c-final-state"
+    ]
+  }
+}
+                </pre>
+                <p><strong>DAG Traversal Limits (Normative):</strong></p>
+                <table>
+                    <thead><tr><th>Limit</th><th>Value</th><th>Rationale</th></tr></thead>
+                    <tbody>
+                        <tr><td>Maximum <a>DAG depth</a></td><td>64 hops</td><td>Prevents unbounded recursion in deeply nested assembly chains</td></tr>
+                        <tr><td>Maximum antecedent array width</td><td>256 entries</td><td>Limits fan-in for aggregation events</td></tr>
+                        <tr><td>Cycle detection</td><td>REQUIRED</td><td>Resolvers MUST maintain a visited-ID set; reject cycles with <code>rejected_cyclic_chain</code></td></tr>
+                        <tr><td>Traversal timeout</td><td>30 seconds</td><td>Reject with <code>rejected_traversal_timeout</code> if exceeded</td></tr>
+                    </tbody>
+                </table>
+                <div class="warning">Any attestation whose antecedent graph contains a cycle is definitionally invalid and MUST be rejected. Cyclic references are an indicator of data corruption or an active attack.</div>
+                <p><strong>DAG Validation Rule:</strong> A <a>Verifier</a> SHALL recursively validate every referenced branch. The attestation is valid only if ALL antecedent branches resolve to valid, non-superseded terminal states within the depth and timeout limits.</p>
+            </section>
+
+            <section>
+                <h4>Conflict Resolution Cascade</h4>
+                <p>If a <a>Verifier</a> encounters two attestations claiming to succeed the same <a>antecedent</a>, the conflict SHALL be resolved using this deterministic, three-tier cascade.</p>
+
+                <figure id="fig-conflict-cascade">
+                    <figcaption>Conflict Resolution Cascade — Authority Precedence is Primary</figcaption>
+                    <div class="cascade-gauge">
+                        <div class="cascade-row cascade-tier-1">
+                            <div class="cascade-pillar"><span class="tier-num">1</span>Authority</div>
+                            <div class="cascade-desc">
+                                <strong>Authority Precedence (Primary)</strong>
+                                <p>The attestation from the Issuer with the higher <code>authorityPrecedence</code> value prevails. Always resolvable without examining timestamps. <em>Governance supersedes chronology.</em></p>
+                            </div>
+                        </div>
+                        <div class="cascade-row cascade-tier-2">
+                            <div class="cascade-pillar"><span class="tier-num">2</span>Timestamp</div>
+                            <div class="cascade-desc">
+                                <strong>Timestamp Precedence (Secondary)</strong>
+                                <p>If Issuers have identical authority precedence, the attestation with the later <code>validFrom</code> timestamp prevails (1-second tolerance). Reached only when co-equal authorities record competing events.</p>
+                            </div>
+                        </div>
+                        <div class="cascade-row cascade-tier-3">
+                            <div class="cascade-pillar"><span class="tier-num">3</span>Hash</div>
+                            <div class="cascade-desc">
+                                <strong>Hash Precedence (Tiebreaker)</strong>
+                                <p>If authority and timestamps are equal, the attestation with the lexicographically smaller <code>id</code> prevails. Deterministic, requires no external input.</p>
+                            </div>
+                        </div>
+                    </div>
+                </figure>
+
+                <p><strong>Authority Precedence Table Example:</strong></p>
+                <pre class="example">
+{
+  "trustFramework": "https://w3id.org/verifiable-supply-chain/trust-frameworks/pharma-v1",
+  "authorityPrecedenceTable": {
+    "did:web:fda.example.gov":           100,
+    "did:web:manufacturer.example.com":   50,
+    "did:web:wholesaler.example.com":     30,
+    "did:web:retailer.example.com":       10
+  }
+}
+                </pre>
+                <p><strong>Preservation Requirement:</strong> The losing attestation SHALL be preserved with <code>"status": "superseded"</code> and <code>"supersededBy"</code> set to the winning attestation's ID. Superseded attestations SHALL NOT be used for state computation.</p>
+            </section>
+
+            <section>
+                <h4>Linear Custody Chain Enforcement</h4>
+                <p>For Transfer and Disposition attestations, the <a>Verifier</a> SHALL enforce <a>linear custody chain enforcement</a>. The <code>antecedent</code> MUST reference the most recent valid event.</p>
+                <table>
+                    <thead><tr><th>Attestation</th><th>Antecedent</th><th>Most Recent Valid</th><th>Result</th></tr></thead>
+                    <tbody>
+                        <tr><td>Origin</td><td><code>null</code></td><td>—</td><td><code>valid</code></td></tr>
+                        <tr><td>Transfer A (maker → distributor)</td><td><code>origin-id</code></td><td><code>origin-id</code></td><td><code>valid</code></td></tr>
+                        <tr><td>Transfer B (distributor → retailer)</td><td><code>transfer-a-id</code></td><td><code>transfer-a-id</code></td><td><code>valid</code></td></tr>
+                        <tr><td>Transfer C — VIOLATION</td><td><code>origin-id</code></td><td><code>transfer-b-id</code></td><td><code>rejected_linear_chain_violation</code></td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Exemptions:</strong> Origin events (antecedent: null) and Transformation events (multi-antecedent DAG) are exempt.</p>
+            </section>
+        </section>
+
+        <section>
+            <h3><dfn>UORAAttestation</dfn> (Abstract Base Type)</h3>
+            <p>All UORA attestations SHALL extend this abstract base type.</p>
+            <pre class="example">["VerifiableCredential", "UORAAttestation", "<concrete-type>"]</pre>
+            <table>
+                <thead><tr><th>Property</th><th>Required</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>@context</code></td><td>MUST</td><td>Array</td><td>VC v2 context + UORA Core context URI</td></tr>
+                    <tr><td><code>type</code></td><td>MUST</td><td>Array</td><td>Full type chain: VerifiableCredential, UORAAttestation, exactly one concrete subtype</td></tr>
+                    <tr><td><code>id</code></td><td>MUST</td><td>URI</td><td>Globally unique identifier: <code>urn:uuid:{uuid-v4}</code></td></tr>
+                    <tr><td><code>issuer.id</code></td><td>MUST</td><td>URI</td><td>DID of the certified Issuer</td></tr>
+                    <tr><td><code>validFrom</code></td><td>MUST</td><td>DateTime</td><td>ISO 8601 UTC timestamp of the attested event</td></tr>
+                    <tr><td><code>credentialSubject.id</code></td><td>MUST</td><td>URI</td><td>DID of the physical object</td></tr>
+                    <tr><td><code>credentialSubject.eventType</code></td><td>MUST</td><td>String</td><td><code>Origin</code>, <code>Transfer</code>, <code>Transformation</code>, <code>Disposition</code></td></tr>
+                    <tr><td><code>credentialSubject.antecedent</code></td><td>MUST</td><td>URI | Array | null</td><td>Predecessor attestation ID(s); null for origin events</td></tr>
+                    <tr><td><code>credentialSubject.authorizedBy</code></td><td>MUST</td><td>Object</td><td>Certification reference</td></tr>
+                    <tr><td><code>evidence</code></td><td>MUST</td><td>Array</td><td>At least one evidence entry</td></tr>
+                    <tr><td><code>proof</code></td><td>MUST</td><td>Object</td><td>W3C Data Integrity Proof</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3><dfn>UORAOriginAttestation</dfn></h3>
+            <p>Documents the creation, manufacture, mining, or harvest of a physical object. Root attestation; antecedent MUST be null.</p>
+            <table>
+                <thead><tr><th>Property</th><th>Required</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>originType</code></td><td>MUST</td><td>String</td><td><code>manufactured</code>, <code>mined</code>, <code>harvested</code>, <code>created</code></td></tr>
+                    <tr><td><code>originLocation</code></td><td>MUST</td><td>URI</td><td>Physical location of origin (GS1 GLN or equivalent)</td></tr>
+                    <tr><td><code>originDate</code></td><td>MUST</td><td>DateTime</td><td>Timestamp of creation event</td></tr>
+                    <tr><td><code>productionBatch</code></td><td>OPTIONAL</td><td>String</td><td>Batch or lot identifier</td></tr>
+                    <tr><td><code>inputMaterials</code></td><td>OPTIONAL</td><td>Array&lt;URI&gt;</td><td>DID references to source materials</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3><dfn>UORATransferAttestation</dfn></h3>
+            <p>Documents a change of custody, ownership, or physical location. Antecedent MUST reference the most recent valid event per <a>linear custody chain enforcement</a>.</p>
+            <table>
+                <thead><tr><th>Property</th><th>Required</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>transferType</code></td><td>MUST</td><td>String</td><td><code>custody</code>, <code>ownership</code>, <code>location</code></td></tr>
+                    <tr><td><code>fromParty</code></td><td>MUST</td><td>URI</td><td>DID of transferring party</td></tr>
+                    <tr><td><code>toParty</code></td><td>MUST</td><td>URI</td><td>DID of receiving party</td></tr>
+                    <tr><td><code>fromLocation</code></td><td>OPTIONAL</td><td>URI</td><td>Origin location before transfer</td></tr>
+                    <tr><td><code>toLocation</code></td><td>OPTIONAL</td><td>URI</td><td>Destination location after transfer</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3><dfn>UORATransformationAttestation</dfn></h3>
+            <p>Documents processing, assembly, or modification. Only type supporting multi-antecedent DAG chains. Exempt from <a>linear custody chain enforcement</a>.</p>
+            <table>
+                <thead><tr><th>Property</th><th>Required</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>transformationType</code></td><td>MUST</td><td>String</td><td><code>assembly</code>, <code>processing</code>, <code>modification</code>, <code>disassembly</code></td></tr>
+                    <tr><td><code>inputObjects</code></td><td>MUST</td><td>Array&lt;URI&gt;</td><td>DID references to consumed input objects</td></tr>
+                    <tr><td><code>outputObjects</code></td><td>MUST</td><td>Array&lt;URI&gt;</td><td>DID references to produced output objects</td></tr>
+                    <tr><td><code>inputQuantities</code></td><td>OPTIONAL</td><td>Array</td><td>Quantities of each input</td></tr>
+                    <tr><td><code>outputQuantities</code></td><td>OPTIONAL</td><td>Array</td><td>Quantities of each output</td></tr>
+                    <tr><td><code>transformationLocation</code></td><td>OPTIONAL</td><td>URI</td><td>Physical location of transformation</td></tr>
+                    <tr><td><code>processCertification</code></td><td>OPTIONAL</td><td>URI</td><td>Reference to process certification</td></tr>
+                </tbody>
+            </table>
+            <p><strong>Antecedent rule:</strong> SHALL be an array with at least one entry, one per <code>inputObject</code>. Subject to DAG traversal limits.</p>
+        </section>
+
+        <section>
+            <h3><dfn>UORADispositionAttestation</dfn></h3>
+            <p>Documents end-of-life, recycling, or decommissioning. Terminal attestation; no attestation SHALL reference a Disposition as its antecedent.</p>
+            <table>
+                <thead><tr><th>Property</th><th>Required</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>dispositionType</code></td><td>MUST</td><td>String</td><td><code>recycled</code>, <code>decommissioned</code>, <code>destroyed</code>, <code>lost</code></td></tr>
+                    <tr><td><code>dispositionLocation</code></td><td>OPTIONAL</td><td>URI</td><td>Physical location of disposition</td></tr>
+                    <tr><td><code>environmentalCertification</code></td><td>OPTIONAL</td><td>URI</td><td>Reference to environmental compliance certification</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3>Evidence & Data Economy</h3>
+
+            <section>
+                <h4>Required Evidence</h4>
+                <pre class="example">
+{
+  "evidence": [
+    {
+      "id": "urn:uuid:evidence-unique-id",
+      "type": ["Evidence"],
+      "name": "Human-readable evidence name",
+      "description": "Description of the evidence"
+    }
+  ]
+}
+                </pre>
+            </section>
+
+            <section>
+                <h4>EPCIS Evidence Linking</h4>
+                <pre class="example">
+{
+  "evidence": [
+    {
+      "id": "urn:uuid:evidence-unique-id",
+      "type": ["Evidence", "EPCISObjectEvent"],
+      "name": "EPCIS Shipping Event",
+      "description": "Original EPCIS ObjectEvent with bizStep=shipping",
+      "epcisEventID": "ni:///sha-256;abc123def456?ver=CBV2.0",
+      "epcisEventType": "ObjectEvent",
+      "epcisBizStep": "shipping"
+    }
+  ]
+}
+                </pre>
+            </section>
+
+            <section>
+                <h4>Data Economy Guidelines (Informative)</h4>
+                <table>
+                    <thead><tr><th>Data Size</th><th>Recommendation</th><th>Rationale</th></tr></thead>
+                    <tbody>
+                        <tr><td>&lt; 1 KB</td><td>Embed directly in <code>evidence</code></td><td>Negligible overhead; always available</td></tr>
+                        <tr><td>1 KB – 1 MB</td><td>Reference via <code>externalData</code></td><td>Balance availability with chain size</td></tr>
+                        <tr><td>&gt; 1 MB</td><td>MUST reference via <code>externalData</code></td><td>Avoid large payloads in attestation history</td></tr>
+                    </tbody>
+                </table>
+                <pre class="example">
+{
+  "externalData": {
+    "uri": "https://storage.example.com/report-001.pdf",
+    "hash": "sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+    "size": 1048576,
+    "accessPolicy": "holder-controlled",
+    "encryptedFor": null
+  }
+}
+                </pre>
+                <p>The <code>accessPolicy</code> field MUST be one of: <code>public</code>, <code>holder-controlled</code>, or <code>encrypted</code>. Verifiers MUST respect access policies.</p>
+            </section>
+        </section>
+
+        <section>
+            <h3>Proof Section</h3>
+            <p>Every attestation MUST carry a W3C Data Integrity Proof.</p>
+            <pre class="example">
+{
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2026-04-28T10:30:00Z",
+    "verificationMethod": "did:web:shipper.example.com#key-1",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z5LbLbR3qZ5Y6m8n9o0p1q2r3s4t5u6v7w8x9y0za1b2c3d4..."
+  }
+}
+            </pre>
+            <table>
+                <thead><tr><th>Field</th><th>Required</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>type</code></td><td>MUST</td><td><code>Ed25519Signature2020</code>, <code>BbsBlsSignature2020</code>, or <code>DataIntegrityProof</code></td></tr>
+                    <tr><td><code>created</code></td><td>MUST</td><td>ISO 8601 UTC timestamp of proof creation</td></tr>
+                    <tr><td><code>verificationMethod</code></td><td>MUST</td><td>DID URL of the signing key</td></tr>
+                    <tr><td><code>proofPurpose</code></td><td>MUST</td><td>MUST be <code>assertionMethod</code></td></tr>
+                    <tr><td><code>proofValue</code></td><td>MUST</td><td>Cryptographic proof value</td></tr>
+                </tbody>
+            </table>
+            <p><code>BbsBlsSignature2020</code> [[BBS-2023]] proofs enable selective disclosure. Support for <code>BbsBlsSignature2020</code> is REQUIRED for Full Compliance.</p>
+        </section>
+    </section>
+
+    <section id="validation">
+        <h2>Validation Pipeline</h2>
+        <p>The UORA <a>Resolver</a> implements a seven-phase validation pipeline. Each phase executes sequentially; a rejection in any phase terminates processing.</p>
+
+        <figure id="fig-validation-pipeline">
+            <figcaption>Seven-Phase Validation Pipeline</figcaption>
+            <div class="pipeline-track">
+                <div class="pipe-phase"><div class="pipe-num">1</div><div class="pipe-body"><strong>Structural Validation</strong><br>All mandatory fields present; <code>id</code> is a valid UUID URN; <code>id</code> is not a duplicate.<div class="pipe-reject">rejected_missing_field | rejected_duplicate_id</div></div></div>
+                <div class="pipe-phase"><div class="pipe-num">2</div><div class="pipe-body"><strong>Type Validation</strong><br><code>type</code> array contains VerifiableCredential, UORAAttestation, and exactly one concrete subtype.<div class="pipe-reject">rejected_invalid_type | rejected_invalid_event_type</div></div></div>
+                <div class="pipe-phase"><div class="pipe-num">3</div><div class="pipe-body"><strong>Temporal Validation</strong><br><code>validFrom</code> is not more than 5 seconds in the future.<div class="pipe-reject">rejected_future_timestamp</div></div></div>
+                <div class="pipe-phase"><div class="pipe-num">4</div><div class="pipe-body"><strong>Proof Validation</strong><br>Proof section present; cryptographic signature verifies against the Issuer's DID Document.<div class="pipe-reject">rejected_invalid_proof</div></div></div>
+                <div class="pipe-phase"><div class="pipe-num">5</div><div class="pipe-body"><strong>Governance Validation</strong><br><a>authorizedBy</a> claim present; <a>CertificationCredential</a> is valid, unexpired, non-revoked; attestation type is authorized.<div class="pipe-reject">rejected_missing_authorization | rejected_unauthorized_issuer | rejected_expired_certification | rejected_revoked_certification | rejected_unauthorized_category</div></div></div>
+                <div class="pipe-phase"><div class="pipe-num">6</div><div class="pipe-body"><strong>Antecedent Chain Validation</strong><br>Antecedent references resolve within <a>DAG depth</a> (64), width (256), cycle detection, and 30s timeout limits. <a>Linear custody chain enforcement</a> for Transfer/Disposition.<div class="pipe-reject">rejected_broken_chain | rejected_linear_chain_violation | rejected_cyclic_chain | rejected_traversal_timeout</div></div></div>
+                <div class="pipe-phase"><div class="pipe-num">7</div><div class="pipe-body"><strong>Conflict Resolution</strong><br>No competing attestation with higher authority precedence claims the same antecedent.<div class="pipe-reject">superseded (preserved for audit, not used for state)</div></div></div>
+            </div>
+        </figure>
+
+        <section>
+            <h3>Validation Status Codes</h3>
+            <table>
+                <thead><tr><th>Status</th><th>Phase</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>valid</code></td><td>—</td><td>All seven phases passed; attestation is authoritative for state computation</td></tr>
+                    <tr><td><code>superseded</code></td><td>7</td><td>Structurally valid; lost <a>conflict resolution cascade</a>; preserved for audit, not used for state</td></tr>
+                    <tr><td><code>rejected_missing_field</code></td><td>1</td><td>Required field absent</td></tr>
+                    <tr><td><code>rejected_duplicate_id</code></td><td>1</td><td>Attestation ID already processed</td></tr>
+                    <tr><td><code>rejected_invalid_type</code></td><td>2</td><td>Type declaration mismatch or missing concrete subtype</td></tr>
+                    <tr><td><code>rejected_invalid_event_type</code></td><td>2</td><td>eventType does not match declared subtype</td></tr>
+                    <tr><td><code>rejected_future_timestamp</code></td><td>3</td><td>validFrom more than 5 seconds in the future</td></tr>
+                    <tr><td><code>rejected_invalid_proof</code></td><td>4</td><td>Proof missing, unrecognized type, or cryptographic verification failure</td></tr>
+                    <tr><td><code>rejected_missing_authorization</code></td><td>5</td><td>No <a>authorizedBy</a> claim</td></tr>
+                    <tr><td><code>rejected_unauthorized_issuer</code></td><td>5</td><td>Issuer lacks valid <a>CertificationCredential</a> or DID mismatch</td></tr>
+                    <tr><td><code>rejected_expired_certification</code></td><td>5</td><td>CertificationCredential expired at attestation time</td></tr>
+                    <tr><td><code>rejected_revoked_certification</code></td><td>5</td><td>CertificationCredential revoked per BitstringStatusList</td></tr>
+                    <tr><td><code>rejected_unauthorized_category</code></td><td>5</td><td>Attestation type not in certification's authorized scope</td></tr>
+                    <tr><td><code>rejected_broken_chain</code></td><td>6</td><td><a>Antecedent</a> reference cannot be resolved or DAG branch invalid</td></tr>
+                    <tr><td><code>rejected_linear_chain_violation</code></td><td>6</td><td>Transfer/Disposition does not reference the most recent valid event</td></tr>
+                    <tr><td><code>rejected_cyclic_chain</code></td><td>6</td><td>Antecedent graph contains a cycle</td></tr>
+                    <tr><td><code>rejected_traversal_timeout</code></td><td>6</td><td>DAG traversal exceeded 30-second time limit</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3>Chain Integrity States</h3>
+            <table>
+                <thead><tr><th>State</th><th>Meaning</th><th>Action Required</th></tr></thead>
+                <tbody>
+                    <tr><td><code>intact</code></td><td><a>Antecedent chain</a> is complete and all referenced attestations are valid</td><td>None — automated processing continues</td></tr>
+                    <tr><td><code>broken</code></td><td>Unresolvable antecedent, DAG branch failure, cycle, or traversal timeout</td><td>Manual investigation required</td></tr>
+                    <tr><td><code>invalid</code></td><td>Attestation failed structural or governance validation (Phases 1–5)</td><td>Attestation must be reissued with corrections</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </section>
+
+    <section id="example">
+        <h2>Complete Example</h2>
+        <p>A complete, well-formed <a>UORATransferAttestation</a> that passes all seven validation phases.</p>
+        <pre class="example">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://w3id.org/uora/contexts/core.jsonld",
+    "https://w3id.org/verifiable-supply-chain/contexts/shipping.jsonld"
+  ],
+  "id": "urn:uuid:550e8400-e29b-41d4-a716-446655440000",
+  "type": [
+    "VerifiableCredential",
+    "UORAAttestation",
+    "UORATransferAttestation",
+    "VerifiableShippingEvent"
+  ],
+  "issuer": {
+    "id": "did:web:shipper.example.com",
+    "name": "Global Logistics Co."
+  },
+  "validFrom": "2026-04-28T10:30:00.000Z",
+  "credentialSubject": {
+    "id": "did:web:maker.example.com:object:serial:SN-001",
+    "eventType": "Transfer",
+    "transferType": "custody",
+    "fromParty": "did:web:shipper.example.com",
+    "toParty": "did:web:receiver.example.com",
+    "fromLocation": "https://id.gs1.org/414/9521321000010",
+    "toLocation": "https://id.gs1.org/414/9521321000096",
+    "antecedent": "urn:uuid:previous-origin-attestation-id",
+    "authorizedBy": {
+      "certificationId": "urn:uuid:shipper-cert-credential",
+      "trustFramework": "https://w3id.org/verifiable-supply-chain/trust-frameworks/logistics-v1",
+      "verifiedAt": "2026-04-28T10:30:00Z"
+    }
+  },
+  "evidence": [
+    {
+      "id": "urn:uuid:evidence-001",
+      "type": ["Evidence", "EPCISObjectEvent"],
+      "name": "Custody Transfer Handover",
+      "description": "Digital handover confirmation at dock door R1",
+      "epcisEventID": "ni:///sha-256;abc123def456?ver=CBV2.0",
+      "epcisEventType": "ObjectEvent",
+      "epcisBizStep": "shipping"
+    }
+  ],
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2026-04-28T10:30:00Z",
+    "verificationMethod": "did:web:shipper.example.com#key-1",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z5LbLbR3qZ5Y6m8n9o0p1q2r3s4t5u6v7w8x9y0za1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+  }
+}
+        </pre>
+    </section>
+
+    <section id="conformance-section">
+        <h2>Conformance & Test Vectors</h2>
+
+        <section id="conformance-levels">
+            <h3>Compliance Levels</h3>
+            <div class="conf-badge-row">
+                <div class="conf-badge conf-data">
+                    <div class="level-icon">📋</div>
+                    <h5>UORA-Data-Compliant</h5>
+                    <p>Produces attestations conforming to the data model. Passes Phases 1–2. Ed25519Signature2020 required. <strong>9 test vectors</strong> (Categories A + B).</p>
+                </div>
+                <div class="conf-badge conf-proto">
+                    <div class="level-icon">🔗</div>
+                    <h5>UORA-Protocol-Compliant</h5>
+                    <p>Meets Data compliance + implements <a>UORA-Query-API</a> with all six endpoints. Passes Phases 1–5 including revocation checks. <strong>16 test vectors</strong> (Categories A–E + J).</p>
+                </div>
+                <div class="conf-badge conf-full">
+                    <div class="level-icon">✅</div>
+                    <h5>UORA-Full-Compliant</h5>
+                    <p>Meets Protocol compliance + all seven phases including DAG limits, cycle detection, <a>conflict resolution cascade</a>, and BBS+ selective disclosure. <strong>All 22 test vectors</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="test-vectors">
+            <h3>Conformance Test Suite — All 22 Test Vectors</h3>
+            <p>The following test vectors are normative. Test vectors are also published at <code>https://w3id.org/uora/conformance/v1.0/vectors.json</code>.</p>
+
+            <section>
+                <h4>Category A — Valid Attestations (4 vectors, all levels)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-A-001</span><span class="tv-tag">valid</span></div><p>Well-formed <a>UORAOriginAttestation</a> with Ed25519 proof and valid <a>CertificationCredential</a>. <strong>Expected:</strong> <span class="tv-accept">accepted</span></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-A-002</span><span class="tv-tag">valid</span></div><p>Well-formed <a>UORATransferAttestation</a> referencing a valid origin. <strong>Expected:</strong> <span class="tv-accept">accepted</span></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-A-003</span><span class="tv-tag">valid</span></div><p>Well-formed <a>UORATransformationAttestation</a> with two-element DAG antecedent. <strong>Expected:</strong> <span class="tv-accept">accepted</span></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-A-004</span><span class="tv-tag">valid</span></div><p>Well-formed <a>UORADispositionAttestation</a> as terminal event. <strong>Expected:</strong> <span class="tv-accept">accepted</span></p></div>
+            </section>
+
+            <section>
+                <h4>Category B — Invalid Attestations (5 vectors, all levels)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-B-001</span><span class="tv-tag">invalid</span></div><p>Missing <code>issuer.id</code>. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_missing_field</code></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-B-002</span><span class="tv-tag">invalid</span></div><p>Duplicate UUID submission. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_duplicate_id</code>, HTTP 409</p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-B-003</span><span class="tv-tag">invalid</span></div><p>Type array missing concrete subtype. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_invalid_type</code></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-B-004</span><span class="tv-tag">invalid</span></div><p><code>validFrom</code> 60 seconds in the future. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_future_timestamp</code></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-B-005</span><span class="tv-tag">invalid</span></div><p>Origin attestation with non-null antecedent. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_broken_chain</code></p></div>
+            </section>
+
+            <section>
+                <h4>Category C — Governance Validation (3 vectors, Protocol + Full)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-C-001</span><span class="tv-tag">governance</span></div><p><a>authorizedBy</a> claim absent. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_missing_authorization</code></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-C-002</span><span class="tv-tag">governance</span></div><p>CertificationCredential expired before attestation. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_expired_certification</code></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-C-003</span><span class="tv-tag">governance</span></div><p>Attestation type not in authorized scope. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_unauthorized_category</code></p></div>
+            </section>
+
+            <section>
+                <h4>Category D — Revocation (1 vector, Protocol + Full)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-D-001</span><span class="tv-tag">revocation</span></div><p>CertificationCredential revoked in BitstringStatusList. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_revoked_certification</code></p></div>
+            </section>
+
+            <section>
+                <h4>Category E — Proof Validation (2 vectors, Protocol + Full)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-E-001</span><span class="tv-tag">proof</span></div><p>Entire <code>proof</code> section omitted. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_invalid_proof</code></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-E-002</span><span class="tv-tag">proof</span></div><p>Incorrect <code>proofValue</code> — signature verification fails. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_invalid_proof</code></p></div>
+            </section>
+
+            <section>
+                <h4>Category F — Conflict Resolution (3 vectors, Full only)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-F-001</span><span class="tv-tag">conflict</span></div><p>Higher authority precedence wins (100 vs 50). <strong>Expected:</strong> A <span class="tv-accept">valid</span>, B <code>superseded</code>. Tier 1 resolves.</p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-F-002</span><span class="tv-tag">conflict</span></div><p>Equal authority; later timestamp wins. <strong>Expected:</strong> A <span class="tv-accept">valid</span>, B <code>superseded</code>. Tier 2 resolves.</p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-F-003</span><span class="tv-tag">conflict</span></div><p>Equal authority and timestamp; smaller UUID wins. <strong>Expected:</strong> A <span class="tv-accept">valid</span>, B <code>superseded</code>. Tier 3 resolves.</p></div>
+            </section>
+
+            <section>
+                <h4>Category G — Chain Integrity (2 vectors, Full only)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-G-001</span><span class="tv-tag">chain</span></div><p>Antecedent references non-existent UUID. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_broken_chain</code></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-G-002</span><span class="tv-tag">chain</span></div><p>DAG branch resolves to superseded attestation. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_broken_chain</code></p></div>
+            </section>
+
+            <section>
+                <h4>Category H — Linear Chain Enforcement (2 vectors, Full only)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-H-001</span><span class="tv-tag">linear</span></div><p>Transfer skips over a more recent valid event. <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_linear_chain_violation</code></p></div>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-H-002</span><span class="tv-tag">linear</span></div><p>Transfer correctly references most recent valid event. <strong>Expected:</strong> <span class="tv-accept">accepted</span></p></div>
+            </section>
+
+            <section>
+                <h4>Category I — DAG Limits & Cycles (1 vector, Full only)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-I-001</span><span class="tv-tag">dag</span></div><p>Antecedent graph contains cycle (A→B→C→A). <strong>Expected:</strong> <span class="tv-reject">rejected</span> — <code>rejected_cyclic_chain</code></p></div>
+            </section>
+
+            <section>
+                <h4>Category J — EPCIS Evidence Linking (1 vector, Protocol + Full)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-J-001</span><span class="tv-tag">epcis</span></div><p>Transfer attestation with EPCIS ObjectEvent evidence. <strong>Expected:</strong> <span class="tv-accept">accepted</span></p></div>
+            </section>
+
+            <section>
+                <h4>Category K — Selective Disclosure (1 vector, Full only)</h4>
+                <div class="tv-card"><div class="tv-head"><span class="tv-id">TC-K-001</span><span class="tv-tag">bbs</span></div><p>BbsBlsSignature2020 derived presentation with omitted location fields. <strong>Expected:</strong> <span class="tv-accept">accepted</span></p></div>
+            </section>
+        </section>
+    </section>
+
+    <section id="profiles">
+        <h2>Relationship to Domain Profiles</h2>
+        <p>Domain-specific profiles SHALL extend the appropriate UORA attestation subtype and add industry-specific claims. Profiles SHALL NOT modify or override governance validation rules, <a>antecedent chaining</a>, <a>linear custody chain enforcement</a>, DAG traversal limits, or <a>conflict resolution cascade</a>.</p>
         <table>
-            <thead>
-                <tr><th>State</th><th>Entry Condition</th><th>Exit Conditions</th><th>Attestation Required</th></tr>
-            </thead>
+            <thead><tr><th>UORA Attestation</th><th>Example Domain Profiles</th><th>EPCIS Mapping</th></tr></thead>
             <tbody>
-                <tr><td><dfn>Manufactured</dfn></td><td>Device produced; keypair generated or <a>PUF</a> characterized; device certificate issued.</td><td>→ <a>Enrolled</a>: successful <a>BEA</a> issuance.</td><td>Device certificate (BDV-issued).</td></tr>
-                <tr><td><dfn>Enrolled</dfn></td><td><a>BEA</a> issued and anchored to VDR; binding verification method registered in DID document.</td><td>→ <a>Active</a>: first successful challenge-response. → <a>Revoked</a>: pre-operational compromise.</td><td>BEA (EA-issued).</td></tr>
-                <tr><td><dfn>Active</dfn></td><td>Binding operational; challenge-response succeeds.</td><td>→ <a>Degraded</a>: device reports degraded status. → <a>Revoked</a>: authorized revocation event.</td><td>Periodic verification events (logged by verifier).</td></tr>
-                <tr><td><dfn>Degraded</dfn></td><td>Device reports <code>deviceStatus = degraded</code>. Challenge-response may succeed with reduced reliability.</td><td>→ <a>Active</a>: device recovers. → <a>Revoked</a>: degradation progresses to failure or tamper detection.</td><td>Degradation event attestation.</td></tr>
-                <tr><td><dfn>Revoked</dfn></td><td>Binding verification method removed or marked revoked in DID document.</td><td>→ <a>Enrolled</a> (new device): rebinding per §4.5.</td><td>Binding Revocation Attestation.</td></tr>
-                <tr><td><dfn>Decommissioned</dfn></td><td>Object at end-of-life; all bindings revoked; DID document updated with decommission claim.</td><td>Terminal state.</td><td>Disposition attestation (Object Owner-issued).</td></tr>
+                <tr><td><a>UORAOriginAttestation</a></td><td><code>VerifiableCommissioningEvent</code></td><td>ObjectEvent (ADD, bizStep=commissioning)</td></tr>
+                <tr><td><a>UORATransferAttestation</a></td><td><code>VerifiableShippingEvent</code>, <code>VerifiableReceivingEvent</code></td><td>ObjectEvent (OBSERVE, bizStep=shipping/receiving)</td></tr>
+                <tr><td><a>UORATransformationAttestation</a></td><td><code>VerifiableManufacturingEvent</code>, <code>VerifiableAssemblyEvent</code></td><td>TransformationEvent</td></tr>
+                <tr><td><a>UORADispositionAttestation</a></td><td><code>VerifiableRecyclingEvent</code>, <code>VerifiableDestructionEvent</code></td><td>ObjectEvent (DELETE)</td></tr>
             </tbody>
         </table>
     </section>
 
-    <section>
-        <h2>Security Considerations</h2>
-        <p>This section analyzes the security properties of the protocol against the attacker classes defined in Section 2. Implementations claiming a specific <a>BAL</a> MUST demonstrate, with reference to this section, that the identified mitigations are in place.</p>
+    <section id="privacy">
+        <h2>Privacy Considerations (Normative)</h2>
+        <p>This section is normative. UORA attestations are designed for supply chain transparency, but the long-lived nature of object identifiers and immutable event histories creates significant privacy risks that implementations MUST address.</p>
 
         <section>
-            <h3>Cloning Attacks</h3>
-            <p>A cloning attack involves replicating the binding identifier on a counterfeit object such that the counterfeit passes verification.</p>
+            <h3>Selective Disclosure</h3>
+            <p><a>Issuers</a> SHOULD use <code>BbsBlsSignature2020</code> proofs [[BBS-2023]] to enable <a>Holders</a> to present derived credentials disclosing only required claims. <a>Verifiers</a> MUST NOT require disclosure beyond their stated verification purpose and MUST document minimum required claim sets.</p>
+        </section>
+
+        <section>
+            <h3>Pairwise DIDs for Object Identity</h3>
+            <p>Implementations MAY use pairwise DIDs — distinct DIDs presented to different Verifiers for the same physical object — to prevent cross-Verifier correlation. <a>Resolvers</a> MUST support DID aliasing.</p>
+        </section>
+
+        <section>
+            <h3>ExternalData Access Control</h3>
+            <p>Resolvers and Verifiers MUST enforce the <code>accessPolicy</code> field:</p>
             <ul>
-                <li><strong>BAL-1.</strong> Susceptible to carrier replication if an A1 attacker can produce an identical carrier. Tamper-evident carrier engineering raises the practical cost but does not provide cryptographic guarantees.</li>
-                <li><strong>BAL-2.</strong> Resists cloning by A1 and A2 attackers where the secure element's tamper detection and key isolation are intact. An A2 attacker performing side-channel analysis on the secure element is mitigated by: Common Criteria-certified secure elements, key zeroization on tamper, and the ephemeral nature of cryptographic operations inside the SE boundary. A3 attackers (access to fab equipment) are not in scope for BAL-2.</li>
-                <li><strong>BAL-3/4.</strong> Resists cloning by A3 attackers because the <a>PUF</a> response is physically bound to manufacturing variations that cannot be reproduced even with semiconductor fabrication access. An A4 attacker who obtains one enrolled device and its helper data cannot derive the PUF response on a different device, because helper data reveals no information about the PUF's internal response beyond what a <a>fuzzy extractor</a> bound guarantees (see [[Dodis2008]], Theorem 3).</li>
+                <li><code>public</code>: Any Verifier MAY fetch without authorization.</li>
+                <li><code>holder-controlled</code>: Verifier MUST obtain explicit Holder authorization.</li>
+                <li><code>encrypted</code>: Only the designated Verifier can decrypt. Resolvers treat as opaque.</li>
             </ul>
         </section>
 
         <section>
-            <h3>Relay Attacks</h3>
-            <p>A relay attack intercepts a legitimate challenge and relays it to the genuine device from a remote location. The protocol provides tiered mitigations:</p>
-            <ul>
-                <li><strong>Response time bounding</strong> (Section 4.3.6) raises the cost of relay attacks but does not cryptographically prevent them, consistent with the analysis in [[Hancke2005]]. An A5 attacker with a dedicated high-speed RF relay system can defeat time bounding alone.</li>
-                <li><strong>Proximity-Bound Authenticated Channel (PBAC)</strong> (Appendix C) provides cryptographic relay protection by binding the challenge-response to a distance-limited transport. Under <a>PBAC</a>, a relay attacker who intercepts the PBAC-blinded nonce and relays it to a distant device cannot produce a valid response because: (a) the distant device's response is encrypted under the Channel Key, which the local verifier does not possess; and (b) the <a>Proximity Verifier Service (PVS)</a> will reject any attestation request where the latency exceeds the physical propagation limit of the transport.</li>
-            </ul>
-            <p>Verifiers requiring strong relay prevention SHALL use PBAC or supplement with UWB distance bounding.</p>
+            <h3>Data Minimization</h3>
+            <p>The <code>evidence</code> array SHOULD contain only data necessary for verification. Large payloads MUST be referenced via <code>externalData</code>. Evidence entries MUST NOT include PII about natural persons without explicit consent.</p>
+        </section>
+
+        <section>
+            <h3>Immutability and Erasure Rights</h3>
+            <p>Implementations in jurisdictions with data erasure requirements MUST implement Resolver-level access controls rather than modifying or deleting attestations. PII MUST be placed in <code>holder-controlled</code> or <code>encrypted</code> externalData so that access revocation effectively implements erasure without chain corruption.</p>
+        </section>
+
+        <section>
+            <h3>Commercial Confidentiality</h3>
+            <p><a>Issuers</a> MAY encrypt sensitive claims using the intended <a>Verifier</a>'s public key. Resolvers MUST store encrypted fields as opaque blobs and MUST NOT attempt decryption.</p>
+        </section>
+    </section>
+
+    <section id="security">
+        <h2>Security Considerations</h2>
+
+        <section>
+            <h3>Timestamp Manipulation Mitigation</h3>
+            <p><a>Authority precedence</a> is the primary <a>conflict resolution cascade</a> discriminator. A forged timestamp can only influence Tier 2, reached only when Issuers have identical authority precedence. The losing attestation is always preserved with <code>supersededBy</code>, making manipulation detectable in audit.</p>
+        </section>
+
+        <section>
+            <h3>Issuer Impersonation</h3>
+            <p>Mitigated by mandatory <a>CertificationCredential</a> validation at Phase 5, Trust Anchor ability to revoke compromised certifications via BitstringStatusList (max 5-minute cache), and cryptographic binding of every attestation to the Issuer's DID.</p>
+        </section>
+
+        <section>
+            <h3>Antecedent Chain Breaks</h3>
+            <p>Attestations with unresolvable antecedents are flagged <code>chainIntegrity: "broken"</code> and require manual investigation.</p>
+        </section>
+
+        <section>
+            <h3>Custody Gap Attacks</h3>
+            <p><a>Linear custody chain enforcement</a> prevents insertion of Transfer attestations that skip over legitimate custody events.</p>
         </section>
 
         <section>
             <h3>Replay Attacks</h3>
-            <p>Replay attacks are mitigated by nonce freshness and timestamp skew enforcement. The <a>verifier</a>'s short-lived nonce cache (maintained for the skew window) ensures that a captured challenge-response pair cannot be replayed within the skew window. After the skew window expires, the nonce is no longer valid and the response cannot be replayed, because a fresh nonce is required for each new challenge.</p>
+            <p>Mitigated by UUID URN uniqueness and duplicate ID rejection at Phase 1.</p>
         </section>
 
         <section>
-            <h3>BAL Downgrade Attacks</h3>
-            <p>A BAL downgrade attack presents a lower-assurance binding for an object that also has a higher-assurance binding. The BAL selection rules in Section 4.3.5 prevent this by requiring the <a>verifier</a> to select the highest available <a>BAL</a> that meets or exceeds <code>minBal</code>. Any permitted downgrade event MUST be logged and justified.</p>
+            <h3>DAG Depth Attacks</h3>
+            <p>Normative <a>DAG depth</a> limit (64 hops), width limit (256 entries), and traversal timeout (30 seconds) bound computational cost.</p>
         </section>
 
         <section>
-            <h3>Enrollment Authority Compromise</h3>
-            <p>Compromise of an <a>EA</a>'s CertificationCredential key allows an attacker to issue fraudulent <a>BEAs</a> for non-genuine devices. Trust frameworks MUST implement EA revocation and binding revalidation per Section 4.2.3. The use of independent EAs (multiple CertificationCredential holders) limits the blast radius of a single EA compromise. Verifiers SHOULD validate that the EA's CertificationCredential is non-revoked as part of every binding verification.</p>
+            <h3>Cyclic Antecedent Attacks</h3>
+            <p>Resolvers MUST implement visited-ID cycle detection and reject cyclic graphs with <code>rejected_cyclic_chain</code>.</p>
         </section>
 
         <section>
-            <h3>PUF Modeling Attacks</h3>
-            <p>PUF modeling attacks use machine learning classifiers trained on challenge-response pairs to predict unseen responses [[Ruhrmair2013]]. Arbiter PUFs with large challenge spaces are particularly vulnerable. Mitigations: (a) use of XOR-Arbiter PUFs or Ring Oscillator PUFs with controlled challenge sets; (b) challenge set restriction (the verifier's challenge set MUST be kept confidential and rotated); (c) <a>fuzzy extractors</a> that operate on a fixed enrollment challenge, limiting the exposed challenge-response space; (d) preferring SRAM PUFs for BAL-3 implementations where manufacturing access risks are high; and (e) <a>PUF Interface Descriptors</a> (Appendix A) that allow verifiers to evaluate the PUF's published susceptibility profile before issuing challenges. Vendors SHALL document their PUF construction's susceptibility to modeling attacks and the implemented mitigations in the <a>PID</a>.</p>
-        </section>
-
-        <section>
-            <h3>Key Compromise</h3>
-            <p>Evidence of binding private key compromise SHOULD trigger immediate revocation (reason code <code>key_compromise</code>) and rebinding. For BAL-3/4, key compromise in the cryptographic sense (not a physical break) is infeasible without device access, due to the non-persistence of the derived key. For BAL-2, compromise of the SE vendor's manufacturing process could theoretically enable key extraction; independent EA verification and BAL-3 preference for high-value bindings mitigate this.</p>
-        </section>
-
-        <section>
-            <h3>Denial-of-Service on Binding Devices</h3>
-            <p>Repeated challenge requests can exhaust processing capacity or battery reserves of constrained devices. Rate limiting per Section 4.3.7 is the primary mitigation. Trust frameworks SHOULD also define verifier authentication requirements so that only authorized verifiers can submit challenges to <a>binding devices</a> in high-value deployments.</p>
-        </section>
-
-        <section>
-            <h3>PBAC Channel Key Compromise</h3>
-            <p>A compromise of the <a>Proximity Verifier Service (PVS)</a> or its Channel Key shadow store would allow an attacker to forge <a>PBAC</a> attestations, defeating the relay-attack protection at BAL-4. Mitigations:</p>
-            <ul>
-                <li>The PVS SHALL store Channel Key shadows in a FIPS 140-2 Level 3 or higher Hardware Security Module.</li>
-                <li>The PVS attestation signing key SHALL be distinct from the Channel Key store and rotated per the Trust Framework schedule (default: 90 days).</li>
-                <li>Verifiers MAY query multiple independent PVS instances operated by different service providers. If responses from the PVS instances are inconsistent, the verifier SHALL return <a>verification_inconclusive</a>.</li>
-                <li><a>Binding devices</a> SHALL support on-device Channel Key rotation. The new Channel Key hash SHALL be published in an updated DID document, and the old Channel Key SHALL be purged from the PVS.</li>
-            </ul>
+            <h3>CertificationCredential Revocation Timing</h3>
+            <p>The 5-minute revocation cache maximum limits the window during which revoked credentials may be accepted. Trust Anchors SHOULD implement emergency revocation procedures.</p>
         </section>
     </section>
 
-    <section>
-        <h2>Conformance</h2>
-        <p>An implementation claiming conformance to this specification SHALL satisfy all of the following requirements. Claims of conformance at a specific <a>BAL</a> MUST be accompanied by a completed Conformance Declaration referencing the test suite results.</p>
-        <table>
-            <thead>
-                <tr><th>Req. ID</th><th>Requirement</th><th>BAL Scope</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>C-01</td><td>Specify the supported BAL(s) and document any BAL combinations.</td><td>All</td></tr>
-                <tr><td>C-02</td><td>Implement the enrollment protocol per Section 4.2 for each supported BAL.</td><td>All</td></tr>
-                <tr><td>C-03</td><td>Implement the challenge-response protocol per Section 4.3, including <a>JCS</a> canonicalization, nonce generation, and skew tolerance enforcement.</td><td>BAL-2+</td></tr>
-                <tr><td>C-04</td><td>Implement the revocation procedure per Section 4.4, including all reason codes.</td><td>All</td></tr>
-                <tr><td>C-05</td><td>Support at least one cryptographic profile from Section 6.</td><td>BAL-2+</td></tr>
-                <tr><td>C-06</td><td>Pass the UORA Binding Conformance Test Suite (CTS) for all claimed BALs. Test vectors: <code>w3id.org/uora/conformance/binding/v1</code>.</td><td>All</td></tr>
-                <tr><td>C-07</td><td>Publish a valid and complete <a>PUF Interface Descriptor (PID)</a> per Appendix A, including measured inter/intra-device statistics from ≥ 1000 devices.</td><td>BAL-3+</td></tr>
-                <tr><td>C-07a</td><td>Demonstrate that a clean-room verifier implementation can parse the <a>PID</a> and construct a valid PUF challenge without vendor-proprietary knowledge.</td><td>BAL-3+</td></tr>
-                <tr><td>C-08</td><td>Return all verification result states defined in Section 4.6 with the correct semantics.</td><td>BAL-2+</td></tr>
-                <tr><td>C-09</td><td>Support the <code>didVersion</code> field in ChallengeRequest and implement time-consistent verification per Section 4.3.1.</td><td>BAL-2+</td></tr>
-                <tr><td>C-10</td><td>Enforce BAL selection rules per Section 4.3.5, including downgrade prevention.</td><td>BAL-2+</td></tr>
-                <tr><td>C-11</td><td>Implement rate limiting per Section 4.3.7 and document the rate limiting policy.</td><td>BAL-2+</td></tr>
-                <tr><td>C-12</td><td>Implement the lifecycle model per Section 7, recording each state transition as a signed UORA attestation.</td><td>All</td></tr>
-                <tr><td>C-13</td><td>Document trust model assumptions per Section 5 for each claimed BAL.</td><td>All</td></tr>
-                <tr><td>C-14</td><td>Document the tamper-evidence carrier class and engineering specification in the <a>BEA</a>.</td><td>All</td></tr>
-                <tr><td>C-15</td><td>Implement continuous attestation, including trusted time source and autonomous attestation per Section 3.4.</td><td>BAL-4</td></tr>
-                <tr><td>C-16</td><td>Support the mandatory risk acceptance mechanism for Profile C per Section 6.3, and return <a>profile_c_risk_not_accepted</a> when the mechanism is violated.</td><td>BAL-2 (Profile C only)</td></tr>
-                <tr><td>C-17</td><td>Implement <a>PBAC</a> per Appendix C, including Channel Key generation, PBAC response generation, and <a>PVS</a> integration.</td><td>BAL-4</td></tr>
-                <tr><td>C-18</td><td>Support TFP-1 per Appendix B as the default <a>Trust Framework Profile (TFP)</a>, including <code>StatusList2021</code> EA credential revocation and 30-day re-enrollment window.</td><td>All</td></tr>
-                <tr><td>C-19</td><td>Include the TFP identifier in every <a>BEA</a> per Section 4.2.2, Step 6.</td><td>All</td></tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section class="appendix">
-        <h2>Appendix A: PUF Interface Descriptor (PID) Schema</h2>
-        <p>The <a>PUF Interface Descriptor (PID)</a> is REQUIRED for all BAL-3 and BAL-4 bindings. The PID SHALL be embedded in the <code>UORABindingVerification</code> verification method in the DID document, or included directly in the <a>BEA</a> and referenced by URL from the DID document. The PID provides all information a verifier needs to construct a challenge the <a>binding device</a> can process, without requiring vendor-proprietary knowledge.</p>
+    <section class="appendix" id="appendix-a">
+        <h2>Appendix A: UORA JSON-LD Context</h2>
+        <p>The canonical JSON-LD context is published at:</p>
+        <pre class="example">https://w3id.org/uora/contexts/core.jsonld</pre>
         <pre class="example">
 {
-  "pidVersion": "1.0",
-  "pufConstruction": "SRAM-PUF",
-  "pufVendor": "PUFvendor Corp",
-  "pufPartNumber": "PV-SRAM-256A",
-  "challengeConstruction": {
-    "algorithm": "sha256",
-    "inputFormat": "utf8-string",
-    "maxChallengeLength": 64,
-    "minChallengeLength": 8,
-    "description": "The binding device hashes the UTF-8 bytes of the nonce field from the ChallengeRequest. The resulting 256-bit hash is the PUF challenge."
-  },
-  "helperData": {
-    "uri": "https://vendor.example/helper-data/device123.bin",
-    "hash": {
-      "algorithm": "sha256",
-      "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    "format": "bch-params",
-    "formatVersion": "1",
-    "description": "BCH error-correcting code parameters for the fuzzy extractor. The binary helper data file contains the BCH codeword."
-  },
-  "fuzzyExtractor": {
-    "algorithm": "BCH",
-    "parameters": {
-      "codewordLength": 2047,
-      "messageLength": 1023,
-      "errorCorrectionCapability": 50
-    },
-    "implementation": "Standard binary BCH per Lin & Costello",
-    "derivedKeyLength": 256
-  },
-  "pufStatistics": {
-    "interDeviceHD": { "mean": 0.49, "stddev": 0.02, "min": 0.44, "max": 0.54 },
-    "intraDeviceHD": { "mean": 0.04, "stddev": 0.01, "min": 0.01, "max": 0.08 },
-    "sampleSize": 5000,
-    "temperatureRange": "-20C to +85C",
-    "voltageRange": "1.62V to 1.98V",
-    "measurementMethod": "NIST NVLAP-accredited lab, report #2025-PUF-001",
-    "reportUri": "https://pufvendor.example/audit/2025-puf-001.pdf",
-    "measuredBy": "Independent Testing Lab Inc."
-  },
-  "modelingAttackResistance": {
-    "classifierTested": ["Support Vector Machine", "Deep Neural Network", "Logistic Regression"],
-    "challengeResponsePairsExposed": 1000000,
-    "predictionAccuracy": { "maxObserved": 0.52, "atPairCount": 1000000 },
-    "reportUri": "https://pufvendor.example/security/puf-modeling-2025.pdf"
+  "@context": {
+    "@version": 1.1,
+    "@protected": true,
+    "id": "@id",
+    "type": "@type",
+
+    "UORAAttestation":             { "@id": "https://w3id.org/uora#UORAAttestation" },
+    "UORAOriginAttestation":       { "@id": "https://w3id.org/uora#UORAOriginAttestation" },
+    "UORATransferAttestation":     { "@id": "https://w3id.org/uora#UORATransferAttestation" },
+    "UORATransformationAttestation": { "@id": "https://w3id.org/uora#UORATransformationAttestation" },
+    "UORADispositionAttestation":  { "@id": "https://w3id.org/uora#UORADispositionAttestation" },
+    "UORACertificationCredential": { "@id": "https://w3id.org/uora#UORACertificationCredential" },
+
+    "eventType":    "uora:eventType",
+    "antecedent":   { "@id": "uora:antecedent", "@type": "@id" },
+    "authorizedBy": "uora:authorizedBy",
+
+    "originType":       "uora:originType",
+    "originLocation":   { "@id": "uora:originLocation", "@type": "@id" },
+    "originDate":       { "@id": "uora:originDate", "@type": "xsd:dateTime" },
+    "productionBatch":  "uora:productionBatch",
+    "inputMaterials":   { "@id": "uora:inputMaterials", "@type": "@id", "@container": "@set" },
+
+    "transferType":  "uora:transferType",
+    "fromParty":     { "@id": "uora:fromParty", "@type": "@id" },
+    "toParty":       { "@id": "uora:toParty", "@type": "@id" },
+    "fromLocation":  { "@id": "uora:fromLocation", "@type": "@id" },
+    "toLocation":    { "@id": "uora:toLocation", "@type": "@id" },
+
+    "transformationType":    "uora:transformationType",
+    "inputObjects":  { "@id": "uora:inputObjects", "@type": "@id", "@container": "@set" },
+    "outputObjects": { "@id": "uora:outputObjects", "@type": "@id", "@container": "@set" },
+    "inputQuantities":  "uora:inputQuantities",
+    "outputQuantities": "uora:outputQuantities",
+    "transformationLocation": { "@id": "uora:transformationLocation", "@type": "@id" },
+    "processCertification":   { "@id": "uora:processCertification", "@type": "@id" },
+
+    "dispositionType":             "uora:dispositionType",
+    "dispositionLocation":         { "@id": "uora:dispositionLocation", "@type": "@id" },
+    "environmentalCertification":  { "@id": "uora:environmentalCertification", "@type": "@id" },
+
+    "certificationId":        { "@id": "uora:certificationId", "@type": "@id" },
+    "trustFramework":         { "@id": "uora:trustFramework", "@type": "@id" },
+    "verifiedAt":             { "@id": "uora:verifiedAt", "@type": "xsd:dateTime" },
+    "authorityPrecedence":    "uora:authorityPrecedence",
+    "authorizedAttestations": "uora:authorizedAttestations",
+    "authorizedCategories":   "uora:authorizedCategories",
+    "authorizedRegions":      "uora:authorizedRegions",
+
+    "accessPolicy":   "uora:accessPolicy",
+    "encryptedFor":   { "@id": "uora:encryptedFor", "@type": "@id" },
+    "externalData":   "uora:externalData",
+    "physicalBinding": "uora:physicalBinding",
+
+    "epcisEventID":   "uora:epcisEventID",
+    "epcisEventType": "uora:epcisEventType",
+    "epcisBizStep":   "uora:epcisBizStep",
+
+    "uora": "https://w3id.org/uora#",
+    "xsd":  "http://www.w3.org/2001/XMLSchema#"
   }
 }
         </pre>
-        <p><strong>Required fields:</strong> <code>pidVersion</code>, <code>pufConstruction</code>, <code>challengeConstruction</code>, <code>helperData</code>, <code>fuzzyExtractor</code>, <code>pufStatistics</code> (with <code>interDeviceHD</code>, <code>intraDeviceHD</code>, and <code>sampleSize</code>).</p>
-        <p><strong>Verifier usage:</strong> A <a>verifier</a> SHALL parse the <a>PID</a>, validate that <code>pidVersion</code> is supported, verify that the <code>helperData.hash.value</code> matches the actual helper data retrieved from <code>helperData.uri</code>, and construct challenges according to <code>challengeConstruction</code>. If any PID field is missing or invalid, the verifier SHALL return <a>invalid_pid</a>.</p>
     </section>
 
-    <section class="appendix">
-        <h2>Appendix B: Trust Framework Profile 1 (TFP-1)</h2>
-        <p>TFP-1 is the baseline <a>Trust Framework Profile (TFP)</a>. Conformant implementations that do not operate under a community-specific Trust Framework SHALL support TFP-1 as the default interoperability profile. BEA issuers SHALL record the TFP identifier <code>urn:uora:trust-framework:profile-1</code> in the <a>BEA</a> when operating under TFP-1.</p>
-
-        <section>
-            <h4>B.1 CertificationCredential Schema</h4>
-            <p>Under TFP-1, an EA's CertificationCredential SHALL be a W3C Verifiable Credential conforming to the following minimum schema:</p>
-            <pre class="example">
-{
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2",
-    "https://w3id.org/uora/contexts/v1"
-  ],
-  "type": ["VerifiableCredential", "UORACertificationCredential"],
-  "issuer": "did:example:governance-authority",
-  "validFrom": "2026-01-01T00:00:00Z",
-  "validUntil": "2027-01-01T00:00:00Z",
-  "credentialSubject": {
-    "id": "did:example:ea-123",
-    "authorizedBALs": ["BAL-1", "BAL-2", "BAL-3", "BAL-4"],
-    "jurisdiction": "Global",
-    "contactEmail": "compliance@ea-123.example"
-  },
-  "credentialStatus": {
-    "id": "https://ea-123.example/status/1",
-    "type": "StatusList2021Entry",
-    "statusPurpose": "revocation",
-    "statusListIndex": "0",
-    "statusListCredential": "https://governance.example/status/lists/1"
-  }
-}
-            </pre>
-        </section>
-
-        <section>
-            <h4>B.2 EA Revocation and Re-Enrollment</h4>
-            <p>EA CertificationCredentials under TFP-1 SHALL be revocable via <code>StatusList2021</code>. When an EA credential index is set to <code>revoked</code>:</p>
-            <ol>
-                <li>The Governance Authority SHALL publish a notification on the designated revocation endpoint.</li>
-                <li>All <a>BEAs</a> issued by the revoked EA SHALL be treated as invalid.</li>
-                <li>Affected Object Owners have 30 calendar days from the revocation notification to re-enroll their bindings with a valid EA.</li>
-                <li>If re-enrollment is not completed within 30 calendar days, the binding SHALL transition to the <a>Revoked</a> state with reason code <code>authority_revoked</code>.</li>
-            </ol>
-        </section>
-
-        <section>
-            <h4>B.3 Audit Log Structure</h4>
-            <p>Verification events under TFP-1 SHALL be logged with the following minimum structure:</p>
-            <pre class="example">
-{
-  "eventType": "UORABindingVerification",
-  "eventId": "uuid",
-  "timestamp": "ISO8601 UTC",
-  "verifierDid": "did:example:verifier",
-  "objectDid": "did:example:object",
-  "bindingMethodId": "did:example:object#key-1",
-  "result": "valid | invalid_signature | ...",
-  "bal": "BAL-3",
-  "pbacApplied": true,
-  "pvsAttestation": { "..." },
-  "tfp": "urn:uora:trust-framework:profile-1"
-}
-            </pre>
-            <p>Audit logs SHALL be retained for a minimum of 7 years from the verification date, or as required by the applicable regulatory regime, whichever is longer.</p>
-        </section>
-
-        <section>
-            <h4>B.4 Dispute Resolution</h4>
-            <p>TFP-1 defines a default two-step dispute process:</p>
-            <ol>
-                <li><strong>Verification retry.</strong> The disputing party MAY request up to three re-verifications within 24 hours, each with a fresh ChallengeRequest. The results of all re-verifications SHALL be logged.</li>
-                <li><strong>Governance Authority adjudication.</strong> If the dispute remains unresolved after three re-verifications, either party MAY escalate to the Governance Authority, which SHALL issue a binding adjudication attestation within 10 business days. The adjudication attestation SHALL reference all prior verification results and SHALL be recorded in the object's attestation chain.</li>
-            </ol>
-        </section>
+    <section id="references">
+        <h2>References</h2>
+        <h3>Normative References</h3>
+        <dl>
+            <dt><strong>[[DID-CORE]]</strong></dt><dd>Decentralized Identifiers (DIDs) v1.0. W3C Recommendation, 2022.</dd>
+            <dt><strong>[[VC-DATA-MODEL-2.0]]</strong></dt><dd>Verifiable Credentials Data Model v2.0. W3C Recommendation, 2024.</dd>
+            <dt><strong>[[VC-DATA-INTEGRITY]]</strong></dt><dd>Verifiable Credential Data Integrity 1.0. W3C Recommendation, 2024.</dd>
+            <dt><strong>[[BITSTRING-STATUS-LIST]]</strong></dt><dd>Bitstring Status List v1.0. W3C Recommendation, 2024.</dd>
+            <dt><strong>[[BBS-2023]]</strong></dt><dd>BBS Cryptosuite v2023. W3C Credentials Community Group Draft, 2023.</dd>
+            <dt><strong>[[RFC2119]]</strong></dt><dd>Key words for use in RFCs to Indicate Requirement Levels. Bradner, 1997.</dd>
+            <dt><strong>[[RFC8259]]</strong></dt><dd>The JavaScript Object Notation (JSON) Data Interchange Format. 2017.</dd>
+            <dt><strong>[[ISO-8601]]</strong></dt><dd>Date and time format. ISO 8601-1:2019.</dd>
+            <dt><strong>[[NIST-SP800-57]]</strong></dt><dd>Recommendation for Key Management. NIST SP 800-57 Part 1 Rev 5, 2020.</dd>
+        </dl>
+        <h3>Informative References</h3>
+        <dl>
+            <dt><strong>[[EPCIS-2.0]]</strong></dt><dd>GS1 EPCIS 2.0 Standard, 2022.</dd>
+            <dt><strong>UORA Secure Physical Binding</strong></dt><dd><a href="https://w3id.org/uora/spec/secure-physical-binding/v1.0">UORA Secure Physical Binding Specification v1.0</a>.</dd>
+        </dl>
     </section>
-
-    <section class="appendix">
-        <h2>Appendix C: Proximity-Bound Authenticated Channel (PBAC)</h2>
-        <p>The <a>Proximity-Bound Authenticated Channel (PBAC)</a> is a normative extension to the challenge-response protocol that provides cryptographic relay-attack protection. PBAC is REQUIRED for BAL-4 devices and OPTIONAL for BAL-2 and BAL-3 devices. BAL-4 devices SHALL implement PBAC as their primary proximity verification mechanism.</p>
-
-        <section>
-            <h4>C.1 Protocol Overview</h4>
-            <p>The core idea: the <a>verifier</a>'s challenge nonce is encrypted under a symmetric Channel Key (CK) that exists only inside the <a>binding device</a> and in a trusted <a>Proximity Verifier Service (PVS)</a>. The binding device decrypts and re-encrypts the nonce within the same transport session. A relay attacker who intercepts the encrypted nonce and sends it to a distant device cannot produce a valid response because the distant device's decrypted response can never return fast enough to satisfy the transport's physical timing constraints, and the verifier cannot decrypt the response itself. The PVS acts as a trusted third party that verifies the decryption was correct and the latency was within expected bounds.</p>
-        </section>
-
-        <section>
-            <h4>C.2 Channel Key Generation and Registration</h4>
-            <ol>
-                <li>At manufacture, the <a>binding device</a> generates a 256-bit symmetric Channel Key (CK) using a CSPRNG [[NIST-SP800-90A]].</li>
-                <li>The CK SHALL NOT leave the binding device's secure element.</li>
-                <li>The binding device computes <code>CKHash = SHA-256(CK)</code>.</li>
-                <li>The device certificate or <a>PID</a> includes <code>CKHash</code> and the DID of the designated <a>Proximity Verifier Service (PVS)</a> responsible for this device.</li>
-                <li>During enrollment, the <a>Enrollment Authority</a> validates <code>CKHash</code> and registers the PVS binding in the DID document.</li>
-                <li><strong>PVS Shadow Storage.</strong> The binding device vendor or EA securely transmits a copy of CK to the PVS through a secure offline channel (e.g., a one-time HSM-to-HSM transfer during device personalization). The PVS stores CK in a FIPS 140-2 Level 3 HSM indexed by the device's JWK thumbprint.</li>
-            </ol>
-        </section>
-
-        <section>
-            <h4>C.3 PBAC Challenge-Response Protocol</h4>
-            <p>When a verifier sets <code>requestPbac = true</code> in the ChallengeRequest and the <a>binding device</a> supports <a>PBAC</a>:</p>
-            <ol>
-                <li>The verifier generates a standard ChallengeRequest with <code>requestPbac: true</code>.</li>
-                <li>The verifier transmits the ChallengeRequest to the binding device over the short-range transport (e.g., NFC).</li>
-                <li>The binding device receives the ChallengeRequest and extracts the <code>nonce</code> field.</li>
-                <li>The binding device computes: <code>pbacBlindedNonce = AES-256-CTR(CK, nonce)</code> using the internally stored CK. The ciphertext is a deterministic encryption of the nonce under the Channel Key.</li>
-                <li>The binding device constructs the ChallengeResponse with: <code>nonce = base64url(pbacBlindedNonce)</code>, <code>pbacApplied = true</code>, and computes the standard signature over the <a>JCS</a>-canonicalized original ChallengeRequest (not over pbacBlindedNonce).</li>
-                <li>The binding device transmits the ChallengeResponse back to the verifier within the same transport session.</li>
-                <li>The verifier receives the ChallengeResponse. Because <code>pbacApplied = true</code>, the verifier cannot directly compare the nonce. Instead, the verifier submits a PBAC Verification Request to the <a>PVS</a>:
-                    <pre class="example">
-{
-  "deviceJwkThumbprint": "urn:ietf:params:oauth:jwk-thumbprint:sha-256:...",
-  "originalNonce": "base64url(original nonce)",
-  "pbacBlindedNonce": "base64url(pbacBlindedNonce from response)",
-  "challengeTimestamp": "ISO 8601",
-  "responseTimestamp": "ISO 8601",
-  "transportType": "NFC",
-  "verifierDid": "did:example:verifier"
-}
-                    </pre>
-                </li>
-                <li>The PVS retrieves the device's CK from its HSM using the <code>deviceJwkThumbprint</code>.</li>
-                <li>The PVS locally decrypts: <code>decryptedNonce = AES-256-CTR-DECRYPT(CK, pbacBlindedNonce)</code>.</li>
-                <li>The PVS checks that <code>decryptedNonce == originalNonce</code>. If not, the PVS returns a failure attestation.</li>
-                <li>The PVS checks that <code>(responseTimestamp - challengeTimestamp)</code> is within the expected transport latency bound (e.g., ≤ 10 ms for NFC).</li>
-                <li>If both checks pass, the PVS signs and returns a PBAC Attestation:
-                    <pre class="example">
-{
-  "pvsDid": "did:example:pvs",
-  "deviceJwkThumbprint": "urn:ietf:params:oauth:jwk-thumbprint:sha-256:...",
-  "decryptedNonce": "base64url(decrypted nonce, matching originalNonce)",
-  "latencyMs": 4.2,
-  "latencyBoundMs": 10,
-  "latencyValid": true,
-  "verifiedAt": "ISO 8601",
-  "signature": "base64url(PVS_sign(JCS_canonicalize(payload)))"
-}
-                    </pre>
-                </li>
-                <li>The verifier stores the PVS attestation in the <code>ChallengeResponse.pbacSignature</code> field and proceeds with standard verification.</li>
-            </ol>
-        </section>
-
-        <section>
-            <h4>C.4 Security Properties</h4>
-            <ul>
-                <li>A relay attacker intercepting the PBAC-blinded nonce cannot produce the correct <code>pbacBlindedNonce</code> without access to CK. The attacker cannot replay the response because the original nonce is fresh and verifier-generated.</li>
-                <li>A distant genuine device, even if it receives the full ChallengeRequest over a relay channel and produces a valid <code>pbacBlindedNonce</code>, will fail the PVS latency check because the round-trip time to the distant device violates the transport's physical latency bound.</li>
-                <li>The PVS cannot impersonate a <a>binding device</a> because it does not possess the binding device's signing private key, only the symmetric Channel Key used for the PBAC blind.</li>
-            </ul>
-        </section>
-
-        <section>
-            <h4>C.5 Channel Key Rotation</h4>
-            <p>Channel Keys SHALL be rotatable. The rotation procedure:</p>
-            <ol>
-                <li>The <a>binding device</a> generates a new CK' and computes CKHash'.</li>
-                <li>The binding device signs an attestation containing CKHash' and the new <a>PVS</a> assignment (if changing).</li>
-                <li>The Object Owner updates the DID document with the new CKHash' and PVS assignment.</li>
-                <li>The binding device securely transmits the new CK' to the new PVS using the on-device asymmetric key to wrap CK' for PVS delivery.</li>
-                <li>The old PVS purges the old CK from its HSM.</li>
-            </ol>
-        </section>
-    </section>
-
-    <section class="appendix">
-        <h2>Appendix D: Continuous Attestation Payload Schema (BAL-4)</h2>
-        <p>The <code>continuousAttestation</code> object in a BAL-4 ChallengeResponse SHALL conform to the following structure:</p>
-        <pre class="example">
-{
-  "did": "&lt;object DID&gt;",
-  "bindingMethod": "&lt;method ID&gt;",
-  "generatedAt": "&lt;ISO 8601 UTC&gt;",
-  "nextExpectedBy": "&lt;ISO 8601 UTC&gt;",
-  "sensors": {
-    "&lt;sensorId&gt;": {
-      "value": &lt;number&gt;,
-      "unit": "&lt;SI unit&gt;",
-      "withinLimits": &lt;bool&gt;
-    }
-  },
-  "events": [
-    {
-      "eventType": "&lt;string&gt;",
-      "timestamp": "&lt;ISO 8601 UTC&gt;",
-      "details": "&lt;string&gt;"
-    }
-  ],
-  "signature": "&lt;base64url(device_sign(JCS(this_object_without_signature_field)))&gt;"
-}
-        </pre>
-        <p>The <code>signature</code> field SHALL be computed over the <a>JCS</a>-canonicalized attestation object with the <code>signature</code> field absent, using the <a>binding device</a>'s private key. <a>Verifiers</a> MUST verify this signature against the public key in the DID document's binding verification method before trusting any sensor readings or event records.</p>
-    </section>
-
-    <section class="appendix">
-        <h2>Appendix E: Changes from Prior Draft</h2>
-        <table>
-            <thead>
-                <tr><th>Section</th><th>Change</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>2 (Attacker Model)</td><td>New. Formally specifies five attacker classes (A0–A4) with defined capabilities and <a>BAL</a> resistance mapping. Added A5 class for dedicated RF relay attackers.</td></tr>
-                <tr><td>3.2 (BAL-2)</td><td>Added key generation on-device requirement and vendor attestation obligation. Clarified replay protection is verifier-side. Added reference to FIDO-CTAP2.</td></tr>
-                <tr><td>3.3 (BAL-3)</td><td>Grounded PUF unclonability in Armknecht et al. (2011) framework. Added <a>PUF Interface Descriptor (PID)</a> as normative mechanism for PUF interoperability. Added inter/intra-device statistics requirement from ≥ 1000 devices via PID. Added Dodis et al. (2008) theorem citation for helper data security.</td></tr>
-                <tr><td>3.4 (BAL-4)</td><td>Added <a>PBAC</a> as mandatory proximity verification mechanism for BAL-4.</td></tr>
-                <tr><td>4.1 (Transport)</td><td>Explicitly stated transport-agnostic model. Added proximity enforcement guidance and PBAC reference.</td></tr>
-                <tr><td>4.2 (Enrollment)</td><td>Added EA revocation and binding revalidation requirements (§4.2.3). Added <a>TFP</a> identifier requirement in BEA. Added PID requirement in BEA for BAL-3/4.</td></tr>
-                <tr><td>4.3.1 (ChallengeRequest)</td><td><code>didVersion</code> field fully specified. Added <a>version_unavailable</a> error state. Added <code>minBal</code> and <code>requestPbac</code> fields.</td></tr>
-                <tr><td>4.3.2 (ChallengeResponse)</td><td>Added <code>continuousAttestation</code> conditional field for BAL-4. Added <code>deviceStatus</code> tampered handling. Added <code>pbacApplied</code> and <code>pbacSignature</code> fields.</td></tr>
-                <tr><td>4.3.5 (BAL Selection)</td><td>Added explicit downgrade logging requirement. Clarified conditions for permitted downgrade.</td></tr>
-                <tr><td>4.3.6 (Relay Attack)</td><td>Added PBAC as primary mitigation for A5 attackers. Added quantitative response time thresholds per transport. Added UWB distance bounding as optional supplement.</td></tr>
-                <tr><td>4.3.7 (Rate Limiting)</td><td>New dedicated section with recommended rate limit parameters and PUF modeling attack connection.</td></tr>
-                <tr><td>4.6 (Verification States)</td><td>Added <a>version_unavailable</a>, <a>no_binding_method</a>, <a>invalid_nonce</a>, <a>unsupported_trust_framework</a>, <a>profile_c_risk_not_accepted</a>, and <a>invalid_pid</a> result codes.</td></tr>
-                <tr><td>6 (Cryptographic Profiles)</td><td>Profile C deprecated and marked with a security warning. Added mandatory risk acceptance mechanism for Profile C. Added post-quantum migration note. Added key diversification requirement for Profile C per NIST SP 800-108.</td></tr>
-                <tr><td>8 (Security Considerations)</td><td>New sections: 8.3 (Replay), 8.4 (BAL Downgrade), 8.6 (PUF Modeling Attacks), 8.9 (PBAC Channel Key Compromise). Updated Section 8.2 (Relay Attacks) with PBAC cryptographic mitigation. Added Rührmair et al. (2013) citation.</td></tr>
-                <tr><td>9 (Conformance)</td><td>Added C-07a (PID interoperability), C-16 (Profile C risk acceptance), C-17 (PBAC), C-18 (TFP-1 support), C-19 (TFP identifier in BEA).</td></tr>
-                <tr><td>Appendix A</td><td>Formal PID schema with mandatory and optional fields, verifier usage instructions, and conformance requirement.</td></tr>
-                <tr><td>Appendix B (NEW)</td><td><a>Trust Framework Profile</a> 1 (TFP-1) with CertificationCredential schema, EA revocation, audit log structure, and dispute resolution.</td></tr>
-                <tr><td>Appendix C (NEW)</td><td><a>Proximity-Bound Authenticated Channel (PBAC)</a> with Channel Key generation, PBAC challenge-response protocol, PVS integration, and key rotation.</td></tr>
-                <tr><td>10 (References)</td><td>Added NIST SP 800-108 and ISO/IEC 29192-6 references.</td></tr>
-                <tr><td>Terminology</td><td>Added <a>PUF Interface Descriptor (PID)</a>, <a>Trust Framework Profile (TFP)</a>, <a>Proximity-Bound Authenticated Channel (PBAC)</a>, and <a>Proximity Verifier Service (PVS)</a> definitions.</td></tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section id="references"></section>
 
 </body>
 </html>
