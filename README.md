@@ -135,7 +135,7 @@ To contribute:
 
 ## Communication
 
-- Mailing List: *(add UORA CG mailing list)*  
+- Mailing List: public-uora@w3.org
 - GitHub: https://github.com/w3c-cg/uora  
 - Meeting details and minutes are shared via the mailing list  
 
